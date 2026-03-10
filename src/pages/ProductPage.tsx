@@ -1,7 +1,8 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Star, Heart, Minus, Plus, Truck, RefreshCw, Shield, Zap } from 'lucide-react';
-import { products } from '@/data/products';
+import { products as catalogProducts, Product } from '@/data/products';
+import { useAdmin } from '@/context/AdminContext';
 import { useCart } from '@/context/CartContext';
 import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
@@ -11,7 +12,16 @@ import { toast } from 'sonner';
 
 const ProductPage = () => {
   const { id } = useParams();
-  const product = products.find(p => p.id === id);
+  const { products: adminProducts } = useAdmin();
+
+  const allProducts: Product[] = useMemo(() => {
+    const adminAsProducts: Product[] = adminProducts
+      .filter(p => p.isActive)
+      .map(p => ({ ...p, category: p.category as Product['category'], images: [p.image], rating: 4.5, reviews: 0 }));
+    return [...catalogProducts, ...adminAsProducts];
+  }, [adminProducts]);
+
+  const product = allProducts.find(p => p.id === id);
   const { addToCart, toggleWishlist, isInWishlist } = useCart();
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState<string>('');
@@ -29,7 +39,7 @@ const ProductPage = () => {
     );
   }
 
-  const related = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+  const related = allProducts.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
   const wishlisted = isInWishlist(product.id);
 
   const handleAddToCart = () => {
