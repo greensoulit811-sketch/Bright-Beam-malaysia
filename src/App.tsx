@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/context/CartContext";
 import { AdminProvider } from "@/context/AdminContext";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import FacebookPixelProvider from "@/components/FacebookPixelProvider";
 import Index from "./pages/Index.tsx";
 import ShopPage from "./pages/ShopPage.tsx";
 import ProductPage from "./pages/ProductPage.tsx";
