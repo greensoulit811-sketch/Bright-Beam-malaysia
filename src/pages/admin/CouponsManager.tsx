@@ -1,0 +1,129 @@
+import { useState } from 'react';
+import { useAdmin, Coupon } from '@/context/AdminContext';
+import { Plus, Pencil, Trash2, X } from 'lucide-react';
+import { toast } from 'sonner';
+
+const defaultCoupon: Omit<Coupon, 'id'> = {
+  code: '', type: 'percentage', value: 10, minOrder: 0, maxUses: 100, usedCount: 0, isActive: true, expiresAt: '2026-12-31',
+};
+
+const CouponsManager = () => {
+  const { coupons, addCoupon, updateCoupon, deleteCoupon } = useAdmin();
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<Coupon | null>(null);
+  const [form, setForm] = useState(defaultCoupon);
+
+  const openAdd = () => { setEditing(null); setForm(defaultCoupon); setShowForm(true); };
+  const openEdit = (c: Coupon) => { setEditing(c); setForm(c); setShowForm(true); };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editing) { updateCoupon(editing.id, form); toast.success('Coupon updated'); }
+    else { addCoupon(form); toast.success('Coupon created'); }
+    setShowForm(false);
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="font-heading text-3xl font-bold uppercase tracking-wider">Coupons</h1>
+          <p className="font-body text-sm text-muted-foreground mt-1">{coupons.length} coupons</p>
+        </div>
+        <button onClick={openAdd} className="flex items-center gap-2 bg-neon text-accent-foreground px-5 py-2.5 font-body text-sm font-bold tracking-wider uppercase hover:bg-neon-glow transition-all">
+          <Plus className="w-4 h-4" /> Add Coupon
+        </button>
+      </div>
+
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {coupons.map(c => (
+          <div key={c.id} className="bg-card border border-border p-6 hover:border-neon/20 transition-colors">
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-heading text-xl font-bold uppercase tracking-wider text-neon">{c.code}</span>
+              <span className={`px-2 py-1 text-xs font-body font-bold rounded-sm uppercase ${c.isActive ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                {c.isActive ? 'Active' : 'Inactive'}
+              </span>
+            </div>
+            <p className="font-body text-2xl font-bold mb-1">
+              {c.type === 'percentage' ? `${c.value}% OFF` : `${c.value} KWD OFF`}
+            </p>
+            <p className="font-body text-xs text-muted-foreground mb-3">Min order: {c.minOrder} KWD</p>
+            <div className="flex justify-between font-body text-xs text-muted-foreground mb-4">
+              <span>Used: {c.usedCount}/{c.maxUses}</span>
+              <span>Expires: {c.expiresAt}</span>
+            </div>
+            <div className="w-full bg-secondary h-1.5 rounded-full mb-4">
+              <div className="bg-neon h-1.5 rounded-full" style={{ width: `${(c.usedCount / c.maxUses) * 100}%` }} />
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => openEdit(c)} className="flex-1 py-2 border border-border font-body text-xs uppercase tracking-wider hover:border-neon/50 transition-colors">
+                <Pencil className="w-3 h-3 inline mr-1" /> Edit
+              </button>
+              <button onClick={() => { deleteCoupon(c.id); toast.success('Deleted'); }} className="py-2 px-3 border border-border hover:border-red-500/50 text-red-400 transition-colors">
+                <Trash2 className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {showForm && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-card border border-border w-full max-w-md p-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-heading text-2xl font-bold uppercase tracking-wider">{editing ? 'Edit' : 'Add'} Coupon</h2>
+              <button onClick={() => setShowForm(false)}><X className="w-5 h-5 text-muted-foreground" /></button>
+            </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Code</label>
+                <input value={form.code} onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })} required
+                  className="w-full px-4 py-2.5 border border-border bg-background font-body text-sm text-foreground focus:outline-none focus:border-neon uppercase" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Type</label>
+                  <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value as 'percentage' | 'fixed' })}
+                    className="w-full px-4 py-2.5 border border-border bg-background font-body text-sm text-foreground focus:outline-none focus:border-neon">
+                    <option value="percentage">Percentage</option>
+                    <option value="fixed">Fixed Amount</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Value</label>
+                  <input type="number" value={form.value} onChange={e => setForm({ ...form, value: +e.target.value })}
+                    className="w-full px-4 py-2.5 border border-border bg-background font-body text-sm text-foreground focus:outline-none focus:border-neon" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Min Order (KWD)</label>
+                  <input type="number" value={form.minOrder} onChange={e => setForm({ ...form, minOrder: +e.target.value })}
+                    className="w-full px-4 py-2.5 border border-border bg-background font-body text-sm text-foreground focus:outline-none focus:border-neon" />
+                </div>
+                <div>
+                  <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Max Uses</label>
+                  <input type="number" value={form.maxUses} onChange={e => setForm({ ...form, maxUses: +e.target.value })}
+                    className="w-full px-4 py-2.5 border border-border bg-background font-body text-sm text-foreground focus:outline-none focus:border-neon" />
+                </div>
+              </div>
+              <div>
+                <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Expires</label>
+                <input type="date" value={form.expiresAt} onChange={e => setForm({ ...form, expiresAt: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-border bg-background font-body text-sm text-foreground focus:outline-none focus:border-neon" />
+              </div>
+              <label className="flex items-center gap-2 font-body text-sm cursor-pointer">
+                <input type="checkbox" checked={form.isActive} onChange={e => setForm({ ...form, isActive: e.target.checked })} className="accent-neon" /> Active
+              </label>
+              <button type="submit" className="w-full bg-neon text-accent-foreground py-3 font-body text-sm font-bold tracking-wider uppercase hover:bg-neon-glow transition-all">
+                {editing ? 'Save' : 'Create'} Coupon
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CouponsManager;
