@@ -15,7 +15,7 @@ const BannersManager = () => {
   const deleteBanner = useDeleteBanner();
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<DbBanner | null>(null);
-  const [form, setForm] = useState({ title: '', subtitle: '', image_url: images[0], link_url: '/shop', is_active: true, position: 'promo' as string });
+  const [form, setForm] = useState({ title: '', subtitle: '', image_url: '', link_url: '/shop', is_active: true, position: 'hero' as string });
 
   const openAdd = () => { setEditing(null); setForm({ title: '', subtitle: '', image_url: images[0], link_url: '/shop', is_active: true, position: 'promo' }); setShowForm(true); };
   const openEdit = (b: DbBanner) => { setEditing(b); setForm({ title: b.title, subtitle: b.subtitle || '', image_url: b.image_url, link_url: b.link_url || '/shop', is_active: b.is_active ?? true, position: b.position }); setShowForm(true); };
