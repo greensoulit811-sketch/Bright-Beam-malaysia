@@ -378,6 +378,45 @@ export type Database = {
         }
         Relationships: []
       }
+      shipping_methods: {
+        Row: {
+          area_zone: string
+          charge: number
+          created_at: string
+          description: string | null
+          estimated_delivery: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          area_zone?: string
+          charge?: number
+          created_at?: string
+          description?: string | null
+          estimated_delivery?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          area_zone?: string
+          charge?: number
+          created_at?: string
+          description?: string | null
+          estimated_delivery?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           created_at: string
