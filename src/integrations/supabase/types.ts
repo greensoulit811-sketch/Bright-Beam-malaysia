@@ -238,6 +238,33 @@ export type Database = {
         }
         Relationships: []
       }
+      page_views: {
+        Row: {
+          created_at: string
+          id: string
+          page_title: string | null
+          page_url: string
+          session_id: string
+          visitor_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          page_title?: string | null
+          page_url: string
+          session_id: string
+          visitor_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          page_title?: string | null
+          page_url?: string
+          session_id?: string
+          visitor_id?: string
+        }
+        Relationships: []
+      }
       product_variations: {
         Row: {
           color: string
@@ -450,6 +477,63 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      visitor_sessions: {
+        Row: {
+          browser: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          device_type: string | null
+          entry_page: string | null
+          exit_page: string | null
+          id: string
+          ip_address: string | null
+          is_online: boolean | null
+          last_active_at: string
+          os: string | null
+          referrer: string | null
+          session_id: string
+          updated_at: string
+          visitor_id: string
+        }
+        Insert: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          entry_page?: string | null
+          exit_page?: string | null
+          id?: string
+          ip_address?: string | null
+          is_online?: boolean | null
+          last_active_at?: string
+          os?: string | null
+          referrer?: string | null
+          session_id: string
+          updated_at?: string
+          visitor_id: string
+        }
+        Update: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          entry_page?: string | null
+          exit_page?: string | null
+          id?: string
+          ip_address?: string | null
+          is_online?: boolean | null
+          last_active_at?: string
+          os?: string | null
+          referrer?: string | null
+          session_id?: string
+          updated_at?: string
+          visitor_id?: string
         }
         Relationships: []
       }
