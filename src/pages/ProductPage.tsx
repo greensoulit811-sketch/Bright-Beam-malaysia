@@ -14,6 +14,7 @@ const ProductPage = () => {
   const { id } = useParams();
   const { data: dbProducts = [], isLoading } = useActiveProducts();
   const { addToCart, toggleWishlist, isInWishlist } = useCart();
+  const { fbTrackViewContent, fbTrackAddToCart } = useFacebookTracking();
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
