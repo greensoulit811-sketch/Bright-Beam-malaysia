@@ -70,20 +70,29 @@ export const useCheckoutLeadAutoSave = () => {
 
       try {
         if (!savedRef.current) {
-          // Try insert first
-          const { error } = await supabase.from('checkout_leads').upsert(
-            payload,
-            { onConflict: 'session_id' }
-          );
-          if (!error) savedRef.current = true;
+          // Check if a lead already exists for this session
+          const { data: existing } = await supabase
+            .from('checkout_leads')
+            .select('id')
+            .eq('session_id', sessionId)
+            .maybeSingle();
+
+          if (existing) {
+            await supabase.from('checkout_leads')
+              .update(payload)
+              .eq('session_id', sessionId);
+          } else {
+            const { error } = await supabase.from('checkout_leads').insert(payload);
+            if (error) console.error('Lead insert error:', error);
+          }
+          savedRef.current = true;
         } else {
-          // Update existing
           await supabase.from('checkout_leads')
             .update(payload)
             .eq('session_id', sessionId);
         }
-      } catch {
-        // Silent fail - don't disrupt checkout
+      } catch (err) {
+        console.error('Lead save error:', err);
       }
     }, 1500);
   }, []);
