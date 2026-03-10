@@ -378,6 +378,53 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          product_id: string | null
+          rating: number
+          review_text: string
+          reviewer_image: string | null
+          reviewer_name: string
+          show_for_all: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          product_id?: string | null
+          rating?: number
+          review_text?: string
+          reviewer_image?: string | null
+          reviewer_name: string
+          show_for_all?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          product_id?: string | null
+          rating?: number
+          review_text?: string
+          reviewer_image?: string | null
+          reviewer_name?: string
+          show_for_all?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shipping_methods: {
         Row: {
           area_zone: string

@@ -28,6 +28,7 @@ import BannersManager from "./pages/admin/BannersManager.tsx";
 import AnalyticsPage from "./pages/admin/AnalyticsPage.tsx";
 import VisitorAnalyticsPage from "./pages/admin/VisitorAnalyticsPage.tsx";
 import ShippingMethodsManager from "./pages/admin/ShippingMethodsManager.tsx";
+import ReviewsManager from "./pages/admin/ReviewsManager.tsx";
 import CustomersPage from "./pages/admin/CustomersPage.tsx";
 import SettingsPage from "./pages/admin/SettingsPage.tsx";
 import MarketingTrackingPage from "./pages/admin/MarketingTrackingPage.tsx";
@@ -70,6 +71,7 @@ const App = () => (
                 <Route path="settings" element={<SettingsPage />} />
                 <Route path="marketing" element={<MarketingTrackingPage />} />
                 <Route path="shipping" element={<ShippingMethodsManager />} />
+                <Route path="reviews" element={<ReviewsManager />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -8,6 +8,7 @@ import { useFacebookTracking } from '@/hooks/useFacebookTracking';
 import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ProductReviews from '@/components/ProductReviews';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
@@ -209,6 +210,9 @@ const ProductPage = () => {
               </div>
             </motion.div>
           </div>
+
+          {/* Reviews */}
+          <ProductReviews productId={product.id} />
 
           {related.length > 0 && (
             <section className="mt-20 pt-10 border-t border-border">
