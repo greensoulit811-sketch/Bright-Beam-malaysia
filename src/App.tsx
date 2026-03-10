@@ -33,6 +33,9 @@ import ReviewsManager from "./pages/admin/ReviewsManager.tsx";
 import CustomersPage from "./pages/admin/CustomersPage.tsx";
 import SettingsPage from "./pages/admin/SettingsPage.tsx";
 import MarketingTrackingPage from "./pages/admin/MarketingTrackingPage.tsx";
+import PagesManager from "./pages/admin/PagesManager.tsx";
+import AboutPage from "./pages/AboutPage.tsx";
+import ContactPage from "./pages/ContactPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
