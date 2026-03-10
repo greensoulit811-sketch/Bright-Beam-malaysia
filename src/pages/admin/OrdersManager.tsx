@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react';
 import { useOrders, useUpdateOrderStatus, useDeleteOrder } from '@/hooks/useDatabase';
 import { toast } from 'sonner';
 import { printInvoice, printCourierSlip } from '@/components/admin/InvoicePrint';
@@ -18,6 +19,18 @@ const OrdersManager = () => {
   const { data: orders = [], isLoading } = useOrders();
   const updateStatus = useUpdateOrderStatus();
   const deleteOrder = useDeleteOrder();
+  const [statusFilter, setStatusFilter] = useState('all');
+
+  const filtered = useMemo(() => {
+    if (statusFilter === 'all') return orders;
+    return orders.filter(o => o.status === statusFilter);
+  }, [orders, statusFilter]);
+
+  const statusCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: orders.length };
+    statuses.forEach(s => { counts[s] = orders.filter(o => o.status === s).length; });
+    return counts;
+  }, [orders]);
 
   const handleStatusChange = async (id: string, status: string) => {
     try {
@@ -42,8 +55,26 @@ const OrdersManager = () => {
         <h1 className="font-heading text-3xl font-bold uppercase tracking-wider text-foreground">Orders</h1>
         <p className="font-body text-sm text-muted-foreground mt-1">{orders.length} total orders</p>
       </div>
+
+      <div className="flex flex-wrap gap-2 mb-6">
+        {['all', ...statuses].map(s => (
+          <button
+            key={s}
+            onClick={() => setStatusFilter(s)}
+            className={`px-4 py-2 rounded-md font-body text-sm font-medium transition-colors ${
+              statusFilter === s
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary/30'
+            }`}
+          >
+            {s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
+            <span className="ml-1.5 text-xs opacity-70">({statusCounts[s] || 0})</span>
+          </button>
+        ))}
+      </div>
+
       <div className="space-y-4">
-        {orders.map(order => {
+        {filtered.map(order => {
           const items = (order.items as any[]) || [];
           return (
             <div key={order.id} className="bg-card border border-border p-6 rounded-lg hover:border-primary/20 transition-colors">
