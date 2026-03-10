@@ -210,6 +210,13 @@ export type Database = {
         Row: {
           created_at: string
           currency: string | null
+          default_content_type: string | null
+          facebook_access_token: string | null
+          facebook_api_version: string | null
+          facebook_capi_enabled: boolean | null
+          facebook_pixel_enabled: boolean | null
+          facebook_pixel_id: string | null
+          facebook_test_event_code: string | null
           free_shipping_threshold: number | null
           id: string
           instagram_handle: string | null
@@ -217,12 +224,26 @@ export type Database = {
           meta_title: string | null
           site_description: string | null
           site_name: string | null
+          tracking_addtocart: boolean | null
+          tracking_complete_registration: boolean | null
+          tracking_initiatecheckout: boolean | null
+          tracking_lead: boolean | null
+          tracking_pageview: boolean | null
+          tracking_purchase: boolean | null
+          tracking_viewcontent: boolean | null
           updated_at: string
           whatsapp_number: string | null
         }
         Insert: {
           created_at?: string
           currency?: string | null
+          default_content_type?: string | null
+          facebook_access_token?: string | null
+          facebook_api_version?: string | null
+          facebook_capi_enabled?: boolean | null
+          facebook_pixel_enabled?: boolean | null
+          facebook_pixel_id?: string | null
+          facebook_test_event_code?: string | null
           free_shipping_threshold?: number | null
           id?: string
           instagram_handle?: string | null
@@ -230,12 +251,26 @@ export type Database = {
           meta_title?: string | null
           site_description?: string | null
           site_name?: string | null
+          tracking_addtocart?: boolean | null
+          tracking_complete_registration?: boolean | null
+          tracking_initiatecheckout?: boolean | null
+          tracking_lead?: boolean | null
+          tracking_pageview?: boolean | null
+          tracking_purchase?: boolean | null
+          tracking_viewcontent?: boolean | null
           updated_at?: string
           whatsapp_number?: string | null
         }
         Update: {
           created_at?: string
           currency?: string | null
+          default_content_type?: string | null
+          facebook_access_token?: string | null
+          facebook_api_version?: string | null
+          facebook_capi_enabled?: boolean | null
+          facebook_pixel_enabled?: boolean | null
+          facebook_pixel_id?: string | null
+          facebook_test_event_code?: string | null
           free_shipping_threshold?: number | null
           id?: string
           instagram_handle?: string | null
@@ -243,6 +278,13 @@ export type Database = {
           meta_title?: string | null
           site_description?: string | null
           site_name?: string | null
+          tracking_addtocart?: boolean | null
+          tracking_complete_registration?: boolean | null
+          tracking_initiatecheckout?: boolean | null
+          tracking_lead?: boolean | null
+          tracking_pageview?: boolean | null
+          tracking_purchase?: boolean | null
+          tracking_viewcontent?: boolean | null
           updated_at?: string
           whatsapp_number?: string | null
         }
