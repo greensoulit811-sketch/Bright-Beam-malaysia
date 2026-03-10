@@ -51,7 +51,7 @@ const Footer = () => {
             </ul>
             <div className="mt-6 font-body text-sm text-primary-foreground/40">
               <p>Kuwait City, Kuwait</p>
-              <p>info@kickzone.kw</p>
+              <p>info@srkcollection.kw</p>
               <p>+965 1234 5678</p>
             </div>
           </div>
