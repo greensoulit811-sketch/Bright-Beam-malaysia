@@ -14,7 +14,240 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      banners: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          is_active: boolean | null
+          link_url: string | null
+          position: string
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          is_active?: boolean | null
+          link_url?: string | null
+          position?: string
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_active?: boolean | null
+          link_url?: string | null
+          position?: string
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          expires_at: string
+          id: string
+          is_active: boolean | null
+          max_uses: number | null
+          min_order: number | null
+          type: string
+          updated_at: string
+          used_count: number | null
+          value: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          min_order?: number | null
+          type?: string
+          updated_at?: string
+          used_count?: number | null
+          value?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          min_order?: number | null
+          type?: string
+          updated_at?: string
+          used_count?: number | null
+          value?: number
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          created_at: string
+          customer_email: string | null
+          customer_name: string
+          customer_phone: string
+          id: string
+          items: Json
+          notes: string | null
+          order_number: string
+          payment_method: string
+          shipping_address: string
+          status: string
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          customer_email?: string | null
+          customer_name: string
+          customer_phone: string
+          id?: string
+          items?: Json
+          notes?: string | null
+          order_number: string
+          payment_method?: string
+          shipping_address: string
+          status?: string
+          total?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string
+          customer_phone?: string
+          id?: string
+          items?: Json
+          notes?: string | null
+          order_number?: string
+          payment_method?: string
+          shipping_address?: string
+          status?: string
+          total?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          brand: string
+          category: string
+          colors: string[] | null
+          created_at: string
+          description: string | null
+          id: string
+          image: string
+          images: string[] | null
+          is_active: boolean | null
+          is_new: boolean | null
+          is_trending: boolean | null
+          name: string
+          original_price: number | null
+          price: number
+          rating: number | null
+          reviews: number | null
+          sizes: number[] | null
+          stock: number | null
+          updated_at: string
+        }
+        Insert: {
+          brand: string
+          category?: string
+          colors?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string
+          images?: string[] | null
+          is_active?: boolean | null
+          is_new?: boolean | null
+          is_trending?: boolean | null
+          name: string
+          original_price?: number | null
+          price: number
+          rating?: number | null
+          reviews?: number | null
+          sizes?: number[] | null
+          stock?: number | null
+          updated_at?: string
+        }
+        Update: {
+          brand?: string
+          category?: string
+          colors?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string
+          images?: string[] | null
+          is_active?: boolean | null
+          is_new?: boolean | null
+          is_trending?: boolean | null
+          name?: string
+          original_price?: number | null
+          price?: number
+          rating?: number | null
+          reviews?: number | null
+          sizes?: number[] | null
+          stock?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          created_at: string
+          currency: string | null
+          free_shipping_threshold: number | null
+          id: string
+          instagram_handle: string | null
+          meta_description: string | null
+          meta_title: string | null
+          site_description: string | null
+          site_name: string | null
+          updated_at: string
+          whatsapp_number: string | null
+        }
+        Insert: {
+          created_at?: string
+          currency?: string | null
+          free_shipping_threshold?: number | null
+          id?: string
+          instagram_handle?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          site_description?: string | null
+          site_name?: string | null
+          updated_at?: string
+          whatsapp_number?: string | null
+        }
+        Update: {
+          created_at?: string
+          currency?: string | null
+          free_shipping_threshold?: number | null
+          id?: string
+          instagram_handle?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          site_description?: string | null
+          site_name?: string | null
+          updated_at?: string
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
