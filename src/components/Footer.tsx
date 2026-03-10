@@ -1,65 +1,69 @@
 import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Twitter, Youtube } from 'lucide-react';
+import { useSettings } from '@/hooks/useDatabase';
+import { useActiveCategories } from '@/hooks/useCategories';
 
 const Footer = () => {
+  const { data: settings } = useSettings();
+  const { data: categories = [] } = useActiveCategories();
+  const s = settings as any;
+
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           <div>
-            <img src="/logo.png" alt="SRK Collection" className="h-14 w-auto mb-4" />
+            <img src={s?.logo_url || '/logo.png'} alt={s?.site_name || 'Store'} className="h-14 w-auto mb-4" />
             <p className="text-primary-foreground/60 font-body text-sm leading-relaxed mb-6">
-              Your ultimate destination for authentic sports footwear in Kuwait. Nike, Adidas, Puma, and more.
+              {s?.footer_description || 'Your ultimate destination for authentic sports footwear in Kuwait.'}
             </p>
             <div className="flex gap-4">
-              <a href="#" className="text-primary-foreground/40 hover:text-neon transition-colors"><Instagram className="w-5 h-5" /></a>
-              <a href="#" className="text-primary-foreground/40 hover:text-neon transition-colors"><Facebook className="w-5 h-5" /></a>
-              <a href="#" className="text-primary-foreground/40 hover:text-neon transition-colors"><Twitter className="w-5 h-5" /></a>
-              <a href="#" className="text-primary-foreground/40 hover:text-neon transition-colors"><Youtube className="w-5 h-5" /></a>
+              {s?.instagram_url && <a href={s.instagram_url} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/40 hover:text-neon transition-colors"><Instagram className="w-5 h-5" /></a>}
+              {s?.facebook_url && <a href={s.facebook_url} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/40 hover:text-neon transition-colors"><Facebook className="w-5 h-5" /></a>}
+              {s?.twitter_url && <a href={s.twitter_url} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/40 hover:text-neon transition-colors"><Twitter className="w-5 h-5" /></a>}
+              {s?.youtube_url && <a href={s.youtube_url} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/40 hover:text-neon transition-colors"><Youtube className="w-5 h-5" /></a>}
+              {!s?.instagram_url && !s?.facebook_url && !s?.twitter_url && !s?.youtube_url && (
+                <>
+                  <span className="text-primary-foreground/40"><Instagram className="w-5 h-5" /></span>
+                  <span className="text-primary-foreground/40"><Facebook className="w-5 h-5" /></span>
+                </>
+              )}
             </div>
           </div>
 
           <div>
             <h4 className="font-heading text-lg font-semibold uppercase tracking-wider mb-4">Shop</h4>
             <ul className="space-y-3 font-body text-sm text-primary-foreground/60">
-              <li><Link to="/shop?category=running" className="hover:text-neon transition-colors">Running</Link></li>
-              <li><Link to="/shop?category=basketball" className="hover:text-neon transition-colors">Basketball</Link></li>
-              <li><Link to="/shop?category=football" className="hover:text-neon transition-colors">Football</Link></li>
-              <li><Link to="/shop?category=lifestyle" className="hover:text-neon transition-colors">Lifestyle</Link></li>
-              <li><Link to="/shop?category=training" className="hover:text-neon transition-colors">Training</Link></li>
+              {categories.slice(0, 5).map(cat => (
+                <li key={cat.id}><Link to={`/shop?category=${cat.slug}`} className="hover:text-neon transition-colors">{cat.name}</Link></li>
+              ))}
+              {categories.length === 0 && <li><Link to="/shop" className="hover:text-neon transition-colors">All Products</Link></li>}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-heading text-lg font-semibold uppercase tracking-wider mb-4">Brands</h4>
+            <h4 className="font-heading text-lg font-semibold uppercase tracking-wider mb-4">Company</h4>
             <ul className="space-y-3 font-body text-sm text-primary-foreground/60">
-              <li><Link to="/shop" className="hover:text-neon transition-colors">Nike</Link></li>
-              <li><Link to="/shop" className="hover:text-neon transition-colors">Adidas</Link></li>
-              <li><Link to="/shop" className="hover:text-neon transition-colors">Puma</Link></li>
-              <li><Link to="/shop" className="hover:text-neon transition-colors">ASICS</Link></li>
-              <li><Link to="/shop" className="hover:text-neon transition-colors">New Balance</Link></li>
+              <li><Link to="/about" className="hover:text-neon transition-colors">About Us</Link></li>
+              <li><Link to="/contact" className="hover:text-neon transition-colors">Contact Us</Link></li>
+              <li><Link to="/shop" className="hover:text-neon transition-colors">Shop</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-heading text-lg font-semibold uppercase tracking-wider mb-4">Help</h4>
-            <ul className="space-y-3 font-body text-sm text-primary-foreground/60">
-              <li><a href="#" className="hover:text-neon transition-colors">Shipping & Delivery</a></li>
-              <li><a href="#" className="hover:text-neon transition-colors">Returns & Exchanges</a></li>
-              <li><a href="#" className="hover:text-neon transition-colors">Size Guide</a></li>
-              <li><a href="#" className="hover:text-neon transition-colors">Contact Us</a></li>
-            </ul>
-            <div className="mt-6 font-body text-sm text-primary-foreground/40">
-              <p>Kuwait City, Kuwait</p>
-              <p>info@srkcollection.kw</p>
-              <p>+965 1234 5678</p>
+            <h4 className="font-heading text-lg font-semibold uppercase tracking-wider mb-4">Contact</h4>
+            <div className="font-body text-sm text-primary-foreground/40 space-y-2">
+              {s?.contact_address && <p>{s.contact_address}</p>}
+              {s?.contact_email && <p>{s.contact_email}</p>}
+              {s?.contact_phone && <p>{s.contact_phone}</p>}
+              {s?.whatsapp_number && <p>WhatsApp: {s.whatsapp_number}</p>}
             </div>
           </div>
         </div>
 
         <div className="border-t border-primary-foreground/10 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="font-body text-xs text-primary-foreground/40">© 2026 SRK Collection. All rights reserved.</p>
-          <p className="font-body text-xs text-primary-foreground/40">🇰🇼 Free delivery across Kuwait · Cash on Delivery available</p>
+          <p className="font-body text-xs text-primary-foreground/40">{s?.footer_copyright || '© 2026 SRK Collection. All rights reserved.'}</p>
+          <p className="font-body text-xs text-primary-foreground/40">{s?.footer_tagline || '🇰🇼 Free delivery across Kuwait · Cash on Delivery available'}</p>
         </div>
       </div>
     </footer>
