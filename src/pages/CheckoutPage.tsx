@@ -14,6 +14,7 @@ const CheckoutPage = () => {
   const { items, cartTotal, clearCart } = useCart();
   const addOrder = useAddOrder();
   const navigate = useNavigate();
+  const { fbTrackInitiateCheckout, fbTrackPurchase } = useFacebookTracking();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState('');
