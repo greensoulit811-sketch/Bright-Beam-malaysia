@@ -15,6 +15,7 @@ const navItems = [
   { path: '/admin/visitor-analytics', label: 'Visitor Tracker', icon: Activity },
   { path: '/admin/customers', label: 'Customers', icon: Users },
   { path: '/admin/marketing', label: 'Marketing', icon: Megaphone },
+  { path: '/admin/shipping', label: 'Shipping Methods', icon: Truck },
   { path: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
