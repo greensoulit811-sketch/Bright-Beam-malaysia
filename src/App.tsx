@@ -21,6 +21,7 @@ import ProductsManager from "./pages/admin/ProductsManager.tsx";
 import OrdersManager from "./pages/admin/OrdersManager.tsx";
 import OrderDetailsPage from "./pages/admin/OrderDetailsPage.tsx";
 import CouponsManager from "./pages/admin/CouponsManager.tsx";
+import CheckoutLeadsManager from "./pages/admin/CheckoutLeadsManager.tsx";
 import CategoriesManager from "./pages/admin/CategoriesManager.tsx";
 import BannersManager from "./pages/admin/BannersManager.tsx";
 import AnalyticsPage from "./pages/admin/AnalyticsPage.tsx";
@@ -58,6 +59,7 @@ const App = () => (
                 <Route path="orders/:id" element={<OrderDetailsPage />} />
                 <Route path="categories" element={<CategoriesManager />} />
                 <Route path="coupons" element={<CouponsManager />} />
+                <Route path="checkout-leads" element={<CheckoutLeadsManager />} />
                 <Route path="banners" element={<BannersManager />} />
                 <Route path="analytics" element={<AnalyticsPage />} />
                 <Route path="customers" element={<CustomersPage />} />

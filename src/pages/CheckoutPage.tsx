@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useAddOrder } from '@/hooks/useDatabase';
+import { useCheckoutLeadAutoSave } from '@/hooks/useCheckoutLeads';
 import { useFacebookTracking } from '@/hooks/useFacebookTracking';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -15,6 +16,7 @@ const CheckoutPage = () => {
   const addOrder = useAddOrder();
   const navigate = useNavigate();
   const { fbTrackInitiateCheckout, fbTrackPurchase } = useFacebookTracking();
+  const { save: saveCheckoutLead, markCompleted: markLeadCompleted } = useCheckoutLeadAutoSave();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState('');
@@ -42,6 +44,27 @@ const CheckoutPage = () => {
       });
     }
   }, []);
+
+  // Auto-save lead whenever form changes
+  useEffect(() => {
+    if (items.length === 0) return;
+    saveCheckoutLead({
+      name: form.fullName,
+      phone: form.phone,
+      email: form.email,
+      address: `${form.address}${form.block ? `, Block ${form.block}` : ''}`,
+      area: form.area,
+      notes: form.notes,
+      cartItems: items.map(item => ({
+        productName: item.product.name,
+        size: item.size,
+        color: item.color,
+        quantity: item.quantity,
+        price: item.product.price,
+      })),
+      cartTotal: total,
+    });
+  }, [form, items.length]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -80,6 +103,9 @@ const CheckoutPage = () => {
         shipping_address: shippingAddress,
         notes: form.notes,
       });
+
+      // Mark lead as completed
+      await markLeadCompleted();
 
       setOrderId(orderNumber);
       fbTrackPurchase({
