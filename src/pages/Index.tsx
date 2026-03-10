@@ -35,6 +35,8 @@ const reviews = [
 const Index = () => {
   const { data: dbProducts = [] } = useActiveProducts();
   const { data: dbCategories = [] } = useActiveCategories();
+  const { data: banners = [] } = useActiveBanners();
+  const [currentBanner, setCurrentBanner] = useState(0);
   const products = dbProducts.map(p => ({
     id: p.id, name: p.name, brand: p.brand, price: Number(p.price),
     originalPrice: p.original_price ? Number(p.original_price) : undefined,
@@ -46,6 +48,23 @@ const Index = () => {
   const trendingProducts = products.filter(p => p.isTrending);
   const newProducts = products.filter(p => p.isNew);
   const [email, setEmail] = useState('');
+
+  const heroBanners = banners.filter(b => b.position === 'hero');
+  const promoBanners = banners.filter(b => b.position === 'promo');
+
+  const nextBanner = useCallback(() => {
+    if (heroBanners.length > 1) setCurrentBanner(prev => (prev + 1) % heroBanners.length);
+  }, [heroBanners.length]);
+
+  const prevBanner = useCallback(() => {
+    if (heroBanners.length > 1) setCurrentBanner(prev => (prev - 1 + heroBanners.length) % heroBanners.length);
+  }, [heroBanners.length]);
+
+  useEffect(() => {
+    if (heroBanners.length <= 1) return;
+    const interval = setInterval(nextBanner, 5000);
+    return () => clearInterval(interval);
+  }, [heroBanners.length, nextBanner]);
 
   const getCategoryImage = (slug: string, imageUrl: string | null) =>
     imageUrl || fallbackImages[slug] || runnerImg;
