@@ -82,6 +82,12 @@ const CheckoutPage = () => {
       });
 
       setOrderId(orderNumber);
+      fbTrackPurchase({
+        content_ids: items.map(i => i.product.id),
+        value: total,
+        num_items: items.reduce((s, i) => s + i.quantity, 0),
+        order_id: orderNumber,
+      });
       clearCart();
       setOrderPlaced(true);
       toast.success('Order placed successfully!');
