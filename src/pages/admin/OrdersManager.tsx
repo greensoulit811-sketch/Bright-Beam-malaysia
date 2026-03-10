@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { useOrders, useUpdateOrderStatus, useDeleteOrder } from '@/hooks/useDatabase';
 import { toast } from 'sonner';
 import { printInvoice, printCourierSlip } from '@/components/admin/InvoicePrint';
-import { Printer, Truck, Trash2 } from 'lucide-react';
+import { Printer, Truck, Trash2, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const statusColors: Record<string, string> = {
