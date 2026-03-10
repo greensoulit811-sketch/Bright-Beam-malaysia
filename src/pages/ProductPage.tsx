@@ -1,8 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useMemo } from 'react';
 import { Star, Heart, Minus, Plus, Truck, RefreshCw, Shield, Zap } from 'lucide-react';
-import { products as catalogProducts, Product } from '@/data/products';
-import { useAdmin } from '@/context/AdminContext';
+import { useActiveProducts } from '@/hooks/useDatabase';
 import { useCart } from '@/context/CartContext';
 import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
@@ -12,20 +11,42 @@ import { toast } from 'sonner';
 
 const ProductPage = () => {
   const { id } = useParams();
-  const { products: adminProducts } = useAdmin();
-
-  const allProducts: Product[] = useMemo(() => {
-    const adminAsProducts: Product[] = adminProducts
-      .filter(p => p.isActive)
-      .map(p => ({ ...p, category: p.category as Product['category'], images: [p.image], rating: 4.5, reviews: 0 }));
-    return [...catalogProducts, ...adminAsProducts];
-  }, [adminProducts]);
-
-  const product = allProducts.find(p => p.id === id);
+  const { data: dbProducts = [], isLoading } = useActiveProducts();
   const { addToCart, toggleWishlist, isInWishlist } = useCart();
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
+
+  const allProducts = useMemo(() => dbProducts.map(p => ({
+    id: p.id,
+    name: p.name,
+    brand: p.brand,
+    price: Number(p.price),
+    originalPrice: p.original_price ? Number(p.original_price) : undefined,
+    category: p.category as any,
+    image: p.image,
+    images: p.images || [p.image],
+    sizes: p.sizes || [],
+    colors: p.colors || [],
+    description: p.description || '',
+    rating: Number(p.rating) || 4.5,
+    reviews: p.reviews || 0,
+    isTrending: p.is_trending || false,
+    isNew: p.is_new || false,
+  })), [dbProducts]);
+
+  const product = allProducts.find(p => p.id === id);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="pt-32 text-center">
+          <p className="font-body text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (

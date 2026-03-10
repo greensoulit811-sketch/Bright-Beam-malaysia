@@ -1,55 +1,52 @@
-import { useAdmin } from '@/context/AdminContext';
-import { products as catalogProducts } from '@/data/products';
+import { useOrders, useProducts } from '@/hooks/useDatabase';
 import { Package, ShoppingCart, DollarSign, Clock } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 
 const Dashboard = () => {
-  const { orders, products: adminProducts } = useAdmin();
-  const allProducts = catalogProducts.length + adminProducts.length;
+  const { data: orders = [] } = useOrders();
+  const { data: products = [] } = useProducts();
 
-  const totalRevenue = orders.reduce((s, o) => s + o.total, 0);
+  const totalRevenue = orders.reduce((s, o) => s + Number(o.total), 0);
   const pendingOrders = orders.filter(o => o.status === 'pending').length;
   const deliveredOrders = orders.filter(o => o.status === 'delivered').length;
 
   const stats = [
-    { label: 'Total Revenue', value: `${totalRevenue} KWD`, icon: DollarSign, change: '+12.5%' },
-    { label: 'Total Orders', value: orders.length, icon: ShoppingCart, change: '+8.2%' },
-    { label: 'Products', value: allProducts, icon: Package, change: `${adminProducts.length} custom` },
-    { label: 'Pending Orders', value: pendingOrders, icon: Clock, change: `${deliveredOrders} delivered` },
+    { label: 'Total Revenue', value: `${totalRevenue} KWD`, icon: DollarSign, change: `${orders.length} orders` },
+    { label: 'Total Orders', value: orders.length, icon: ShoppingCart, change: `${pendingOrders} pending` },
+    { label: 'Products', value: products.length, icon: Package, change: `${products.filter(p => p.is_active).length} active` },
+    { label: 'Delivered', value: deliveredOrders, icon: Clock, change: `${Math.round((deliveredOrders / (orders.length || 1)) * 100)}% rate` },
   ];
 
-  const revenueData = [
-    { name: 'Jan', revenue: 450 }, { name: 'Feb', revenue: 680 },
-    { name: 'Mar', revenue: 820 }, { name: 'Apr', revenue: 540 },
-    { name: 'May', revenue: 720 }, { name: 'Jun', revenue: 890 },
-  ];
+  // Build revenue by status
+  const statusData = [
+    { name: 'Pending', value: orders.filter(o => o.status === 'pending').length },
+    { name: 'Confirmed', value: orders.filter(o => o.status === 'confirmed').length },
+    { name: 'Shipped', value: orders.filter(o => o.status === 'shipped').length },
+    { name: 'Delivered', value: orders.filter(o => o.status === 'delivered').length },
+    { name: 'Cancelled', value: orders.filter(o => o.status === 'cancelled').length },
+  ].filter(d => d.value > 0);
 
-  const categoryData = [
-    { name: 'Running', value: 35 }, { name: 'Basketball', value: 25 },
-    { name: 'Football', value: 20 }, { name: 'Lifestyle', value: 15 },
-    { name: 'Training', value: 5 },
-  ];
-
-  const orderTrend = [
-    { name: 'Mon', orders: 5 }, { name: 'Tue', orders: 8 },
-    { name: 'Wed', orders: 12 }, { name: 'Thu', orders: 7 },
-    { name: 'Fri', orders: 15 }, { name: 'Sat', orders: 20 },
-    { name: 'Sun', orders: 18 },
-  ];
+  // Category breakdown from products
+  const catMap = new Map<string, number>();
+  products.forEach(p => catMap.set(p.category, (catMap.get(p.category) || 0) + 1));
+  const categoryData = Array.from(catMap.entries()).map(([name, value]) => ({ name, value }));
 
   const COLORS = ['hsl(217, 91%, 56%)', 'hsl(210, 100%, 45%)', 'hsl(0, 80%, 56%)', 'hsl(45, 100%, 50%)', 'hsl(160, 70%, 40%)'];
-
   const tooltipStyle = { background: '#fff', border: '1px solid hsl(220, 13%, 89%)', borderRadius: 8, fontFamily: 'Inter', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' };
   const gridStroke = 'hsl(220, 13%, 91%)';
   const axisStroke = 'hsl(220, 10%, 60%)';
 
   const statusColors: Record<string, string> = {
-    pending: 'bg-yellow-100 text-yellow-700',
-    confirmed: 'bg-blue-100 text-blue-700',
-    shipped: 'bg-purple-100 text-purple-700',
-    delivered: 'bg-green-100 text-green-700',
+    pending: 'bg-yellow-100 text-yellow-700', confirmed: 'bg-blue-100 text-blue-700',
+    shipped: 'bg-purple-100 text-purple-700', delivered: 'bg-green-100 text-green-700',
     cancelled: 'bg-red-100 text-red-700',
   };
+
+  // Revenue per order for chart
+  const revenueByOrder = orders.slice().reverse().slice(0, 10).map((o, i) => ({
+    name: o.order_number || `#${i + 1}`,
+    revenue: Number(o.total),
+  }));
 
   return (
     <div>
@@ -73,9 +70,9 @@ const Dashboard = () => {
 
       <div className="grid lg:grid-cols-3 gap-4 mb-8">
         <div className="lg:col-span-2 bg-card border border-border p-6 rounded-lg">
-          <h3 className="font-heading text-lg font-bold uppercase tracking-wider mb-4 text-foreground">Revenue Overview</h3>
+          <h3 className="font-heading text-lg font-bold uppercase tracking-wider mb-4 text-foreground">Revenue by Order</h3>
           <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={revenueData}>
+            <BarChart data={revenueByOrder}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
               <XAxis dataKey="name" stroke={axisStroke} fontSize={12} />
               <YAxis stroke={axisStroke} fontSize={12} />
@@ -86,13 +83,11 @@ const Dashboard = () => {
         </div>
 
         <div className="bg-card border border-border p-6 rounded-lg">
-          <h3 className="font-heading text-lg font-bold uppercase tracking-wider mb-4 text-foreground">Sales by Category</h3>
+          <h3 className="font-heading text-lg font-bold uppercase tracking-wider mb-4 text-foreground">Products by Category</h3>
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
               <Pie data={categoryData} cx="50%" cy="50%" outerRadius={90} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
-                {categoryData.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i]} />
-                ))}
+                {categoryData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
               </Pie>
               <Tooltip contentStyle={tooltipStyle} />
             </PieChart>
@@ -102,32 +97,30 @@ const Dashboard = () => {
 
       <div className="grid lg:grid-cols-2 gap-4">
         <div className="bg-card border border-border p-6 rounded-lg">
-          <h3 className="font-heading text-lg font-bold uppercase tracking-wider mb-4 text-foreground">Weekly Orders</h3>
+          <h3 className="font-heading text-lg font-bold uppercase tracking-wider mb-4 text-foreground">Order Status</h3>
           <ResponsiveContainer width="100%" height={220}>
-            <LineChart data={orderTrend}>
+            <BarChart data={statusData}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
               <XAxis dataKey="name" stroke={axisStroke} fontSize={12} />
               <YAxis stroke={axisStroke} fontSize={12} />
               <Tooltip contentStyle={tooltipStyle} />
-              <Line type="monotone" dataKey="orders" stroke="hsl(217, 91%, 56%)" strokeWidth={2} dot={{ fill: 'hsl(217, 91%, 56%)' }} />
-            </LineChart>
+              <Bar dataKey="value" fill="hsl(217, 91%, 56%)" radius={[4, 4, 0, 0]} />
+            </BarChart>
           </ResponsiveContainer>
         </div>
 
         <div className="bg-card border border-border p-6 rounded-lg">
           <h3 className="font-heading text-lg font-bold uppercase tracking-wider mb-4 text-foreground">Recent Orders</h3>
           <div className="space-y-3">
-            {orders.slice(-5).reverse().map(order => (
+            {orders.slice(0, 5).map(order => (
               <div key={order.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                 <div>
-                  <p className="font-body text-sm font-semibold text-foreground">{order.id}</p>
-                  <p className="font-body text-xs text-muted-foreground">{order.customerName}</p>
+                  <p className="font-body text-sm font-semibold text-foreground">{order.order_number}</p>
+                  <p className="font-body text-xs text-muted-foreground">{order.customer_name}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-body text-sm font-bold text-primary">{order.total} KWD</p>
-                  <span className={`inline-block px-2 py-0.5 text-xs font-body font-semibold rounded-full uppercase ${statusColors[order.status]}`}>
-                    {order.status}
-                  </span>
+                  <p className="font-body text-sm font-bold text-primary">{Number(order.total)} KWD</p>
+                  <span className={`inline-block px-2 py-0.5 text-xs font-body font-semibold rounded-full uppercase ${statusColors[order.status] || ''}`}>{order.status}</span>
                 </div>
               </div>
             ))}

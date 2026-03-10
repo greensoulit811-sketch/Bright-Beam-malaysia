@@ -1,27 +1,39 @@
 import { useState } from 'react';
-import { useAdmin, Coupon } from '@/context/AdminContext';
+import { useCoupons, useAddCoupon, useUpdateCoupon, useDeleteCoupon, type DbCoupon } from '@/hooks/useDatabase';
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
 import { toast } from 'sonner';
 
-const defaultCoupon: Omit<Coupon, 'id'> = {
-  code: '', type: 'percentage', value: 10, minOrder: 0, maxUses: 100, usedCount: 0, isActive: true, expiresAt: '2026-12-31',
-};
-
 const CouponsManager = () => {
-  const { coupons, addCoupon, updateCoupon, deleteCoupon } = useAdmin();
+  const { data: coupons = [], isLoading } = useCoupons();
+  const addCoupon = useAddCoupon();
+  const updateCoupon = useUpdateCoupon();
+  const deleteCoupon = useDeleteCoupon();
   const [showForm, setShowForm] = useState(false);
-  const [editing, setEditing] = useState<Coupon | null>(null);
-  const [form, setForm] = useState(defaultCoupon);
+  const [editing, setEditing] = useState<DbCoupon | null>(null);
+  const [form, setForm] = useState({ code: '', type: 'percentage', value: 10, min_order: 0, max_uses: 100, is_active: true, expires_at: '2026-12-31' });
 
-  const openAdd = () => { setEditing(null); setForm(defaultCoupon); setShowForm(true); };
-  const openEdit = (c: Coupon) => { setEditing(c); setForm(c); setShowForm(true); };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editing) { updateCoupon(editing.id, form); toast.success('Coupon updated'); }
-    else { addCoupon(form); toast.success('Coupon created'); }
-    setShowForm(false);
+  const openAdd = () => { setEditing(null); setForm({ code: '', type: 'percentage', value: 10, min_order: 0, max_uses: 100, is_active: true, expires_at: '2026-12-31' }); setShowForm(true); };
+  const openEdit = (c: DbCoupon) => {
+    setEditing(c);
+    setForm({ code: c.code, type: c.type, value: Number(c.value), min_order: Number(c.min_order) || 0, max_uses: c.max_uses || 100, is_active: c.is_active ?? true, expires_at: c.expires_at });
+    setShowForm(true);
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (editing) {
+        await updateCoupon.mutateAsync({ id: editing.id, ...form });
+        toast.success('Coupon updated');
+      } else {
+        await addCoupon.mutateAsync(form);
+        toast.success('Coupon created');
+      }
+      setShowForm(false);
+    } catch { toast.error('Failed to save coupon'); }
+  };
+
+  if (isLoading) return <p className="text-center py-10 text-muted-foreground">Loading...</p>;
 
   return (
     <div>
@@ -40,26 +52,24 @@ const CouponsManager = () => {
           <div key={c.id} className="bg-card border border-border p-6 rounded-lg hover:border-primary/20 transition-colors">
             <div className="flex items-center justify-between mb-3">
               <span className="font-heading text-xl font-bold uppercase tracking-wider text-primary">{c.code}</span>
-              <span className={`px-2 py-1 text-xs font-body font-bold rounded-full uppercase ${c.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                {c.isActive ? 'Active' : 'Inactive'}
+              <span className={`px-2 py-1 text-xs font-body font-bold rounded-full uppercase ${c.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                {c.is_active ? 'Active' : 'Inactive'}
               </span>
             </div>
-            <p className="font-body text-2xl font-bold mb-1 text-foreground">
-              {c.type === 'percentage' ? `${c.value}% OFF` : `${c.value} KWD OFF`}
-            </p>
-            <p className="font-body text-xs text-muted-foreground mb-3">Min order: {c.minOrder} KWD</p>
+            <p className="font-body text-2xl font-bold mb-1 text-foreground">{c.type === 'percentage' ? `${Number(c.value)}% OFF` : `${Number(c.value)} KWD OFF`}</p>
+            <p className="font-body text-xs text-muted-foreground mb-3">Min order: {Number(c.min_order)} KWD</p>
             <div className="flex justify-between font-body text-xs text-muted-foreground mb-4">
-              <span>Used: {c.usedCount}/{c.maxUses}</span>
-              <span>Expires: {c.expiresAt}</span>
+              <span>Used: {c.used_count}/{c.max_uses}</span>
+              <span>Expires: {c.expires_at}</span>
             </div>
             <div className="w-full bg-secondary h-1.5 rounded-full mb-4">
-              <div className="bg-primary h-1.5 rounded-full" style={{ width: `${(c.usedCount / c.maxUses) * 100}%` }} />
+              <div className="bg-primary h-1.5 rounded-full" style={{ width: `${((c.used_count || 0) / (c.max_uses || 1)) * 100}%` }} />
             </div>
             <div className="flex gap-2">
               <button onClick={() => openEdit(c)} className="flex-1 py-2 border border-border rounded-md font-body text-xs uppercase tracking-wider hover:border-primary/50 transition-colors text-foreground">
                 <Pencil className="w-3 h-3 inline mr-1" /> Edit
               </button>
-              <button onClick={() => { deleteCoupon(c.id); toast.success('Deleted'); }} className="py-2 px-3 border border-border rounded-md hover:border-red-300 text-red-500 transition-colors">
+              <button onClick={async () => { await deleteCoupon.mutateAsync(c.id); toast.success('Deleted'); }} className="py-2 px-3 border border-border rounded-md hover:border-red-300 text-red-500 transition-colors">
                 <Trash2 className="w-3 h-3" />
               </button>
             </div>
@@ -83,7 +93,7 @@ const CouponsManager = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Type</label>
-                  <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value as 'percentage' | 'fixed' })}
+                  <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}
                     className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary">
                     <option value="percentage">Percentage</option>
                     <option value="fixed">Fixed Amount</option>
@@ -98,22 +108,22 @@ const CouponsManager = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Min Order (KWD)</label>
-                  <input type="number" value={form.minOrder} onChange={e => setForm({ ...form, minOrder: +e.target.value })}
+                  <input type="number" value={form.min_order} onChange={e => setForm({ ...form, min_order: +e.target.value })}
                     className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
                 </div>
                 <div>
                   <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Max Uses</label>
-                  <input type="number" value={form.maxUses} onChange={e => setForm({ ...form, maxUses: +e.target.value })}
+                  <input type="number" value={form.max_uses} onChange={e => setForm({ ...form, max_uses: +e.target.value })}
                     className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
                 </div>
               </div>
               <div>
                 <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Expires</label>
-                <input type="date" value={form.expiresAt} onChange={e => setForm({ ...form, expiresAt: e.target.value })}
+                <input type="date" value={form.expires_at} onChange={e => setForm({ ...form, expires_at: e.target.value })}
                   className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
               </div>
               <label className="flex items-center gap-2 font-body text-sm cursor-pointer text-foreground">
-                <input type="checkbox" checked={form.isActive} onChange={e => setForm({ ...form, isActive: e.target.checked })} className="accent-primary" /> Active
+                <input type="checkbox" checked={form.is_active} onChange={e => setForm({ ...form, is_active: e.target.checked })} className="accent-primary" /> Active
               </label>
               <button type="submit" className="w-full bg-primary text-primary-foreground py-3 rounded-md font-body text-sm font-bold tracking-wider uppercase hover:bg-primary/90 transition-all">
                 {editing ? 'Save' : 'Create'} Coupon

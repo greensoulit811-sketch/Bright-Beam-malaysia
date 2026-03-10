@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAdmin, Banner } from '@/context/AdminContext';
+import { useBanners, useAddBanner, useUpdateBanner, useDeleteBanner, type DbBanner } from '@/hooks/useDatabase';
 import { Plus, Pencil, Trash2, X, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -8,25 +8,28 @@ const images = [
   '/assets/shoe-training.jpg', '/assets/shoe-football.jpg', '/assets/shoe-trail.jpg',
 ];
 
-const defaultBanner: Omit<Banner, 'id'> = {
-  title: '', subtitle: '', imageUrl: images[0], linkUrl: '/shop', isActive: true, position: 'promo',
-};
-
 const BannersManager = () => {
-  const { banners, addBanner, updateBanner, deleteBanner } = useAdmin();
+  const { data: banners = [], isLoading } = useBanners();
+  const addBanner = useAddBanner();
+  const updateBanner = useUpdateBanner();
+  const deleteBanner = useDeleteBanner();
   const [showForm, setShowForm] = useState(false);
-  const [editing, setEditing] = useState<Banner | null>(null);
-  const [form, setForm] = useState(defaultBanner);
+  const [editing, setEditing] = useState<DbBanner | null>(null);
+  const [form, setForm] = useState({ title: '', subtitle: '', image_url: images[0], link_url: '/shop', is_active: true, position: 'promo' as string });
 
-  const openAdd = () => { setEditing(null); setForm(defaultBanner); setShowForm(true); };
-  const openEdit = (b: Banner) => { setEditing(b); setForm(b); setShowForm(true); };
+  const openAdd = () => { setEditing(null); setForm({ title: '', subtitle: '', image_url: images[0], link_url: '/shop', is_active: true, position: 'promo' }); setShowForm(true); };
+  const openEdit = (b: DbBanner) => { setEditing(b); setForm({ title: b.title, subtitle: b.subtitle || '', image_url: b.image_url, link_url: b.link_url || '/shop', is_active: b.is_active ?? true, position: b.position }); setShowForm(true); };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editing) { updateBanner(editing.id, form); toast.success('Banner updated'); }
-    else { addBanner(form); toast.success('Banner created'); }
-    setShowForm(false);
+    try {
+      if (editing) { await updateBanner.mutateAsync({ id: editing.id, ...form }); toast.success('Banner updated'); }
+      else { await addBanner.mutateAsync(form); toast.success('Banner created'); }
+      setShowForm(false);
+    } catch { toast.error('Failed to save'); }
   };
+
+  if (isLoading) return <p className="text-center py-10 text-muted-foreground">Loading...</p>;
 
   return (
     <div>
@@ -44,31 +47,22 @@ const BannersManager = () => {
         {banners.map(b => (
           <div key={b.id} className="bg-card border border-border overflow-hidden rounded-lg hover:border-primary/20 transition-colors">
             <div className="aspect-video relative">
-              <img src={b.imageUrl} alt={b.title} className="w-full h-full object-cover" />
+              <img src={b.image_url} alt={b.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
                 <span className="inline-block px-2 py-0.5 text-xs font-body font-bold uppercase bg-white/20 text-white mb-2 rounded">{b.position}</span>
                 <h3 className="font-heading text-xl font-bold uppercase text-white">{b.title}</h3>
                 <p className="font-body text-sm text-white/80">{b.subtitle}</p>
               </div>
-              {!b.isActive && (
-                <div className="absolute top-3 right-3 px-2 py-1 bg-red-100 text-red-700 text-xs font-body font-bold uppercase rounded">
-                  Hidden
-                </div>
-              )}
             </div>
             <div className="p-4 flex items-center justify-between">
-              <span className="font-body text-xs text-muted-foreground">Link: {b.linkUrl}</span>
+              <span className="font-body text-xs text-muted-foreground">Link: {b.link_url}</span>
               <div className="flex gap-2">
-                <button onClick={() => updateBanner(b.id, { isActive: !b.isActive })} className="p-2 hover:bg-secondary rounded-md transition-colors">
-                  {b.isActive ? <Eye className="w-4 h-4 text-primary" /> : <EyeOff className="w-4 h-4 text-muted-foreground" />}
+                <button onClick={async () => { await updateBanner.mutateAsync({ id: b.id, is_active: !b.is_active }); }} className="p-2 hover:bg-secondary rounded-md transition-colors">
+                  {b.is_active ? <Eye className="w-4 h-4 text-primary" /> : <EyeOff className="w-4 h-4 text-muted-foreground" />}
                 </button>
-                <button onClick={() => openEdit(b)} className="p-2 hover:bg-secondary rounded-md transition-colors">
-                  <Pencil className="w-4 h-4 text-muted-foreground" />
-                </button>
-                <button onClick={() => { deleteBanner(b.id); toast.success('Deleted'); }} className="p-2 hover:bg-red-50 rounded-md transition-colors">
-                  <Trash2 className="w-4 h-4 text-red-500" />
-                </button>
+                <button onClick={() => openEdit(b)} className="p-2 hover:bg-secondary rounded-md transition-colors"><Pencil className="w-4 h-4 text-muted-foreground" /></button>
+                <button onClick={async () => { await deleteBanner.mutateAsync(b.id); toast.success('Deleted'); }} className="p-2 hover:bg-red-50 rounded-md transition-colors"><Trash2 className="w-4 h-4 text-red-500" /></button>
               </div>
             </div>
           </div>
@@ -85,20 +79,18 @@ const BannersManager = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Title</label>
-                <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required
-                  className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
+                <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
               </div>
               <div>
                 <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Subtitle</label>
-                <input value={form.subtitle} onChange={e => setForm({ ...form, subtitle: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
+                <input value={form.subtitle} onChange={e => setForm({ ...form, subtitle: e.target.value })} className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
               </div>
               <div>
                 <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Image</label>
                 <div className="grid grid-cols-3 gap-2">
                   {images.map(img => (
-                    <button key={img} type="button" onClick={() => setForm({ ...form, imageUrl: img })}
-                      className={`aspect-video border-2 overflow-hidden rounded-md ${form.imageUrl === img ? 'border-primary ring-2 ring-primary/20' : 'border-border hover:border-primary/50'}`}>
+                    <button key={img} type="button" onClick={() => setForm({ ...form, image_url: img })}
+                      className={`aspect-video border-2 overflow-hidden rounded-md ${form.image_url === img ? 'border-primary ring-2 ring-primary/20' : 'border-border hover:border-primary/50'}`}>
                       <img src={img} alt="" className="w-full h-full object-cover" />
                     </button>
                   ))}
@@ -107,21 +99,17 @@ const BannersManager = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Link URL</label>
-                  <input value={form.linkUrl} onChange={e => setForm({ ...form, linkUrl: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
+                  <input value={form.link_url} onChange={e => setForm({ ...form, link_url: e.target.value })} className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
                 </div>
                 <div>
                   <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Position</label>
-                  <select value={form.position} onChange={e => setForm({ ...form, position: e.target.value as Banner['position'] })}
-                    className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary">
-                    <option value="hero">Hero</option>
-                    <option value="promo">Promo</option>
-                    <option value="category">Category</option>
+                  <select value={form.position} onChange={e => setForm({ ...form, position: e.target.value })} className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary">
+                    <option value="hero">Hero</option><option value="promo">Promo</option><option value="category">Category</option>
                   </select>
                 </div>
               </div>
               <label className="flex items-center gap-2 font-body text-sm cursor-pointer text-foreground">
-                <input type="checkbox" checked={form.isActive} onChange={e => setForm({ ...form, isActive: e.target.checked })} className="accent-primary" /> Active
+                <input type="checkbox" checked={form.is_active} onChange={e => setForm({ ...form, is_active: e.target.checked })} className="accent-primary" /> Active
               </label>
               <button type="submit" className="w-full bg-primary text-primary-foreground py-3 rounded-md font-body text-sm font-bold tracking-wider uppercase hover:bg-primary/90 transition-all">
                 {editing ? 'Save' : 'Create'} Banner

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
-import { useAdmin } from '@/context/AdminContext';
+import { useAddOrder } from '@/hooks/useDatabase';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Input } from '@/components/ui/input';
@@ -11,7 +11,7 @@ import { motion } from 'framer-motion';
 
 const CheckoutPage = () => {
   const { items, cartTotal, clearCart } = useCart();
-  const { addOrder } = useAdmin();
+  const addOrder = useAddOrder();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
@@ -34,7 +34,7 @@ const CheckoutPage = () => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.fullName || !form.phone || !form.address || !form.area) {
       toast.error('Please fill in all required fields');
@@ -52,27 +52,31 @@ const CheckoutPage = () => {
     }));
 
     const shippingAddress = `${form.address}, Block ${form.block}, ${form.area}, Kuwait`;
+    const orderNumber = `ORD${String(Date.now()).slice(-6)}`;
 
-    addOrder({
-      customerName: form.fullName,
-      customerEmail: form.email,
-      customerPhone: form.phone,
-      items: orderItems,
-      total,
-      status: 'pending',
-      paymentMethod: 'cod',
-      shippingAddress,
-    });
+    try {
+      await addOrder.mutateAsync({
+        order_number: orderNumber,
+        customer_name: form.fullName,
+        customer_email: form.email,
+        customer_phone: form.phone,
+        items: orderItems,
+        total,
+        status: 'pending',
+        payment_method: 'cod',
+        shipping_address: shippingAddress,
+        notes: form.notes,
+      });
 
-    const newOrderId = `ORD${String(Date.now()).slice(-6)}`;
-    setOrderId(newOrderId);
-
-    setTimeout(() => {
+      setOrderId(orderNumber);
       clearCart();
       setOrderPlaced(true);
-      setIsSubmitting(false);
       toast.success('Order placed successfully!');
-    }, 1500);
+    } catch (error) {
+      toast.error('Failed to place order. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (items.length === 0 && !orderPlaced) {
@@ -113,11 +117,8 @@ const CheckoutPage = () => {
           <Link to="/cart" className="inline-flex items-center gap-2 font-body text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
             <ArrowLeft className="w-4 h-4" /> Back to Cart
           </Link>
-
           <h1 className="font-heading text-3xl md:text-4xl font-bold mb-10 text-foreground">Checkout</h1>
-
           <form onSubmit={handleSubmit} className="grid lg:grid-cols-3 gap-10">
-            {/* Customer Info */}
             <div className="lg:col-span-2 space-y-8">
               <div className="bg-card border border-border rounded-lg p-6">
                 <h2 className="font-heading text-lg font-bold uppercase tracking-wider mb-6 text-foreground">Contact Information</h2>
@@ -136,7 +137,6 @@ const CheckoutPage = () => {
                   </div>
                 </div>
               </div>
-
               <div className="bg-card border border-border rounded-lg p-6">
                 <h2 className="font-heading text-lg font-bold uppercase tracking-wider mb-6 text-foreground">Shipping Address</h2>
                 <div className="grid sm:grid-cols-2 gap-4">
@@ -154,11 +154,11 @@ const CheckoutPage = () => {
                   </div>
                   <div className="sm:col-span-2">
                     <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">Notes</label>
-                    <textarea name="notes" value={form.notes} onChange={handleChange} placeholder="Delivery instructions..." className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[80px]" />
+                    <textarea name="notes" value={form.notes} onChange={handleChange} placeholder="Delivery instructions..."
+                      className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[80px]" />
                   </div>
                 </div>
               </div>
-
               <div className="bg-card border border-border rounded-lg p-6">
                 <h2 className="font-heading text-lg font-bold uppercase tracking-wider mb-4 text-foreground">Payment Method</h2>
                 <div className="flex items-center gap-3 p-4 border-2 border-primary rounded-lg bg-primary/5">
@@ -172,8 +172,6 @@ const CheckoutPage = () => {
                 </div>
               </div>
             </div>
-
-            {/* Order Summary */}
             <div className="h-fit">
               <div className="bg-card border border-border rounded-lg p-6 sticky top-28">
                 <h2 className="font-heading text-lg font-bold uppercase tracking-wider mb-6 text-foreground">Order Summary</h2>
@@ -198,14 +196,10 @@ const CheckoutPage = () => {
                 <div className="flex justify-between font-heading text-xl font-bold border-t border-border pt-4 mb-6 text-foreground">
                   <span>Total</span><span className="text-primary">{total.toFixed(2)} KWD</span>
                 </div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-primary text-primary-foreground py-4 font-body text-sm font-bold tracking-wider uppercase hover:bg-primary/90 transition-all duration-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                <button type="submit" disabled={isSubmitting}
+                  className="w-full bg-primary text-primary-foreground py-4 font-body text-sm font-bold tracking-wider uppercase hover:bg-primary/90 transition-all duration-300 rounded-md disabled:opacity-50">
                   {isSubmitting ? 'Placing Order...' : 'Place Order'}
                 </button>
-                <p className="text-center font-body text-xs text-muted-foreground mt-3">By placing your order, you agree to our terms</p>
               </div>
             </div>
           </form>

@@ -1,70 +1,70 @@
 import { useState } from 'react';
-import { useAdmin, AdminProduct } from '@/context/AdminContext';
-import { products as catalogProducts } from '@/data/products';
+import { useProducts, useAddProduct, useUpdateProduct, useDeleteProduct, type DbProduct } from '@/hooks/useDatabase';
 import { Plus, Pencil, Trash2, X, Search } from 'lucide-react';
 import { toast } from 'sonner';
 
-const defaultProduct: Omit<AdminProduct, 'id' | 'createdAt'> = {
-  name: '', brand: '', price: 0, category: 'running', image: '/assets/shoe-runner-1.jpg',
-  sizes: [40, 41, 42, 43, 44], colors: ['Black'], description: '', stock: 50,
-  isActive: true, isTrending: false, isNew: false,
-};
-
 const ProductsManager = () => {
-  const { products: adminProducts, addProduct, updateProduct, deleteProduct } = useAdmin();
+  const { data: products = [], isLoading } = useProducts();
+  const addProduct = useAddProduct();
+  const updateProduct = useUpdateProduct();
+  const deleteProduct = useDeleteProduct();
   const [showForm, setShowForm] = useState(false);
-  const [editing, setEditing] = useState<AdminProduct | null>(null);
-  const [form, setForm] = useState(defaultProduct);
+  const [editing, setEditing] = useState<DbProduct | null>(null);
   const [search, setSearch] = useState('');
-  const [sizesInput, setSizesInput] = useState('40,41,42,43,44');
-  const [colorsInput, setColorsInput] = useState('Black');
 
-  const allProducts = [
-    ...catalogProducts.map(p => ({ ...p, stock: 50, isActive: true, isTrending: p.isTrending || false, isNew: p.isNew || false, createdAt: '2026-01-01', sizes: p.sizes, colors: p.colors } as AdminProduct)),
-    ...adminProducts,
-  ];
+  const [form, setForm] = useState({
+    name: '', brand: '', price: 0, original_price: null as number | null, category: 'running',
+    image: '/assets/shoe-runner-1.jpg', sizes: '40,41,42,43,44', colors: 'Black',
+    description: '', stock: 50, is_active: true, is_trending: false, is_new: false,
+  });
 
-  const filtered = allProducts.filter(p =>
+  const filtered = products.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
     p.brand.toLowerCase().includes(search.toLowerCase())
   );
 
   const openAdd = () => {
     setEditing(null);
-    setForm(defaultProduct);
-    setSizesInput('40,41,42,43,44');
-    setColorsInput('Black');
+    setForm({ name: '', brand: '', price: 0, original_price: null, category: 'running', image: '/assets/shoe-runner-1.jpg', sizes: '40,41,42,43,44', colors: 'Black', description: '', stock: 50, is_active: true, is_trending: false, is_new: false });
     setShowForm(true);
   };
 
-  const openEdit = (p: AdminProduct) => {
+  const openEdit = (p: DbProduct) => {
     setEditing(p);
-    setForm(p);
-    setSizesInput(p.sizes.join(','));
-    setColorsInput(p.colors.join(','));
+    setForm({
+      name: p.name, brand: p.brand, price: Number(p.price), original_price: p.original_price ? Number(p.original_price) : null,
+      category: p.category, image: p.image, sizes: (p.sizes || []).join(','), colors: (p.colors || []).join(','),
+      description: p.description || '', stock: p.stock || 50, is_active: p.is_active ?? true, is_trending: p.is_trending ?? false, is_new: p.is_new ?? false,
+    });
     setShowForm(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const data = {
-      ...form,
-      sizes: sizesInput.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n)),
-      colors: colorsInput.split(',').map(c => c.trim()).filter(Boolean),
+      name: form.name, brand: form.brand, price: form.price, original_price: form.original_price,
+      category: form.category, image: form.image,
+      sizes: form.sizes.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n)),
+      colors: form.colors.split(',').map(c => c.trim()).filter(Boolean),
+      description: form.description, stock: form.stock, is_active: form.is_active, is_trending: form.is_trending, is_new: form.is_new,
     };
-    if (editing) {
-      updateProduct(editing.id, data);
-      toast.success('Product updated');
-    } else {
-      addProduct(data);
-      toast.success('Product added');
-    }
-    setShowForm(false);
+    try {
+      if (editing) {
+        await updateProduct.mutateAsync({ id: editing.id, ...data });
+        toast.success('Product updated');
+      } else {
+        await addProduct.mutateAsync(data);
+        toast.success('Product added');
+      }
+      setShowForm(false);
+    } catch { toast.error('Failed to save product'); }
   };
 
-  const handleDelete = (id: string) => {
-    deleteProduct(id);
-    toast.success('Product deleted');
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteProduct.mutateAsync(id);
+      toast.success('Product deleted');
+    } catch { toast.error('Failed to delete'); }
   };
 
   const images = [
@@ -78,7 +78,7 @@ const ProductsManager = () => {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="font-heading text-3xl font-bold uppercase tracking-wider text-foreground">Products</h1>
-          <p className="font-body text-sm text-muted-foreground mt-1">{allProducts.length} total products</p>
+          <p className="font-body text-sm text-muted-foreground mt-1">{products.length} total products</p>
         </div>
         <button onClick={openAdd} className="flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-md font-body text-sm font-bold tracking-wider uppercase hover:bg-primary/90 transition-all">
           <Plus className="w-4 h-4" /> Add Product
@@ -87,69 +87,59 @@ const ProductsManager = () => {
 
       <div className="relative mb-6">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <input
-          type="text" placeholder="Search products..." value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="w-full pl-11 pr-4 py-3 border border-border bg-card rounded-md font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
-        />
+        <input type="text" placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)}
+          className="w-full pl-11 pr-4 py-3 border border-border bg-card rounded-md font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors" />
       </div>
 
-      <div className="bg-card border border-border rounded-lg overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border">
-              <th className="text-left p-4 font-heading text-xs uppercase tracking-wider text-muted-foreground">Product</th>
-              <th className="text-left p-4 font-heading text-xs uppercase tracking-wider text-muted-foreground">Brand</th>
-              <th className="text-left p-4 font-heading text-xs uppercase tracking-wider text-muted-foreground">Price</th>
-              <th className="text-left p-4 font-heading text-xs uppercase tracking-wider text-muted-foreground">Category</th>
-              <th className="text-left p-4 font-heading text-xs uppercase tracking-wider text-muted-foreground">Stock</th>
-              <th className="text-left p-4 font-heading text-xs uppercase tracking-wider text-muted-foreground">Status</th>
-              <th className="text-right p-4 font-heading text-xs uppercase tracking-wider text-muted-foreground">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map(p => {
-              const isCustom = adminProducts.some(ap => ap.id === p.id);
-              return (
+      {isLoading ? (
+        <p className="text-center py-10 text-muted-foreground">Loading...</p>
+      ) : (
+        <div className="bg-card border border-border rounded-lg overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left p-4 font-heading text-xs uppercase tracking-wider text-muted-foreground">Product</th>
+                <th className="text-left p-4 font-heading text-xs uppercase tracking-wider text-muted-foreground">Brand</th>
+                <th className="text-left p-4 font-heading text-xs uppercase tracking-wider text-muted-foreground">Price</th>
+                <th className="text-left p-4 font-heading text-xs uppercase tracking-wider text-muted-foreground">Category</th>
+                <th className="text-left p-4 font-heading text-xs uppercase tracking-wider text-muted-foreground">Stock</th>
+                <th className="text-left p-4 font-heading text-xs uppercase tracking-wider text-muted-foreground">Status</th>
+                <th className="text-right p-4 font-heading text-xs uppercase tracking-wider text-muted-foreground">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map(p => (
                 <tr key={p.id} className="border-b border-border last:border-0 hover:bg-secondary/50 transition-colors">
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <img src={p.image} alt={p.name} className="w-10 h-10 object-cover rounded bg-secondary" />
                       <div>
                         <p className="font-body text-sm font-semibold text-foreground">{p.name}</p>
-                        {p.isNew && <span className="text-xs text-primary font-bold">NEW</span>}
+                        {p.is_new && <span className="text-xs text-primary font-bold">NEW</span>}
                       </div>
                     </div>
                   </td>
                   <td className="p-4 font-body text-sm text-foreground">{p.brand}</td>
-                  <td className="p-4 font-body text-sm font-bold text-primary">{p.price} KWD</td>
+                  <td className="p-4 font-body text-sm font-bold text-primary">{Number(p.price)} KWD</td>
                   <td className="p-4 font-body text-sm capitalize text-foreground">{p.category}</td>
                   <td className="p-4 font-body text-sm text-foreground">{p.stock}</td>
                   <td className="p-4">
-                    <span className={`px-2 py-1 text-xs font-body font-bold rounded-full uppercase ${p.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                      {p.isActive ? 'Active' : 'Inactive'}
+                    <span className={`px-2 py-1 text-xs font-body font-bold rounded-full uppercase ${p.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      {p.is_active ? 'Active' : 'Inactive'}
                     </span>
                   </td>
                   <td className="p-4 text-right">
-                    {isCustom ? (
-                      <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => openEdit(p)} className="p-2 hover:bg-secondary rounded-md transition-colors">
-                          <Pencil className="w-4 h-4 text-muted-foreground" />
-                        </button>
-                        <button onClick={() => handleDelete(p.id)} className="p-2 hover:bg-red-50 rounded-md transition-colors">
-                          <Trash2 className="w-4 h-4 text-red-500" />
-                        </button>
-                      </div>
-                    ) : (
-                      <span className="font-body text-xs text-muted-foreground">Catalog</span>
-                    )}
+                    <div className="flex items-center justify-end gap-2">
+                      <button onClick={() => openEdit(p)} className="p-2 hover:bg-secondary rounded-md transition-colors"><Pencil className="w-4 h-4 text-muted-foreground" /></button>
+                      <button onClick={() => handleDelete(p.id)} className="p-2 hover:bg-red-50 rounded-md transition-colors"><Trash2 className="w-4 h-4 text-red-500" /></button>
+                    </div>
                   </td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {showForm && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -179,7 +169,7 @@ const ProductsManager = () => {
                 </div>
                 <div>
                   <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Original Price</label>
-                  <input type="number" step="0.01" value={form.originalPrice || ''} onChange={e => setForm({ ...form, originalPrice: e.target.value ? +e.target.value : undefined })}
+                  <input type="number" step="0.01" value={form.original_price || ''} onChange={e => setForm({ ...form, original_price: e.target.value ? +e.target.value : null })}
                     className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
                 </div>
                 <div>
@@ -192,9 +182,7 @@ const ProductsManager = () => {
                 <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Category</label>
                 <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}
                   className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary">
-                  {['running', 'basketball', 'football', 'training', 'lifestyle', 'trail', 'women'].map(c => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
+                  {['running','basketball','football','training','lifestyle','trail','women'].map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
               <div>
@@ -211,12 +199,12 @@ const ProductsManager = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Sizes (comma separated)</label>
-                  <input value={sizesInput} onChange={e => setSizesInput(e.target.value)}
+                  <input value={form.sizes} onChange={e => setForm({ ...form, sizes: e.target.value })}
                     className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
                 </div>
                 <div>
                   <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Colors (comma separated)</label>
-                  <input value={colorsInput} onChange={e => setColorsInput(e.target.value)}
+                  <input value={form.colors} onChange={e => setForm({ ...form, colors: e.target.value })}
                     className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
                 </div>
               </div>
@@ -227,22 +215,21 @@ const ProductsManager = () => {
               </div>
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 font-body text-sm cursor-pointer text-foreground">
-                  <input type="checkbox" checked={form.isActive} onChange={e => setForm({ ...form, isActive: e.target.checked })} className="accent-primary" /> Active
+                  <input type="checkbox" checked={form.is_active} onChange={e => setForm({ ...form, is_active: e.target.checked })} className="accent-primary" /> Active
                 </label>
                 <label className="flex items-center gap-2 font-body text-sm cursor-pointer text-foreground">
-                  <input type="checkbox" checked={form.isTrending} onChange={e => setForm({ ...form, isTrending: e.target.checked })} className="accent-primary" /> Trending
+                  <input type="checkbox" checked={form.is_trending} onChange={e => setForm({ ...form, is_trending: e.target.checked })} className="accent-primary" /> Trending
                 </label>
                 <label className="flex items-center gap-2 font-body text-sm cursor-pointer text-foreground">
-                  <input type="checkbox" checked={form.isNew} onChange={e => setForm({ ...form, isNew: e.target.checked })} className="accent-primary" /> New
+                  <input type="checkbox" checked={form.is_new} onChange={e => setForm({ ...form, is_new: e.target.checked })} className="accent-primary" /> New
                 </label>
               </div>
               <div className="flex gap-3 pt-4">
-                <button type="submit" className="flex-1 bg-primary text-primary-foreground py-3 rounded-md font-body text-sm font-bold tracking-wider uppercase hover:bg-primary/90 transition-all">
+                <button type="submit" disabled={addProduct.isPending || updateProduct.isPending}
+                  className="flex-1 bg-primary text-primary-foreground py-3 rounded-md font-body text-sm font-bold tracking-wider uppercase hover:bg-primary/90 transition-all disabled:opacity-50">
                   {editing ? 'Save Changes' : 'Add Product'}
                 </button>
-                <button type="button" onClick={() => setShowForm(false)} className="px-8 py-3 border border-border rounded-md font-body text-sm font-medium hover:bg-secondary transition-colors">
-                  Cancel
-                </button>
+                <button type="button" onClick={() => setShowForm(false)} className="px-8 py-3 border border-border rounded-md font-body text-sm font-medium hover:bg-secondary transition-colors">Cancel</button>
               </div>
             </form>
           </div>

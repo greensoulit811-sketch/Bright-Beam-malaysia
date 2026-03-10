@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Search, SlidersHorizontal } from 'lucide-react';
-import { products as catalogProducts, categories, brands, Product } from '@/data/products';
-import { useAdmin } from '@/context/AdminContext';
+import { categories, brands } from '@/data/products';
+import { useActiveProducts } from '@/hooks/useDatabase';
 import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -10,36 +10,42 @@ import { motion } from 'framer-motion';
 
 const ShopPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { products: adminProducts } = useAdmin();
+  const { data: dbProducts = [], isLoading } = useActiveProducts();
   const categoryFilter = searchParams.get('category') || '';
   const [search, setSearch] = useState('');
   const [brandFilter, setBrandFilter] = useState('');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
   const [showFilters, setShowFilters] = useState(false);
 
-  // Merge catalog + admin products
-  const allProducts: Product[] = useMemo(() => {
-    const adminAsProducts: Product[] = adminProducts
-      .filter(p => p.isActive)
-      .map(p => ({
-        ...p,
-        category: p.category as Product['category'],
-        images: [p.image],
-        rating: 4.5,
-        reviews: 0,
-      }));
-    return [...catalogProducts, ...adminAsProducts];
-  }, [adminProducts]);
+  const products = useMemo(() => {
+    return dbProducts.map(p => ({
+      id: p.id,
+      name: p.name,
+      brand: p.brand,
+      price: Number(p.price),
+      originalPrice: p.original_price ? Number(p.original_price) : undefined,
+      category: p.category as any,
+      image: p.image,
+      images: p.images || [p.image],
+      sizes: p.sizes || [],
+      colors: p.colors || [],
+      description: p.description || '',
+      rating: Number(p.rating) || 4.5,
+      reviews: p.reviews || 0,
+      isTrending: p.is_trending || false,
+      isNew: p.is_new || false,
+    }));
+  }, [dbProducts]);
 
   const filtered = useMemo(() => {
-    return allProducts.filter(p => {
+    return products.filter(p => {
       if (categoryFilter && p.category !== categoryFilter) return false;
       if (brandFilter && p.brand !== brandFilter) return false;
       if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !p.brand.toLowerCase().includes(search.toLowerCase())) return false;
       if (p.price < priceRange[0] || p.price > priceRange[1]) return false;
       return true;
     });
-  }, [allProducts, categoryFilter, brandFilter, search, priceRange]);
+  }, [products, categoryFilter, brandFilter, search, priceRange]);
 
   const setCategory = (cat: string) => {
     if (cat) setSearchParams({ category: cat });
@@ -122,7 +128,11 @@ const ShopPage = () => {
 
             <div className="flex-1">
               <p className="font-body text-sm text-muted-foreground mb-6">{filtered.length} products found</p>
-              {filtered.length > 0 ? (
+              {isLoading ? (
+                <div className="text-center py-20">
+                  <p className="font-body text-muted-foreground">Loading products...</p>
+                </div>
+              ) : filtered.length > 0 ? (
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                   {filtered.map(product => <ProductCard key={product.id} product={product} />)}
                 </div>
