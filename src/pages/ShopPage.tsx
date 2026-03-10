@@ -9,6 +9,7 @@ import Footer from '@/components/Footer';
 import { motion } from 'framer-motion';
 
 const ShopPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { products: adminProducts } = useAdmin();
   const categoryFilter = searchParams.get('category') || '';
   const [search, setSearch] = useState('');
