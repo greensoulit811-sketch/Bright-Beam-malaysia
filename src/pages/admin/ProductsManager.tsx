@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useProducts, useAddProduct, useUpdateProduct, useDeleteProduct, type DbProduct } from '@/hooks/useDatabase';
 import { useSaveVariations, useProductVariations } from '@/hooks/useProductVariations';
+import { useActiveCategories } from '@/hooks/useCategories';
 import { uploadProductImage, deleteProductImage } from '@/lib/image-upload';
 import { Plus, Pencil, Trash2, X, Search, Upload, ImageIcon, Loader2 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
