@@ -238,6 +238,42 @@ export type Database = {
         }
         Relationships: []
       }
+      page_contents: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_active: boolean
+          meta_description: string | null
+          meta_title: string | null
+          page_slug: string
+          page_title: string
+          updated_at: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          meta_description?: string | null
+          meta_title?: string | null
+          page_slug: string
+          page_title?: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          meta_description?: string | null
+          meta_title?: string | null
+          page_slug?: string
+          page_title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       page_views: {
         Row: {
           created_at: string
@@ -466,6 +502,10 @@ export type Database = {
       }
       site_settings: {
         Row: {
+          about_short: string | null
+          contact_address: string | null
+          contact_email: string | null
+          contact_phone: string | null
           created_at: string
           currency: string | null
           default_content_type: string | null
@@ -475,9 +515,16 @@ export type Database = {
           facebook_pixel_enabled: boolean | null
           facebook_pixel_id: string | null
           facebook_test_event_code: string | null
+          facebook_url: string | null
+          favicon_url: string | null
+          footer_copyright: string | null
+          footer_description: string | null
+          footer_tagline: string | null
           free_shipping_threshold: number | null
           id: string
           instagram_handle: string | null
+          instagram_url: string | null
+          logo_url: string | null
           meta_description: string | null
           meta_title: string | null
           site_description: string | null
@@ -489,10 +536,16 @@ export type Database = {
           tracking_pageview: boolean | null
           tracking_purchase: boolean | null
           tracking_viewcontent: boolean | null
+          twitter_url: string | null
           updated_at: string
           whatsapp_number: string | null
+          youtube_url: string | null
         }
         Insert: {
+          about_short?: string | null
+          contact_address?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
           created_at?: string
           currency?: string | null
           default_content_type?: string | null
@@ -502,9 +555,16 @@ export type Database = {
           facebook_pixel_enabled?: boolean | null
           facebook_pixel_id?: string | null
           facebook_test_event_code?: string | null
+          facebook_url?: string | null
+          favicon_url?: string | null
+          footer_copyright?: string | null
+          footer_description?: string | null
+          footer_tagline?: string | null
           free_shipping_threshold?: number | null
           id?: string
           instagram_handle?: string | null
+          instagram_url?: string | null
+          logo_url?: string | null
           meta_description?: string | null
           meta_title?: string | null
           site_description?: string | null
@@ -516,10 +576,16 @@ export type Database = {
           tracking_pageview?: boolean | null
           tracking_purchase?: boolean | null
           tracking_viewcontent?: boolean | null
+          twitter_url?: string | null
           updated_at?: string
           whatsapp_number?: string | null
+          youtube_url?: string | null
         }
         Update: {
+          about_short?: string | null
+          contact_address?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
           created_at?: string
           currency?: string | null
           default_content_type?: string | null
@@ -529,9 +595,16 @@ export type Database = {
           facebook_pixel_enabled?: boolean | null
           facebook_pixel_id?: string | null
           facebook_test_event_code?: string | null
+          facebook_url?: string | null
+          favicon_url?: string | null
+          footer_copyright?: string | null
+          footer_description?: string | null
+          footer_tagline?: string | null
           free_shipping_threshold?: number | null
           id?: string
           instagram_handle?: string | null
+          instagram_url?: string | null
+          logo_url?: string | null
           meta_description?: string | null
           meta_title?: string | null
           site_description?: string | null
@@ -543,8 +616,10 @@ export type Database = {
           tracking_pageview?: boolean | null
           tracking_purchase?: boolean | null
           tracking_viewcontent?: boolean | null
+          twitter_url?: string | null
           updated_at?: string
           whatsapp_number?: string | null
+          youtube_url?: string | null
         }
         Relationships: []
       }
