@@ -86,15 +86,14 @@ const BannersManager = () => {
                 <input value={form.subtitle} onChange={e => setForm({ ...form, subtitle: e.target.value })} className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
               </div>
               <div>
-                <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Image</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {images.map(img => (
-                    <button key={img} type="button" onClick={() => setForm({ ...form, image_url: img })}
-                      className={`aspect-video border-2 overflow-hidden rounded-md ${form.image_url === img ? 'border-primary ring-2 ring-primary/20' : 'border-border hover:border-primary/50'}`}>
-                      <img src={img} alt="" className="w-full h-full object-cover" />
-                    </button>
-                  ))}
-                </div>
+                <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Image URL</label>
+                <input value={form.image_url} onChange={e => setForm({ ...form, image_url: e.target.value })} placeholder="Paste image URL" required className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary mb-2" />
+                {form.image_url && (
+                  <div className="aspect-video border border-border rounded-md overflow-hidden">
+                    <img src={form.image_url} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                )}
+                <p className="font-body text-xs text-muted-foreground mt-1">Use a high-quality wide image for best results on all screen sizes</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
