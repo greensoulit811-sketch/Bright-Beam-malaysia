@@ -33,6 +33,15 @@ const reviews = [
 ];
 
 const Index = () => {
+  const { data: dbProducts = [] } = useActiveProducts();
+  const products = dbProducts.map(p => ({
+    id: p.id, name: p.name, brand: p.brand, price: Number(p.price),
+    originalPrice: p.original_price ? Number(p.original_price) : undefined,
+    category: p.category as any, image: p.image, images: p.images || [p.image],
+    sizes: p.sizes || [], colors: p.colors || [], description: p.description || '',
+    rating: Number(p.rating) || 4.5, reviews: p.reviews || 0,
+    isTrending: p.is_trending || false, isNew: p.is_new || false,
+  }));
   const trendingProducts = products.filter(p => p.isTrending);
   const newProducts = products.filter(p => p.isNew);
   const [email, setEmail] = useState('');
