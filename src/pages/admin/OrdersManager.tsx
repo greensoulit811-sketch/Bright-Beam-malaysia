@@ -1,7 +1,7 @@
-import { useOrders, useUpdateOrderStatus } from '@/hooks/useDatabase';
+import { useOrders, useUpdateOrderStatus, useDeleteOrder } from '@/hooks/useDatabase';
 import { toast } from 'sonner';
 import { printInvoice, printCourierSlip } from '@/components/admin/InvoicePrint';
-import { Printer, Truck } from 'lucide-react';
+import { Printer, Truck, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const statusColors: Record<string, string> = {
@@ -17,12 +17,21 @@ const statuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
 const OrdersManager = () => {
   const { data: orders = [], isLoading } = useOrders();
   const updateStatus = useUpdateOrderStatus();
+  const deleteOrder = useDeleteOrder();
 
   const handleStatusChange = async (id: string, status: string) => {
     try {
       await updateStatus.mutateAsync({ id, status });
       toast.success(`Order updated to ${status}`);
     } catch { toast.error('Failed to update'); }
+  };
+
+  const handleDelete = async (id: string, orderNumber: string) => {
+    if (!window.confirm(`Are you sure you want to delete order ${orderNumber}?`)) return;
+    try {
+      await deleteOrder.mutateAsync(id);
+      toast.success(`Order ${orderNumber} deleted`);
+    } catch { toast.error('Failed to delete order'); }
   };
 
   if (isLoading) return <p className="text-center py-10 text-muted-foreground">Loading orders...</p>;
