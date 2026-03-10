@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Truck } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useAddOrder } from '@/hooks/useDatabase';
 import { useCheckoutLeadAutoSave } from '@/hooks/useCheckoutLeads';
 import { useFacebookTracking } from '@/hooks/useFacebookTracking';
+import { useShippingMethods } from '@/hooks/useShippingMethods';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Input } from '@/components/ui/input';
@@ -17,9 +18,11 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const { fbTrackInitiateCheckout, fbTrackPurchase } = useFacebookTracking();
   const { save: saveCheckoutLead, markCompleted: markLeadCompleted } = useCheckoutLeadAutoSave();
+  const { data: shippingMethods = [] } = useShippingMethods(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState('');
+  const [selectedShippingId, setSelectedShippingId] = useState('');
 
   const [form, setForm] = useState({
     fullName: '',
@@ -31,8 +34,16 @@ const CheckoutPage = () => {
     notes: '',
   });
 
-  const shipping = cartTotal >= 30 ? 0 : 3;
-  const total = cartTotal + shipping;
+  // Auto-select first shipping method
+  useEffect(() => {
+    if (shippingMethods.length > 0 && !selectedShippingId) {
+      setSelectedShippingId(shippingMethods[0].id);
+    }
+  }, [shippingMethods]);
+
+  const selectedShipping = shippingMethods.find(s => s.id === selectedShippingId);
+  const shippingCharge = selectedShipping ? Number(selectedShipping.charge) : 0;
+  const total = cartTotal + shippingCharge;
 
   // Track InitiateCheckout on mount
   useEffect(() => {
@@ -64,7 +75,7 @@ const CheckoutPage = () => {
       })),
       cartTotal: total,
     });
-  }, [form, items.length]);
+  }, [form, items.length, selectedShippingId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -101,10 +112,9 @@ const CheckoutPage = () => {
         status: 'pending',
         payment_method: 'cod',
         shipping_address: shippingAddress,
-        notes: form.notes,
+        notes: `${form.notes}${selectedShipping ? `\nShipping: ${selectedShipping.name} (${shippingCharge === 0 ? 'Free' : shippingCharge + ' KWD'})` : ''}`,
       });
 
-      // Mark lead as completed
       await markLeadCompleted();
 
       setOrderId(orderNumber);
@@ -204,6 +214,49 @@ const CheckoutPage = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Shipping Method Selection */}
+              <div className="bg-card border border-border rounded-lg p-6">
+                <h2 className="font-heading text-lg font-bold uppercase tracking-wider mb-6 text-foreground">Shipping Method</h2>
+                <div className="space-y-3">
+                  {shippingMethods.map(method => (
+                    <label key={method.id}
+                      className={`flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                        selectedShippingId === method.id ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'
+                      }`}>
+                      <input type="radio" name="shipping" value={method.id} checked={selectedShippingId === method.id}
+                        onChange={() => setSelectedShippingId(method.id)} className="sr-only" />
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
+                        selectedShippingId === method.id ? 'border-primary' : 'border-muted-foreground'
+                      }`}>
+                        {selectedShippingId === method.id && <div className="w-2 h-2 rounded-full bg-primary" />}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <p className="font-body text-sm font-bold text-foreground">{method.name}</p>
+                          <span className="font-body text-sm font-bold text-primary">
+                            {Number(method.charge) === 0 ? 'Free' : `${Number(method.charge).toFixed(3)} KWD`}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          {method.area_zone && <span className="font-body text-xs text-muted-foreground">{method.area_zone}</span>}
+                          {method.estimated_delivery && (
+                            <>
+                              <span className="text-muted-foreground">·</span>
+                              <span className="font-body text-xs text-muted-foreground flex items-center gap-1"><Truck className="w-3 h-3" />{method.estimated_delivery}</span>
+                            </>
+                          )}
+                        </div>
+                        {method.description && <p className="font-body text-xs text-muted-foreground mt-1">{method.description}</p>}
+                      </div>
+                    </label>
+                  ))}
+                  {shippingMethods.length === 0 && (
+                    <p className="font-body text-sm text-muted-foreground">No shipping methods available</p>
+                  )}
+                </div>
+              </div>
+
               <div className="bg-card border border-border rounded-lg p-6">
                 <h2 className="font-heading text-lg font-bold uppercase tracking-wider mb-4 text-foreground">Payment Method</h2>
                 <div className="flex items-center gap-3 p-4 border-2 border-primary rounded-lg bg-primary/5">
@@ -236,10 +289,13 @@ const CheckoutPage = () => {
                 </div>
                 <div className="space-y-2 font-body text-sm border-t border-border pt-4 mb-4">
                   <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>{cartTotal.toFixed(2)} KWD</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Shipping</span><span>{shipping === 0 ? 'Free' : `${shipping.toFixed(2)} KWD`}</span></div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Shipping{selectedShipping ? ` (${selectedShipping.name})` : ''}</span>
+                    <span>{shippingCharge === 0 ? 'Free' : `${shippingCharge.toFixed(3)} KWD`}</span>
+                  </div>
                 </div>
                 <div className="flex justify-between font-heading text-xl font-bold border-t border-border pt-4 mb-6 text-foreground">
-                  <span>Total</span><span className="text-primary">{total.toFixed(2)} KWD</span>
+                  <span>Total</span><span className="text-primary">{total.toFixed(3)} KWD</span>
                 </div>
                 <button type="submit" disabled={isSubmitting}
                   className="w-full bg-primary text-primary-foreground py-4 font-body text-sm font-bold tracking-wider uppercase hover:bg-primary/90 transition-all duration-300 rounded-md disabled:opacity-50">
