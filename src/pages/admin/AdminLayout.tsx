@@ -6,6 +6,7 @@ import { useAdminAuth } from '@/hooks/useAdminAuth';
 const navItems = [
   { path: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { path: '/admin/products', label: 'Products', icon: Package },
+  { path: '/admin/categories', label: 'Categories', icon: FolderTree },
   { path: '/admin/orders', label: 'Orders', icon: ShoppingCart },
   { path: '/admin/coupons', label: 'Coupons', icon: Tag },
   { path: '/admin/banners', label: 'Banners', icon: Image },
