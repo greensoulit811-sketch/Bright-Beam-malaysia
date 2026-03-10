@@ -4,9 +4,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/context/CartContext";
-import { AdminProvider } from "@/context/AdminContext";
+import { AdminAuthProvider } from "@/hooks/useAdminAuth";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import FacebookPixelProvider from "@/components/FacebookPixelProvider";
+import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 import Index from "./pages/Index.tsx";
 import ShopPage from "./pages/ShopPage.tsx";
 import ProductPage from "./pages/ProductPage.tsx";
@@ -14,6 +15,7 @@ import CartPage from "./pages/CartPage.tsx";
 import CheckoutPage from "./pages/CheckoutPage.tsx";
 import WishlistPage from "./pages/WishlistPage.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
+import AdminLoginPage from "./pages/admin/AdminLoginPage.tsx";
 import Dashboard from "./pages/admin/Dashboard.tsx";
 import ProductsManager from "./pages/admin/ProductsManager.tsx";
 import OrdersManager from "./pages/admin/OrdersManager.tsx";
@@ -31,7 +33,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <CartProvider>
-        <AdminProvider>
+        <AdminAuthProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
@@ -42,7 +44,12 @@ const App = () => (
               <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/wishlist" element={<WishlistPage />} />
-              <Route path="/admin" element={<AdminLayout />}>
+              <Route path="/admin/login" element={<AdminLoginPage />} />
+              <Route path="/admin" element={
+                <ProtectedAdminRoute>
+                  <AdminLayout />
+                </ProtectedAdminRoute>
+              }>
                 <Route index element={<Dashboard />} />
                 <Route path="products" element={<ProductsManager />} />
                 <Route path="orders" element={<OrdersManager />} />
@@ -50,15 +57,15 @@ const App = () => (
                 <Route path="banners" element={<BannersManager />} />
                 <Route path="analytics" element={<AnalyticsPage />} />
                 <Route path="customers" element={<CustomersPage />} />
-              <Route path="settings" element={<SettingsPage />} />
-              <Route path="marketing" element={<MarketingTrackingPage />} />
+                <Route path="settings" element={<SettingsPage />} />
+                <Route path="marketing" element={<MarketingTrackingPage />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
             <WhatsAppButton />
             <FacebookPixelProvider />
           </BrowserRouter>
-        </AdminProvider>
+        </AdminAuthProvider>
       </CartProvider>
     </TooltipProvider>
   </QueryClientProvider>

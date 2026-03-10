@@ -1,6 +1,7 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingCart, Tag, Image, Settings, Users, BarChart3, ChevronLeft, Menu, Megaphone } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Tag, Image, Settings, Users, BarChart3, ChevronLeft, Menu, Megaphone, LogOut } from 'lucide-react';
 import { useState } from 'react';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 const navItems = [
   { path: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
@@ -17,10 +18,16 @@ const navItems = [
 const AdminLayout = () => {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+  const { user, signOut } = useAdminAuth();
 
   const isActive = (path: string, exact?: boolean) => {
     if (exact) return location.pathname === path;
     return location.pathname.startsWith(path);
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    window.location.href = '/admin/login';
   };
 
   return (
@@ -59,7 +66,20 @@ const AdminLayout = () => {
           })}
         </nav>
 
-        <div className="p-3 border-t border-sidebar-border">
+        <div className="p-3 border-t border-sidebar-border space-y-1">
+          {!collapsed && user && (
+            <div className="px-3 py-2">
+              <p className="font-body text-xs text-sidebar-foreground/40 truncate">{user.email}</p>
+            </div>
+          )}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-md font-body text-sm text-sidebar-foreground/60 hover:text-destructive transition-colors w-full"
+            title={collapsed ? 'Logout' : undefined}
+          >
+            <LogOut className="w-5 h-5 shrink-0" />
+            {!collapsed && <span>Logout</span>}
+          </button>
           <Link
             to="/"
             className="flex items-center gap-3 px-3 py-2.5 rounded-md font-body text-sm text-sidebar-foreground/60 hover:text-sidebar-primary transition-colors"
