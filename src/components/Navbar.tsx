@@ -11,13 +11,11 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* Logo */}
-          <Link to="/" className="font-heading text-2xl lg:text-3xl font-bold tracking-wider uppercase">
+          <Link to="/" className="font-heading text-2xl lg:text-3xl font-bold tracking-wider uppercase text-foreground">
             KICK<span className="text-neon">ZONE</span>
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8 font-body text-sm tracking-widest uppercase font-medium">
+          <div className="hidden md:flex items-center gap-8 font-body text-sm tracking-widest uppercase font-medium text-foreground">
             <Link to="/" className="hover-neon transition-colors duration-300">Home</Link>
             <Link to="/shop" className="hover-neon transition-colors duration-300">Shop</Link>
             <Link to="/shop?category=running" className="hover-neon transition-colors duration-300">Running</Link>
@@ -25,14 +23,9 @@ const Navbar = () => {
             <Link to="/shop?category=football" className="hover-neon transition-colors duration-300">Football</Link>
           </div>
 
-          {/* Icons */}
-          <div className="flex items-center gap-4">
-            <Link to="/shop" className="hover-neon transition-colors duration-300">
-              <Search className="w-5 h-5" />
-            </Link>
-            <Link to="/wishlist" className="hover-neon transition-colors duration-300">
-              <Heart className="w-5 h-5" />
-            </Link>
+          <div className="flex items-center gap-4 text-foreground">
+            <Link to="/shop" className="hover-neon transition-colors duration-300"><Search className="w-5 h-5" /></Link>
+            <Link to="/wishlist" className="hover-neon transition-colors duration-300"><Heart className="w-5 h-5" /></Link>
             <Link to="/cart" className="hover-neon transition-colors duration-300 relative">
               <ShoppingBag className="w-5 h-5" />
               {cartCount > 0 && (
@@ -41,20 +34,16 @@ const Navbar = () => {
                 </span>
               )}
             </Link>
-            <button
-              className="md:hidden hover-neon transition-colors duration-300"
-              onClick={() => setMobileOpen(!mobileOpen)}
-            >
+            <button className="md:hidden hover-neon transition-colors duration-300" onClick={() => setMobileOpen(!mobileOpen)}>
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Nav */}
       {mobileOpen && (
         <div className="md:hidden bg-background border-t border-border">
-          <div className="flex flex-col px-4 py-6 gap-4 font-body text-sm tracking-widest uppercase font-medium">
+          <div className="flex flex-col px-4 py-6 gap-4 font-body text-sm tracking-widest uppercase font-medium text-foreground">
             <Link to="/" onClick={() => setMobileOpen(false)} className="hover-neon transition-colors py-2">Home</Link>
             <Link to="/shop" onClick={() => setMobileOpen(false)} className="hover-neon transition-colors py-2">Shop</Link>
             <Link to="/shop?category=running" onClick={() => setMobileOpen(false)} className="hover-neon transition-colors py-2">Running</Link>
