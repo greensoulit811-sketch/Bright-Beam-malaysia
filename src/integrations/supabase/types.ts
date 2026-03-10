@@ -97,6 +97,57 @@ export type Database = {
           },
         ]
       }
+      checkout_leads: {
+        Row: {
+          area: string | null
+          cart_items: Json | null
+          cart_total: number | null
+          contacted: boolean | null
+          created_at: string
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string
+          id: string
+          notes: string | null
+          session_id: string
+          shipping_address: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          area?: string | null
+          cart_items?: Json | null
+          cart_total?: number | null
+          contacted?: boolean | null
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone: string
+          id?: string
+          notes?: string | null
+          session_id: string
+          shipping_address?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          area?: string | null
+          cart_items?: Json | null
+          cart_total?: number | null
+          contacted?: boolean | null
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string
+          id?: string
+          notes?: string | null
+          session_id?: string
+          shipping_address?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       coupons: {
         Row: {
           code: string
