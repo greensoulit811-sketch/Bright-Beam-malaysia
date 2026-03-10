@@ -387,18 +387,18 @@ const Index = () => {
             <span className="text-neon font-body text-sm font-bold tracking-[0.3em] uppercase">Stay In The Game</span>
             <h2 className="heading-display text-3xl md:text-5xl font-bold mt-2 mb-4">Get Exclusive Drops</h2>
             <p className="font-body text-primary-foreground/60 mb-8">Early access to new releases, exclusive deals, and athlete updates.</p>
-            <form onSubmit={(e) => { e.preventDefault(); setEmail(''); }} className="flex gap-0">
+            <form onSubmit={(e) => { e.preventDefault(); setEmail(''); }} className="flex flex-col sm:flex-row gap-0">
               <input
                 type="email"
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 px-5 py-4 border border-primary-foreground/20 bg-primary-foreground/5 font-body text-sm text-primary-foreground placeholder:text-primary-foreground/40 focus:outline-none focus:border-neon transition-colors rounded-l-sm"
+                className="flex-1 px-4 py-3 sm:py-4 border border-primary-foreground/20 bg-primary-foreground/5 font-body text-sm text-primary-foreground placeholder:text-primary-foreground/40 focus:outline-none focus:border-neon transition-colors rounded-sm sm:rounded-l-sm sm:rounded-r-none"
                 required
               />
               <button
                 type="submit"
-                className="bg-neon text-accent-foreground px-8 py-4 font-body text-sm font-bold tracking-wider uppercase hover:bg-neon-glow transition-colors duration-300 rounded-r-sm"
+                className="bg-neon text-accent-foreground px-6 py-3 sm:px-8 sm:py-4 font-body text-sm font-bold tracking-wider uppercase hover:bg-neon-glow transition-colors duration-300 rounded-sm sm:rounded-r-sm sm:rounded-l-none"
               >
                 Subscribe
               </button>
