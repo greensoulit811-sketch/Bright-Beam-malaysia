@@ -56,6 +56,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             <WhatsAppButton />
+            <FacebookPixelProvider />
           </BrowserRouter>
         </AdminProvider>
       </CartProvider>

@@ -10,6 +10,7 @@ const navItems = [
   { path: '/admin/banners', label: 'Banners', icon: Image },
   { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
   { path: '/admin/customers', label: 'Customers', icon: Users },
+  { path: '/admin/marketing', label: 'Marketing', icon: Megaphone },
   { path: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 

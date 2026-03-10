@@ -81,6 +81,12 @@ const ProductPage = () => {
     if (!selectedSize) { toast.error('Please select a size'); return; }
     if (!selectedColor) { toast.error('Please select a color'); return; }
     addToCart(product, selectedSize, selectedColor);
+    fbTrackAddToCart({
+      content_ids: [product.id],
+      content_name: product.name,
+      value: product.price * quantity,
+      num_items: quantity,
+    });
     toast.success(`${product.name} added to cart!`);
   };
 
