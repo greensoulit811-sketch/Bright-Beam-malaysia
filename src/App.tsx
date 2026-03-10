@@ -20,6 +20,7 @@ import Dashboard from "./pages/admin/Dashboard.tsx";
 import ProductsManager from "./pages/admin/ProductsManager.tsx";
 import OrdersManager from "./pages/admin/OrdersManager.tsx";
 import CouponsManager from "./pages/admin/CouponsManager.tsx";
+import CategoriesManager from "./pages/admin/CategoriesManager.tsx";
 import BannersManager from "./pages/admin/BannersManager.tsx";
 import AnalyticsPage from "./pages/admin/AnalyticsPage.tsx";
 import CustomersPage from "./pages/admin/CustomersPage.tsx";
