@@ -8,6 +8,7 @@ import { AdminAuthProvider } from "@/hooks/useAdminAuth";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import FacebookPixelProvider from "@/components/FacebookPixelProvider";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
+import VisitorTracker from "@/components/VisitorTracker";
 import Index from "./pages/Index.tsx";
 import ShopPage from "./pages/ShopPage.tsx";
 import ProductPage from "./pages/ProductPage.tsx";
@@ -25,6 +26,7 @@ import CheckoutLeadsManager from "./pages/admin/CheckoutLeadsManager.tsx";
 import CategoriesManager from "./pages/admin/CategoriesManager.tsx";
 import BannersManager from "./pages/admin/BannersManager.tsx";
 import AnalyticsPage from "./pages/admin/AnalyticsPage.tsx";
+import VisitorAnalyticsPage from "./pages/admin/VisitorAnalyticsPage.tsx";
 import CustomersPage from "./pages/admin/CustomersPage.tsx";
 import SettingsPage from "./pages/admin/SettingsPage.tsx";
 import MarketingTrackingPage from "./pages/admin/MarketingTrackingPage.tsx";
@@ -62,12 +64,14 @@ const App = () => (
                 <Route path="checkout-leads" element={<CheckoutLeadsManager />} />
                 <Route path="banners" element={<BannersManager />} />
                 <Route path="analytics" element={<AnalyticsPage />} />
+                <Route path="visitor-analytics" element={<VisitorAnalyticsPage />} />
                 <Route path="customers" element={<CustomersPage />} />
                 <Route path="settings" element={<SettingsPage />} />
                 <Route path="marketing" element={<MarketingTrackingPage />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <VisitorTracker />
             <WhatsAppButton />
             <FacebookPixelProvider />
           </BrowserRouter>
