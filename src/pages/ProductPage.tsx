@@ -211,6 +211,9 @@ const ProductPage = () => {
             </motion.div>
           </div>
 
+          {/* Reviews */}
+          <ProductReviews productId={product.id} />
+
           {related.length > 0 && (
             <section className="mt-20 pt-10 border-t border-border">
               <h2 className="heading-display text-2xl md:text-4xl font-bold mb-10 text-foreground">You May Also Like</h2>
