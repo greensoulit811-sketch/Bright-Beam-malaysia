@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useState, useMemo, useEffect } from 'react';
 import { Star, Heart, Minus, Plus, Truck, RefreshCw, Shield, Zap } from 'lucide-react';
 import { useActiveProducts } from '@/hooks/useDatabase';
+import { useProductVariations, type ProductVariation } from '@/hooks/useProductVariations';
 import { useCart } from '@/context/CartContext';
 import { useFacebookTracking } from '@/hooks/useFacebookTracking';
 import ProductCard from '@/components/ProductCard';
@@ -13,39 +14,49 @@ import { toast } from 'sonner';
 const ProductPage = () => {
   const { id } = useParams();
   const { data: dbProducts = [], isLoading } = useActiveProducts();
+  const { data: variations = [] } = useProductVariations(id || '');
   const { addToCart, toggleWishlist, isInWishlist } = useCart();
   const { fbTrackViewContent, fbTrackAddToCart } = useFacebookTracking();
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(0);
 
   const allProducts = useMemo(() => dbProducts.map(p => ({
-    id: p.id,
-    name: p.name,
-    brand: p.brand,
-    price: Number(p.price),
+    id: p.id, name: p.name, brand: p.brand, price: Number(p.price),
     originalPrice: p.original_price ? Number(p.original_price) : undefined,
-    category: p.category as any,
-    image: p.image,
-    images: p.images || [p.image],
-    sizes: p.sizes || [],
-    colors: p.colors || [],
-    description: p.description || '',
-    rating: Number(p.rating) || 4.5,
-    reviews: p.reviews || 0,
-    isTrending: p.is_trending || false,
-    isNew: p.is_new || false,
+    category: p.category as any, image: p.image,
+    images: p.images || [p.image], sizes: p.sizes || [], colors: p.colors || [],
+    description: p.description || '', rating: Number(p.rating) || 4.5,
+    reviews: p.reviews || 0, isTrending: p.is_trending || false, isNew: p.is_new || false,
   })), [dbProducts]);
 
   const product = allProducts.find(p => p.id === id);
+
+  // Find matching variation for selected size/color
+  const selectedVariation = useMemo(() => {
+    if (!selectedSize || !selectedColor || variations.length === 0) return null;
+    return variations.find(v => v.size === String(selectedSize) && v.color === selectedColor) || null;
+  }, [selectedSize, selectedColor, variations]);
+
+  // Display price based on variation
+  const displayPrice = selectedVariation?.price ? Number(selectedVariation.price) : product?.price || 0;
+  const variationStock = selectedVariation ? selectedVariation.stock : null;
+
+  useEffect(() => {
+    if (product) {
+      fbTrackViewContent({
+        content_ids: [product.id], content_name: product.name,
+        content_category: product.category, value: product.price,
+      });
+    }
+  }, [product?.id]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="pt-32 text-center">
-          <p className="font-body text-muted-foreground">Loading...</p>
-        </div>
+        <div className="pt-32 text-center"><p className="font-body text-muted-foreground">Loading...</p></div>
       </div>
     );
   }
@@ -62,30 +73,20 @@ const ProductPage = () => {
     );
   }
 
+  const galleryImages = product.images.length > 0 ? product.images : [product.image];
   const related = allProducts.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
   const wishlisted = isInWishlist(product.id);
-
-  // Track ViewContent
-  useEffect(() => {
-    if (product) {
-      fbTrackViewContent({
-        content_ids: [product.id],
-        content_name: product.name,
-        content_category: product.category,
-        value: product.price,
-      });
-    }
-  }, [product?.id]);
 
   const handleAddToCart = () => {
     if (!selectedSize) { toast.error('Please select a size'); return; }
     if (!selectedColor) { toast.error('Please select a color'); return; }
-    addToCart(product, selectedSize, selectedColor);
+    if (variationStock !== null && variationStock <= 0) { toast.error('This variation is out of stock'); return; }
+
+    const cartProduct = { ...product, price: displayPrice };
+    addToCart(cartProduct, selectedSize, selectedColor);
     fbTrackAddToCart({
-      content_ids: [product.id],
-      content_name: product.name,
-      value: product.price * quantity,
-      num_items: quantity,
+      content_ids: [product.id], content_name: product.name,
+      value: displayPrice * quantity, num_items: quantity,
     });
     toast.success(`${product.name} added to cart!`);
   };
@@ -102,9 +103,23 @@ const ProductPage = () => {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="aspect-square bg-card overflow-hidden rounded-lg border border-border">
-              <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-            </motion.div>
+            {/* Image Gallery */}
+            <div>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                className="aspect-square bg-card overflow-hidden rounded-lg border border-border mb-4">
+                <img src={galleryImages[selectedImage]} alt={product.name} className="w-full h-full object-cover" />
+              </motion.div>
+              {galleryImages.length > 1 && (
+                <div className="flex gap-2 overflow-x-auto pb-2">
+                  {galleryImages.map((img, i) => (
+                    <button key={i} onClick={() => setSelectedImage(i)}
+                      className={`w-20 h-20 shrink-0 rounded-md overflow-hidden border-2 transition-all ${selectedImage === i ? 'border-primary ring-2 ring-primary/20' : 'border-border hover:border-primary/50'}`}>
+                      <img src={img} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
               <span className="font-body text-sm text-neon font-bold tracking-wider uppercase">{product.brand}</span>
@@ -120,16 +135,22 @@ const ProductPage = () => {
               </div>
 
               <div className="flex items-center gap-3 mb-8">
-                <span className="font-heading text-4xl font-bold text-neon">{product.price} KWD</span>
+                <span className="font-heading text-4xl font-bold text-neon">{displayPrice} KWD</span>
                 {product.originalPrice && (
                   <>
                     <span className="font-body text-lg text-muted-foreground line-through">{product.originalPrice} KWD</span>
                     <span className="bg-destructive text-destructive-foreground px-2 py-1 text-xs font-body font-bold tracking-wider uppercase rounded-sm">
-                      {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF
+                      {Math.round((1 - displayPrice / product.originalPrice) * 100)}% OFF
                     </span>
                   </>
                 )}
               </div>
+
+              {variationStock !== null && (
+                <p className={`font-body text-sm mb-4 ${variationStock > 0 ? 'text-green-600' : 'text-destructive'}`}>
+                  {variationStock > 0 ? `${variationStock} in stock` : 'Out of stock'}
+                </p>
+              )}
 
               <p className="font-body text-muted-foreground leading-relaxed mb-8">{product.description}</p>
 
@@ -164,8 +185,9 @@ const ProductPage = () => {
                   <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-12 flex items-center justify-center hover:bg-card transition-colors"><Plus className="w-4 h-4" /></button>
                 </div>
                 <button onClick={handleAddToCart}
-                  className="flex-1 h-12 bg-neon text-accent-foreground font-body text-sm font-bold tracking-wider uppercase hover:bg-neon-glow transition-all duration-300 glow-neon rounded-sm">
-                  Add to Cart
+                  disabled={variationStock !== null && variationStock <= 0}
+                  className="flex-1 h-12 bg-neon text-accent-foreground font-body text-sm font-bold tracking-wider uppercase hover:bg-neon-glow transition-all duration-300 glow-neon rounded-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                  {variationStock !== null && variationStock <= 0 ? 'Out of Stock' : 'Add to Cart'}
                 </button>
                 <button onClick={() => toggleWishlist(product.id)}
                   className={`w-12 h-12 border flex items-center justify-center rounded-sm transition-all ${wishlisted ? 'border-neon bg-neon/10' : 'border-border hover:border-neon/50'}`}>

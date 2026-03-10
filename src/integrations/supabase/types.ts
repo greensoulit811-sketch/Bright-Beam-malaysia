@@ -140,6 +140,50 @@ export type Database = {
         }
         Relationships: []
       }
+      product_variations: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          price: number | null
+          product_id: string
+          size: string
+          sku: string | null
+          stock: number
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          id?: string
+          price?: number | null
+          product_id: string
+          size?: string
+          sku?: string | null
+          stock?: number
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          price?: number | null
+          product_id?: string
+          size?: string
+          sku?: string | null
+          stock?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_variations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           brand: string
@@ -159,6 +203,7 @@ export type Database = {
           rating: number | null
           reviews: number | null
           sizes: number[] | null
+          sku: string | null
           stock: number | null
           updated_at: string
         }
@@ -180,6 +225,7 @@ export type Database = {
           rating?: number | null
           reviews?: number | null
           sizes?: number[] | null
+          sku?: string | null
           stock?: number | null
           updated_at?: string
         }
@@ -201,6 +247,7 @@ export type Database = {
           rating?: number | null
           reviews?: number | null
           sizes?: number[] | null
+          sku?: string | null
           stock?: number | null
           updated_at?: string
         }
