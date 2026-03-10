@@ -10,6 +10,7 @@ import Index from "./pages/Index.tsx";
 import ShopPage from "./pages/ShopPage.tsx";
 import ProductPage from "./pages/ProductPage.tsx";
 import CartPage from "./pages/CartPage.tsx";
+import CheckoutPage from "./pages/CheckoutPage.tsx";
 import WishlistPage from "./pages/WishlistPage.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import Dashboard from "./pages/admin/Dashboard.tsx";
@@ -37,6 +38,7 @@ const App = () => (
               <Route path="/shop" element={<ShopPage />} />
               <Route path="/product/:id" element={<ProductPage />} />
               <Route path="/cart" element={<CartPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/wishlist" element={<WishlistPage />} />
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<Dashboard />} />

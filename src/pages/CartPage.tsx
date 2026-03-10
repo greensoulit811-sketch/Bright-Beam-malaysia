@@ -74,9 +74,9 @@ const CartPage = () => {
               <div className="flex justify-between font-heading text-xl font-bold mb-8 text-foreground">
                 <span>Total</span><span className="text-neon">{(cartTotal + shipping).toFixed(2)} KWD</span>
               </div>
-              <button className="w-full bg-neon text-accent-foreground py-4 font-body text-sm font-bold tracking-wider uppercase glow-neon hover:bg-neon-glow transition-all duration-300 rounded-sm mb-3">
-                Checkout
-              </button>
+              <Link to="/checkout" className="w-full block text-center bg-primary text-primary-foreground py-4 font-body text-sm font-bold tracking-wider uppercase hover:bg-primary/90 transition-all duration-300 rounded-md mb-3">
+                Proceed to Checkout
+              </Link>
               <p className="text-center font-body text-xs text-muted-foreground">Cash on Delivery available 🇰🇼</p>
             </div>
           </div>
