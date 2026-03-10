@@ -26,6 +26,7 @@ import CheckoutLeadsManager from "./pages/admin/CheckoutLeadsManager.tsx";
 import CategoriesManager from "./pages/admin/CategoriesManager.tsx";
 import BannersManager from "./pages/admin/BannersManager.tsx";
 import AnalyticsPage from "./pages/admin/AnalyticsPage.tsx";
+import VisitorAnalyticsPage from "./pages/admin/VisitorAnalyticsPage.tsx";
 import CustomersPage from "./pages/admin/CustomersPage.tsx";
 import SettingsPage from "./pages/admin/SettingsPage.tsx";
 import MarketingTrackingPage from "./pages/admin/MarketingTrackingPage.tsx";
