@@ -59,6 +59,7 @@ const App = () => (
                 <Route path="orders/:id" element={<OrderDetailsPage />} />
                 <Route path="categories" element={<CategoriesManager />} />
                 <Route path="coupons" element={<CouponsManager />} />
+                <Route path="checkout-leads" element={<CheckoutLeadsManager />} />
                 <Route path="banners" element={<BannersManager />} />
                 <Route path="analytics" element={<AnalyticsPage />} />
                 <Route path="customers" element={<CustomersPage />} />
