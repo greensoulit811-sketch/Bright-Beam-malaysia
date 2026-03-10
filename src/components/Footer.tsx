@@ -7,9 +7,7 @@ const Footer = () => {
       <div className="container mx-auto px-4 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           <div>
-            <h3 className="font-heading text-2xl font-bold tracking-wider uppercase mb-4">
-              KICK<span className="text-neon">ZONE</span>
-            </h3>
+            <img src="/logo.png" alt="SRK Collection" className="h-14 w-auto mb-4" />
             <p className="text-primary-foreground/60 font-body text-sm leading-relaxed mb-6">
               Your ultimate destination for authentic sports footwear in Kuwait. Nike, Adidas, Puma, and more.
             </p>
