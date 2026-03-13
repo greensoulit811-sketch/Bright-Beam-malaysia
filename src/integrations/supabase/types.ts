@@ -524,6 +524,7 @@ export type Database = {
           id: string
           instagram_handle: string | null
           instagram_url: string | null
+          language: string | null
           logo_url: string | null
           meta_description: string | null
           meta_title: string | null
@@ -564,6 +565,7 @@ export type Database = {
           id?: string
           instagram_handle?: string | null
           instagram_url?: string | null
+          language?: string | null
           logo_url?: string | null
           meta_description?: string | null
           meta_title?: string | null
@@ -604,6 +606,7 @@ export type Database = {
           id?: string
           instagram_handle?: string | null
           instagram_url?: string | null
+          language?: string | null
           logo_url?: string | null
           meta_description?: string | null
           meta_title?: string | null
