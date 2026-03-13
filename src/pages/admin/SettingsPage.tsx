@@ -22,6 +22,7 @@ const SettingsPage = () => {
         meta_title: s.meta_title || '', meta_description: s.meta_description || '',
         whatsapp_number: s.whatsapp_number || '', instagram_handle: s.instagram_handle || '',
         free_shipping_threshold: Number(s.free_shipping_threshold) || 30, currency: s.currency || 'KWD',
+        language: s.language || 'en',
         logo_url: s.logo_url || '/logo.png', favicon_url: s.favicon_url || '/favicon.ico',
         footer_description: s.footer_description || '', footer_copyright: s.footer_copyright || '', footer_tagline: s.footer_tagline || '',
         contact_email: s.contact_email || '', contact_phone: s.contact_phone || '', contact_address: s.contact_address || '',
