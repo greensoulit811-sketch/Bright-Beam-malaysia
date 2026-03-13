@@ -90,6 +90,15 @@ const SettingsPage = () => {
             <Field label="Currency" field="currency" />
             <Field label="Free Shipping Min" field="free_shipping_threshold" type="number" />
           </div>
+          <div>
+            <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Website Language</label>
+            <select value={form.language} onChange={e => setForm({ ...form, language: e.target.value })}
+              className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary">
+              <option value="en">English</option>
+              <option value="ar">العربية (Arabic)</option>
+            </select>
+            <p className="font-body text-xs text-muted-foreground mt-1">This changes the entire frontend language and direction (RTL for Arabic)</p>
+          </div>
         </Section>
 
         <Section title="SEO Settings">

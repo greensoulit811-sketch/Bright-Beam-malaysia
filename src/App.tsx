@@ -90,6 +90,7 @@ const App = () => (
             <FacebookPixelProvider />
           </BrowserRouter>
         </AdminAuthProvider>
+        </LanguageProvider>
       </CartProvider>
     </TooltipProvider>
   </QueryClientProvider>
