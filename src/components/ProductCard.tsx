@@ -27,13 +27,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
           <div className="absolute inset-0 bg-neon/0 group-hover:bg-neon/5 transition-colors duration-300" />
           {product.isNew && (
-            <span className="absolute top-3 left-3 bg-neon text-accent-foreground px-3 py-1 text-xs font-body font-bold tracking-wider uppercase rounded-sm">
+            <span className="absolute top-3 start-3 bg-neon text-accent-foreground px-3 py-1 text-xs font-body font-bold tracking-wider uppercase rounded-sm">
               {t('card.new')}
             </span>
           )}
           {product.originalPrice && (
-            <span className="absolute top-3 left-3 bg-hot text-accent-foreground px-3 py-1 text-xs font-body font-bold tracking-wider uppercase rounded-sm"
-              style={product.isNew ? { left: '4.5rem' } : {}}
+            <span className="absolute top-3 start-3 bg-hot text-accent-foreground px-3 py-1 text-xs font-body font-bold tracking-wider uppercase rounded-sm"
+              style={product.isNew ? { insetInlineStart: '4.5rem' } : {}}
             >
               {t('card.sale')}
             </span>
