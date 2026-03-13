@@ -9,6 +9,7 @@ const SettingsPage = () => {
   const [form, setForm] = useState({
     site_name: '', site_description: '', meta_title: '', meta_description: '',
     whatsapp_number: '', instagram_handle: '', free_shipping_threshold: 30, currency: 'KWD',
+    language: 'en',
     logo_url: '', favicon_url: '', footer_description: '', footer_copyright: '', footer_tagline: '',
     contact_email: '', contact_phone: '', contact_address: '',
     facebook_url: '', twitter_url: '', youtube_url: '', instagram_url: '',
