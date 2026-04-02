@@ -78,9 +78,9 @@ export const useFacebookTracking = () => {
     if (!settings?.facebook_pixel_enabled || !settings?.tracking_addtocart) return;
     const currency = settings.currency || 'KWD';
     const contentType = settings.default_content_type || 'product';
-    const eventId = trackAddToCart({ ...params, currency, content_type: contentType });
-    sendServerEvent('AddToCart', eventId, { ...params, currency, content_type: contentType });
-  }, [settings, sendServerEvent]);
+    const data = { ...params, currency, content_type: contentType };
+    fireEvent('AddToCart', (d) => trackAddToCart(d as any), data);
+  }, [settings, fireEvent]);
 
   const fbTrackInitiateCheckout = useCallback((params: {
     content_ids: string[];
