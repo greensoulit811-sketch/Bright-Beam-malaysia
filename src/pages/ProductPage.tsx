@@ -37,6 +37,14 @@ const ProductPage = () => {
 
   const product = allProducts.find(p => p.id === id);
 
+  // Auto-select when only one size or color option
+  useEffect(() => {
+    if (product) {
+      if (product.sizes.length === 1) setSelectedSize(product.sizes[0]);
+      if (product.colors.length === 1) setSelectedColor(product.colors[0]);
+    }
+  }, [product?.id]);
+
   const selectedVariation = useMemo(() => {
     if (!selectedSize || !selectedColor || variations.length === 0) return null;
     return variations.find(v => v.size === String(selectedSize) && v.color === selectedColor) || null;
