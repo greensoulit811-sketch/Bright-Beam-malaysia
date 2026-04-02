@@ -26,14 +26,6 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
 
-  // Auto-select when only one size or color option
-  useEffect(() => {
-    if (product) {
-      if (product.sizes.length === 1 && !selectedSize) setSelectedSize(product.sizes[0]);
-      if (product.colors.length === 1 && !selectedColor) setSelectedColor(product.colors[0]);
-    }
-  }, [product?.id, product?.sizes, product?.colors]);
-
   const allProducts = useMemo(() => dbProducts.map(p => ({
     id: p.id, name: p.name, brand: p.brand, price: Number(p.price),
     originalPrice: p.original_price ? Number(p.original_price) : undefined,
