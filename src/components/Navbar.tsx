@@ -3,6 +3,7 @@ import { ShoppingBag, Heart, Search, Menu, X } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useActiveCategories } from '@/hooks/useCategories';
 import { useLanguage } from '@/context/LanguageContext';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useState } from 'react';
 
 const Navbar = () => {
@@ -32,6 +33,7 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-4 text-foreground">
+            <LanguageSwitcher />
             <Link to="/shop" className="hover-neon transition-colors duration-300"><Search className="w-5 h-5" /></Link>
             <Link to="/wishlist" className="hover-neon transition-colors duration-300"><Heart className="w-5 h-5" /></Link>
             <Link to="/cart" className="hover-neon transition-colors duration-300 relative">
