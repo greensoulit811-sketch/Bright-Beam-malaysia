@@ -58,6 +58,19 @@ Deno.serve(async (req) => {
     const accessToken = settings.facebook_access_token;
     const testEventCode = settings.facebook_test_event_code;
 
+    // Extract first valid IP from x-forwarded-for
+    const rawIp = req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || '';
+    const clientIp = rawIp.split(',')[0]?.trim() || '';
+
+    // Build user_data, only include IP if valid
+    const resolvedUserData: Record<string, any> = {
+      client_user_agent: req.headers.get('user-agent') || '',
+      ...user_data,
+    };
+    if (clientIp) {
+      resolvedUserData.client_ip_address = clientIp;
+    }
+
     // Build event payload
     const eventData: any = {
       event_name,
@@ -65,11 +78,7 @@ Deno.serve(async (req) => {
       event_id,
       event_source_url: event_source_url || '',
       action_source: 'website',
-      user_data: {
-        client_ip_address: req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || '',
-        client_user_agent: req.headers.get('user-agent') || '',
-        ...user_data,
-      },
+      user_data: resolvedUserData,
     };
 
     if (custom_data && Object.keys(custom_data).length > 0) {
