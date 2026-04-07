@@ -115,7 +115,11 @@ const OrderDetailsPage = () => {
               {items.map((item: any, i: number) => (
                 <div key={i} className="flex items-center justify-between py-4 first:pt-0 last:pb-0">
                   <div className="flex-1">
-                    <Link to={`/admin/products?view=${item.productId}`} className="font-body text-sm font-semibold text-primary hover:underline">{item.productName}</Link>
+                    {item.productId ? (
+                      <Link to={`/admin/products?view=${item.productId}`} className="font-body text-sm font-semibold text-primary hover:underline">{item.productName}</Link>
+                    ) : (
+                      <p className="font-body text-sm font-semibold text-foreground">{item.productName}</p>
+                    )}
                     <p className="font-body text-xs text-muted-foreground mt-0.5">
                       Size: {item.size} · Color: {item.color} · Qty: {item.quantity}
                     </p>
