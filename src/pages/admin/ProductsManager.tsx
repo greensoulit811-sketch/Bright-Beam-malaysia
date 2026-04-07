@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useProducts, useAddProduct, useUpdateProduct, useDeleteProduct, type DbProduct } from '@/hooks/useDatabase';
 import { useSaveVariations, useProductVariations } from '@/hooks/useProductVariations';
 import { useActiveCategories } from '@/hooks/useCategories';
@@ -24,6 +25,7 @@ const emptyForm = {
 };
 
 const ProductsManager = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { data: products = [], isLoading } = useProducts();
   const { data: categoryList = [] } = useActiveCategories();
   const addProduct = useAddProduct();
@@ -39,6 +41,20 @@ const ProductsManager = () => {
   const [galleryUploading, setGalleryUploading] = useState(false);
   const mainImageRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
+  const [autoOpened, setAutoOpened] = useState(false);
+
+  // Auto-open product from URL param (e.g. ?view=product-id)
+  useEffect(() => {
+    const viewId = searchParams.get('view');
+    if (viewId && products.length > 0 && !autoOpened) {
+      const product = products.find(p => p.id === viewId);
+      if (product) {
+        openEdit(product);
+        setAutoOpened(true);
+        setSearchParams({}, { replace: true });
+      }
+    }
+  }, [searchParams, products, autoOpened]);
 
   const filtered = products.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
