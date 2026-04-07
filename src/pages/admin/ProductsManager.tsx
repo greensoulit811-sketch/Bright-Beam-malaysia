@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useProducts, useAddProduct, useUpdateProduct, useDeleteProduct, type DbProduct } from '@/hooks/useDatabase';
 import { useSaveVariations, useProductVariations } from '@/hooks/useProductVariations';
 import { useActiveCategories } from '@/hooks/useCategories';
