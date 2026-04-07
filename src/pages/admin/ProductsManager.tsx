@@ -43,18 +43,41 @@ const ProductsManager = () => {
   const galleryRef = useRef<HTMLInputElement>(null);
   const [autoOpened, setAutoOpened] = useState(false);
 
-  // Auto-open product from URL param (e.g. ?view=product-id)
+  // Auto-open product from URL params
   useEffect(() => {
+    if (products.length === 0 || autoOpened) return;
+
     const viewId = searchParams.get('view');
-    if (viewId && products.length > 0 && !autoOpened) {
-      const product = products.find(p => p.id === viewId);
-      if (product) {
-        openEdit(product);
-        setAutoOpened(true);
-        setSearchParams({}, { replace: true });
-      }
+    const productName = searchParams.get('name');
+    const productPrice = searchParams.get('price');
+    const productColor = searchParams.get('color');
+    const productSize = searchParams.get('size');
+
+    const matchedProduct = viewId
+      ? products.find(p => p.id === viewId)
+      : products.find(p => {
+          const matchesName = productName
+            ? p.name.trim().toLowerCase() === productName.trim().toLowerCase()
+            : true;
+          const matchesPrice = productPrice
+            ? Number(p.price) === Number(productPrice)
+            : true;
+          const matchesColor = productColor
+            ? (p.colors || []).some(color => color.trim().toLowerCase() === productColor.trim().toLowerCase())
+            : true;
+          const matchesSize = productSize
+            ? (p.sizes || []).some(size => String(size) === String(productSize))
+            : true;
+
+          return matchesName && matchesPrice && matchesColor && matchesSize;
+        });
+
+    if (matchedProduct) {
+      openEdit(matchedProduct);
+      setAutoOpened(true);
+      setSearchParams({}, { replace: true });
     }
-  }, [searchParams, products, autoOpened]);
+  }, [searchParams, products, autoOpened, setSearchParams]);
 
   const filtered = products.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
