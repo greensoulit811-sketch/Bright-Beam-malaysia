@@ -10,6 +10,8 @@ import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProductReviews from '@/components/ProductReviews';
+import FakePurchaseNotification from '@/components/FakePurchaseNotification';
+import CountdownTimer from '@/components/CountdownTimer';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
@@ -86,6 +88,7 @@ const ProductPage = () => {
   const galleryImages = product.images.length > 0 ? product.images : [product.image];
   const related = allProducts.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
   const wishlisted = isInWishlist(product.id);
+  const productNames = allProducts.map(p => p.name);
 
   const validateSelection = () => {
     if (!selectedSize) { toast.error(t('product.select_size_error')); return false; }
@@ -153,6 +156,8 @@ const ProductPage = () => {
                 </div>
                 <span className="font-body text-sm text-muted-foreground">({product.reviews.toLocaleString()} {t('product.reviews')})</span>
               </div>
+
+              <CountdownTimer />
 
               <div className="flex items-center gap-3 mb-8">
                 <span className="font-heading text-4xl font-bold text-neon">{displayPrice} KWD</span>
@@ -248,6 +253,7 @@ const ProductPage = () => {
           )}
         </div>
       </div>
+      <FakePurchaseNotification productNames={productNames} />
       <Footer />
     </div>
   );
