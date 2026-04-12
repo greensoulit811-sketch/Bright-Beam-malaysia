@@ -147,7 +147,7 @@ const CheckoutPage = () => {
             <div className="lg:col-span-2 space-y-8">
               <div className="bg-card border border-border rounded-lg p-6">
                 <h2 className="font-heading text-lg font-bold uppercase tracking-wider mb-6 text-foreground">{t('checkout.contact_info')}</h2>
-                <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-4">
                   <div>
                     <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.full_name')} *</label>
                     <Input name="fullName" value={form.fullName} onChange={handleChange} placeholder="Ahmed Al-Sabah" required />
@@ -156,28 +156,11 @@ const CheckoutPage = () => {
                     <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.phone')} *</label>
                     <Input name="phone" value={form.phone} onChange={handleChange} placeholder="+965 9900 1122" required />
                   </div>
-                  <div className="sm:col-span-2">
-                    <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.email')}</label>
-                    <Input name="email" type="email" value={form.email} onChange={handleChange} placeholder="ahmed@email.com" />
-                  </div>
-                </div>
-              </div>
-              <div className="bg-card border border-border rounded-lg p-6">
-                <h2 className="font-heading text-lg font-bold uppercase tracking-wider mb-6 text-foreground">{t('checkout.shipping_address')}</h2>
-                <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.area')} *</label>
-                    <Input name="area" value={form.area} onChange={handleChange} placeholder="Salmiya" required />
+                    <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.shipping_address')} *</label>
+                    <Input name="address" value={form.address} onChange={handleChange} placeholder="Area, Block 5, Street 10, Building 3" required />
                   </div>
                   <div>
-                    <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.block')}</label>
-                    <Input name="block" value={form.block} onChange={handleChange} placeholder="5" />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.street')} *</label>
-                    <Input name="address" value={form.address} onChange={handleChange} placeholder="Street 10, Building 5, Apt 3" required />
-                  </div>
-                  <div className="sm:col-span-2">
                     <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.notes')}</label>
                     <textarea name="notes" value={form.notes} onChange={handleChange} placeholder={t('checkout.delivery_instructions')}
                       className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[80px]" />
