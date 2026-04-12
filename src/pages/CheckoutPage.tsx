@@ -27,7 +27,7 @@ const CheckoutPage = () => {
   const [selectedShippingId, setSelectedShippingId] = useState('');
 
   const [form, setForm] = useState({
-    fullName: '', email: '', phone: '', address: '', area: '', block: '', notes: '',
+    fullName: '', phone: '', address: '', notes: '',
   });
 
   useEffect(() => {
@@ -53,9 +53,9 @@ const CheckoutPage = () => {
   useEffect(() => {
     if (items.length === 0) return;
     saveCheckoutLead({
-      name: form.fullName, phone: form.phone, email: form.email,
-      address: `${form.address}${form.block ? `, Block ${form.block}` : ''}`,
-      area: form.area, notes: form.notes,
+      name: form.fullName, phone: form.phone, email: '',
+      address: form.address,
+      area: '', notes: form.notes,
       cartItems: items.map(item => ({
         productId: item.product.id, productName: item.product.name, size: item.size, color: item.color,
         quantity: item.quantity, price: item.product.price,
@@ -70,7 +70,7 @@ const CheckoutPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.fullName || !form.phone || !form.address || !form.area) {
+    if (!form.fullName || !form.phone || !form.address) {
       toast.error(t('checkout.fill_required'));
       return;
     }
@@ -80,13 +80,13 @@ const CheckoutPage = () => {
       productId: item.product.id, productName: item.product.name, size: item.size, color: item.color,
       quantity: item.quantity, price: item.product.price,
     }));
-    const shippingAddress = `${form.address}, Block ${form.block}, ${form.area}, Kuwait`;
+    const shippingAddress = `${form.address}, Kuwait`;
     const orderNumber = `ORD${String(Date.now()).slice(-6)}`;
 
     try {
       await addOrder.mutateAsync({
         order_number: orderNumber, customer_name: form.fullName,
-        customer_email: form.email, customer_phone: form.phone,
+        customer_email: '', customer_phone: form.phone,
         items: orderItems, total, status: 'pending', payment_method: 'cod',
         shipping_address: shippingAddress,
         notes: `${form.notes}${selectedShipping ? `\nShipping: ${selectedShipping.name} (${shippingCharge === 0 ? 'Free' : shippingCharge + ' KWD'})` : ''}`,
@@ -147,7 +147,7 @@ const CheckoutPage = () => {
             <div className="lg:col-span-2 space-y-8">
               <div className="bg-card border border-border rounded-lg p-6">
                 <h2 className="font-heading text-lg font-bold uppercase tracking-wider mb-6 text-foreground">{t('checkout.contact_info')}</h2>
-                <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-4">
                   <div>
                     <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.full_name')} *</label>
                     <Input name="fullName" value={form.fullName} onChange={handleChange} placeholder="Ahmed Al-Sabah" required />
@@ -156,28 +156,11 @@ const CheckoutPage = () => {
                     <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.phone')} *</label>
                     <Input name="phone" value={form.phone} onChange={handleChange} placeholder="+965 9900 1122" required />
                   </div>
-                  <div className="sm:col-span-2">
-                    <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.email')}</label>
-                    <Input name="email" type="email" value={form.email} onChange={handleChange} placeholder="ahmed@email.com" />
-                  </div>
-                </div>
-              </div>
-              <div className="bg-card border border-border rounded-lg p-6">
-                <h2 className="font-heading text-lg font-bold uppercase tracking-wider mb-6 text-foreground">{t('checkout.shipping_address')}</h2>
-                <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.area')} *</label>
-                    <Input name="area" value={form.area} onChange={handleChange} placeholder="Salmiya" required />
+                    <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.shipping_address')} *</label>
+                    <Input name="address" value={form.address} onChange={handleChange} placeholder="Area, Block 5, Street 10, Building 3" required />
                   </div>
                   <div>
-                    <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.block')}</label>
-                    <Input name="block" value={form.block} onChange={handleChange} placeholder="5" />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.street')} *</label>
-                    <Input name="address" value={form.address} onChange={handleChange} placeholder="Street 10, Building 5, Apt 3" required />
-                  </div>
-                  <div className="sm:col-span-2">
                     <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.notes')}</label>
                     <textarea name="notes" value={form.notes} onChange={handleChange} placeholder={t('checkout.delivery_instructions')}
                       className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[80px]" />
