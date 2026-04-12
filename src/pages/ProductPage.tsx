@@ -157,6 +157,8 @@ const ProductPage = () => {
                 <span className="font-body text-sm text-muted-foreground">({product.reviews.toLocaleString()} {t('product.reviews')})</span>
               </div>
 
+              <CountdownTimer />
+
               <div className="flex items-center gap-3 mb-8">
                 <span className="font-heading text-4xl font-bold text-neon">{displayPrice} KWD</span>
                 {product.originalPrice && (
@@ -251,6 +253,7 @@ const ProductPage = () => {
           )}
         </div>
       </div>
+      <FakePurchaseNotification productNames={productNames} />
       <Footer />
     </div>
   );
