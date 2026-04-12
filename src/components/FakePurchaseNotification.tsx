@@ -30,7 +30,7 @@ const FakePurchaseNotification = ({ productNames }: { productNames: string[] }) 
     };
 
     const initialDelay = setTimeout(show, 5000);
-    const interval = setInterval(show, 15000 + Math.random() * 10000);
+    const interval = setInterval(show, 10000);
     return () => { clearTimeout(initialDelay); clearInterval(interval); };
   }, [productNames]);
 
