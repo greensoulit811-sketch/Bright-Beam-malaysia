@@ -10,6 +10,8 @@ import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProductReviews from '@/components/ProductReviews';
+import FakePurchaseNotification from '@/components/FakePurchaseNotification';
+import CountdownTimer from '@/components/CountdownTimer';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
