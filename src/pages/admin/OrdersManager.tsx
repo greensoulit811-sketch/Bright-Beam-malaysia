@@ -52,9 +52,12 @@ const OrdersManager = () => {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="font-heading text-3xl font-bold uppercase tracking-wider text-foreground">Orders</h1>
-        <p className="font-body text-sm text-muted-foreground mt-1">{orders.length} total orders</p>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="font-heading text-3xl font-bold uppercase tracking-wider text-foreground">Orders</h1>
+          <p className="font-body text-sm text-muted-foreground mt-1">{orders.length} total orders</p>
+        </div>
+        <AddOrderDialog />
       </div>
 
       <div className="flex flex-wrap gap-2 mb-6">
