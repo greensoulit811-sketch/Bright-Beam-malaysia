@@ -88,6 +88,7 @@ const ProductPage = () => {
   const galleryImages = product.images.length > 0 ? product.images : [product.image];
   const related = allProducts.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
   const wishlisted = isInWishlist(product.id);
+  const productNames = allProducts.map(p => p.name);
 
   const validateSelection = () => {
     if (!selectedSize) { toast.error(t('product.select_size_error')); return false; }
