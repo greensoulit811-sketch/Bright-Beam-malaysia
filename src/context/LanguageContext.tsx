@@ -25,7 +25,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const defaultLang = ((settings as any)?.language || 'en') as Language;
   const [language, setLanguageState] = useState<Language>(() => {
     const stored = localStorage.getItem('visitor_language');
-    return (stored === 'ar' || stored === 'en') ? stored : defaultLang;
+    return (stored === 'bn' || stored === 'en') ? stored : defaultLang;
   });
   const isAdminRoute = location.pathname.startsWith('/admin');
 
@@ -40,22 +40,17 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('visitor_language', lang);
     setLanguageState(lang);
   };
-  // RTL only applies to frontend, never admin
-  const isRTL = language === 'ar' && !isAdminRoute;
+
+  // Bengali and English are both LTR, no RTL needed
+  const isRTL = false;
 
   const t = (key: string): string => {
     return translations[language]?.[key] || translations['en']?.[key] || key;
   };
 
   useEffect(() => {
-    // Only set RTL on frontend pages, admin always stays LTR
-    if (isAdminRoute) {
-      document.documentElement.dir = 'ltr';
-      document.documentElement.lang = 'en';
-    } else {
-      document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-      document.documentElement.lang = language;
-    }
+    document.documentElement.dir = 'ltr';
+    document.documentElement.lang = language;
   }, [language, isAdminRoute]);
 
   return (

@@ -2,19 +2,19 @@ import { Star, ThumbsUp, CheckCircle, Users } from 'lucide-react';
 import { useProductReviews } from '@/hooks/useReviews';
 import { motion } from 'framer-motion';
 
-const staticReviews = [
-  { id: 'static-1', reviewer_name: 'Ahmed K.', rating: 5, review_text: 'Amazing quality! Exactly as described. Fast delivery too. Will definitely order again.', reviewer_image: '' },
-  { id: 'static-2', reviewer_name: 'Sara M.', rating: 5, review_text: 'Best shoes I\'ve bought in Kuwait. Original product, great packaging. Highly recommended!', reviewer_image: '' },
-  { id: 'static-3', reviewer_name: 'Mohammed A.', rating: 4, review_text: 'Very comfortable and stylish. My friends keep asking where I got them. Great store!', reviewer_image: '' },
-  { id: 'static-4', reviewer_name: 'Fatima R.', rating: 5, review_text: 'Perfect fit! The color is exactly like the photos. Customer service was very helpful.', reviewer_image: '' },
-  { id: 'static-5', reviewer_name: 'Omar H.', rating: 5, review_text: 'Third time ordering from here. Never disappointed. 100% same authentic products.', reviewer_image: '' },
-  { id: 'static-6', reviewer_name: 'Nour S.', rating: 4, review_text: 'Love the quality! Arrived faster than expected. Will be a regular customer for sure.', reviewer_image: '' },
-];
+// const staticReviews = [
+//   { id: 'static-1', reviewer_name: 'Ahmed K.', rating: 5, review_text: 'Amazing quality! Exactly as described. Fast delivery too. Will definitely order again.', reviewer_image: '' },
+//   { id: 'static-2', reviewer_name: 'Sara M.', rating: 5, review_text: 'Best shoes I\'ve bought in Kuwait. Original product, great packaging. Highly recommended!', reviewer_image: '' },
+//   { id: 'static-3', reviewer_name: 'Mohammed A.', rating: 4, review_text: 'Very comfortable and stylish. My friends keep asking where I got them. Great store!', reviewer_image: '' },
+//   { id: 'static-4', reviewer_name: 'Fatima R.', rating: 5, review_text: 'Perfect fit! The color is exactly like the photos. Customer service was very helpful.', reviewer_image: '' },
+//   { id: 'static-5', reviewer_name: 'Omar H.', rating: 5, review_text: 'Third time ordering from here. Never disappointed. 100% same authentic products.', reviewer_image: '' },
+//   { id: 'static-6', reviewer_name: 'Nour S.', rating: 4, review_text: 'Love the quality! Arrived faster than expected. Will be a regular customer for sure.', reviewer_image: '' },
+// ];
 
 const ProductReviews = ({ productId }: { productId: string }) => {
   const { data: dbReviews = [] } = useProductReviews(productId);
 
-  const allReviews = [...dbReviews, ...staticReviews.filter(sr => !dbReviews.some(r => r.id === sr.id))];
+  const allReviews = [...dbReviews];
 
   return (
     <section className="mt-16 pt-10 border-t border-border">
