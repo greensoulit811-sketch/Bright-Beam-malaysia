@@ -8,7 +8,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import heroImage from '@/assets/hero-sports.jpg';
+
 import { useState, useEffect, useCallback } from 'react';
 
 import basketballImg from '@/assets/shoe-basketball.jpg';
@@ -76,7 +76,7 @@ const Index = () => {
       <Navbar />
 
       {/* Hero Banner Section */}
-      {heroBanners.length > 0 ? (
+      {heroBanners.length > 0 && (
         <section className="relative w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-screen overflow-hidden">
           <AnimatePresence mode="wait">
             <motion.div key={currentBanner} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }} className="absolute inset-0">
@@ -121,26 +121,6 @@ const Index = () => {
               </div>
             </>
           )}
-        </section>
-      ) : (
-        <section className="relative h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-screen flex items-center overflow-hidden">
-          <div className="absolute inset-0">
-            <img src={heroImage} alt="Athletic running shoes in action" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent md:bg-gradient-to-r md:from-primary/90 md:via-primary/60 md:to-transparent" />
-          </div>
-          <div className="container mx-auto px-4 lg:px-8 relative z-10">
-            <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-2xl">
-              <h1 className="heading-display text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-bold leading-[0.9] mb-6 text-primary-foreground">
-                {t('hero.fuel')}<br /><span className="text-neon text-glow">{t('hero.game')}</span>
-              </h1>
-              <p className="text-primary-foreground/70 font-body text-base md:text-xl mb-8 max-w-lg">
-                {t('hero.subtitle')}
-              </p>
-              <Link to="/shop" className="inline-flex items-center gap-2 bg-neon text-accent-foreground px-6 py-3 md:px-8 md:py-4 font-body text-xs md:text-sm font-bold tracking-widest uppercase hover:bg-neon-glow transition-all duration-300 glow-neon rounded-sm">
-                {t('hero.shop_now')} <ArrowRight className="w-4 h-4" />
-              </Link>
-            </motion.div>
-          </div>
         </section>
       )}
 
