@@ -60,7 +60,7 @@ const CartPage = () => {
                         <span className="w-8 h-8 flex items-center justify-center font-body text-xs font-bold">{item.quantity}</span>
                         <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="w-8 h-8 flex items-center justify-center hover:bg-card transition-colors"><Plus className="w-3 h-3" /></button>
                       </div>
-                      <span className="font-heading font-bold text-neon">{(item.product.price * item.quantity).toFixed(2)} KWD</span>
+                      <span className="font-heading font-bold text-neon">{(item.product.price * item.quantity).toFixed(2)} RM</span>
                     </div>
                   </div>
                 </motion.div>
@@ -70,11 +70,11 @@ const CartPage = () => {
             <div className="bg-card p-8 border border-border rounded-lg h-fit">
               <h2 className="font-heading text-xl font-bold uppercase tracking-wider mb-6 text-foreground">{t('cart.order_summary')}</h2>
               <div className="space-y-3 font-body text-sm border-b border-border pb-6 mb-6">
-                <div className="flex justify-between"><span className="text-muted-foreground">{t('cart.subtotal')}</span><span className="text-foreground">{cartTotal.toFixed(2)} KWD</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">{t('cart.shipping')}</span><span className="text-foreground">{shipping === 0 ? t('cart.free') : `${shipping.toFixed(2)} KWD`}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">{t('cart.subtotal')}</span><span className="text-foreground">{cartTotal.toFixed(2)} RM</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">{t('cart.shipping')}</span><span className="text-foreground">{shipping === 0 ? t('cart.free') : `${shipping.toFixed(2)} RM`}</span></div>
               </div>
               <div className="flex justify-between font-heading text-xl font-bold mb-8 text-foreground">
-                <span>{t('cart.total')}</span><span className="text-neon">{(cartTotal + shipping).toFixed(2)} KWD</span>
+                <span>{t('cart.total')}</span><span className="text-neon">{(cartTotal + shipping).toFixed(2)} RM</span>
               </div>
               <Link to="/checkout" className="w-full block text-center bg-primary text-primary-foreground py-4 font-body text-sm font-bold tracking-wider uppercase hover:bg-primary/90 transition-all duration-300 rounded-md mb-3">
                 {t('cart.checkout')}

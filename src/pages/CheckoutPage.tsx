@@ -89,7 +89,7 @@ const CheckoutPage = () => {
         customer_email: '', customer_phone: form.phone,
         items: orderItems, total, status: 'pending', payment_method: 'cod',
         shipping_address: shippingAddress,
-        notes: `${form.notes}${selectedShipping ? `\nShipping: ${selectedShipping.name} (${shippingCharge === 0 ? 'Free' : shippingCharge + ' KWD'})` : ''}`,
+        notes: `${form.notes}${selectedShipping ? `\nShipping: ${selectedShipping.name} (${shippingCharge === 0 ? 'Free' : shippingCharge + ' RM'})` : ''}`,
       });
       await markLeadCompleted();
       setOrderId(orderNumber);
@@ -173,21 +173,19 @@ const CheckoutPage = () => {
                 <div className="space-y-3">
                   {shippingMethods.map(method => (
                     <label key={method.id}
-                      className={`flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                        selectedShippingId === method.id ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'
-                      }`}>
+                      className={`flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${selectedShippingId === method.id ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'
+                        }`}>
                       <input type="radio" name="shipping" value={method.id} checked={selectedShippingId === method.id}
                         onChange={() => setSelectedShippingId(method.id)} className="sr-only" />
-                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
-                        selectedShippingId === method.id ? 'border-primary' : 'border-muted-foreground'
-                      }`}>
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${selectedShippingId === method.id ? 'border-primary' : 'border-muted-foreground'
+                        }`}>
                         {selectedShippingId === method.id && <div className="w-2 h-2 rounded-full bg-primary" />}
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
                           <p className="font-body text-sm font-bold text-foreground">{method.name}</p>
                           <span className="font-body text-sm font-bold text-primary">
-                            {Number(method.charge) === 0 ? t('cart.free') : `${Number(method.charge).toFixed(3)} KWD`}
+                            {Number(method.charge) === 0 ? t('cart.free') : `${Number(method.charge).toFixed(2)} RM`}
                           </span>
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
@@ -234,20 +232,20 @@ const CheckoutPage = () => {
                       <div className="flex-1 min-w-0">
                         <p className="font-body text-xs font-bold truncate text-foreground">{item.product.name}</p>
                         <p className="font-body text-xs text-muted-foreground">{item.color ? `${item.color} · ` : ''}x{item.quantity}</p>
-                        <p className="font-body text-xs font-bold text-primary">{(item.product.price * item.quantity).toFixed(2)} KWD</p>
+                        <p className="font-body text-xs font-bold text-primary">{(item.product.price * item.quantity).toFixed(2)} RM</p>
                       </div>
                     </div>
                   ))}
                 </div>
                 <div className="space-y-2 font-body text-sm border-t border-border pt-4 mb-4">
-                  <div className="flex justify-between"><span className="text-muted-foreground">{t('cart.subtotal')}</span><span>{cartTotal.toFixed(2)} KWD</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">{t('cart.subtotal')}</span><span>{cartTotal.toFixed(2)} RM</span></div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('cart.shipping')}{selectedShipping ? ` (${selectedShipping.name})` : ''}</span>
-                    <span>{shippingCharge === 0 ? t('cart.free') : `${shippingCharge.toFixed(3)} KWD`}</span>
+                    <span>{shippingCharge === 0 ? t('cart.free') : `${shippingCharge.toFixed(2)} RM`}</span>
                   </div>
                 </div>
                 <div className="flex justify-between font-heading text-xl font-bold border-t border-border pt-4 mb-6 text-foreground">
-                  <span>{t('cart.total')}</span><span className="text-primary">{total.toFixed(3)} KWD</span>
+                  <span>{t('cart.total')}</span><span className="text-primary">{total.toFixed(2)} RM</span>
                 </div>
                 <button type="submit" disabled={isSubmitting}
                   className="w-full bg-primary text-primary-foreground py-4 font-body text-sm font-bold tracking-wider uppercase hover:bg-primary/90 transition-all duration-300 rounded-md disabled:opacity-50">

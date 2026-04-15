@@ -158,10 +158,10 @@ const ProductPage = () => {
               <CountdownTimer />
 
               <div className="flex items-center gap-3 mb-8">
-                <span className="font-heading text-4xl font-bold text-neon">{displayPrice} BDT</span>
+                <span className="font-heading text-4xl font-bold text-neon">{displayPrice} RM</span>
                 {product.originalPrice && (
                   <>
-                    <span className="font-body text-lg text-muted-foreground line-through">{product.originalPrice} BDT</span>
+                    <span className="font-body text-lg text-muted-foreground line-through">{product.originalPrice} RM</span>
                     <span className="bg-destructive text-destructive-foreground px-2 py-1 text-xs font-body font-bold tracking-wider uppercase rounded-sm">
                       {Math.round((1 - displayPrice / product.originalPrice) * 100)}% OFF
                     </span>
@@ -217,7 +217,7 @@ const ProductPage = () => {
               </button>
 
               <a
-                href={`https://wa.me/96590993896?text=${encodeURIComponent(`Hi! I'd like to order:\n\nProduct: ${product.name}\nBrand: ${product.brand}\nColor: ${selectedColor || 'Not selected'}\nQuantity: ${quantity}\nPrice: ${displayPrice} KWD\n\nPlease confirm my order. Thank you!`)}`}
+                href={`https://wa.me/96590993896?text=${encodeURIComponent(`Hi! I'd like to order:\n\nProduct: ${product.name}\nBrand: ${product.brand}\nColor: ${selectedColor || 'Not selected'}\nQuantity: ${quantity}\nPrice: ${displayPrice} RM\n\nPlease confirm my order. Thank you!`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full h-12 bg-[#25D366] text-white font-body text-sm font-bold tracking-wider uppercase hover:bg-[#20bd5a] transition-all duration-300 rounded-sm flex items-center justify-center gap-2 mb-8"

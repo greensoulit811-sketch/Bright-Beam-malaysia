@@ -51,9 +51,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <h3 className="font-heading text-base font-medium uppercase tracking-wide mb-1 text-foreground h-6 md:h-12 line-clamp-1 md:line-clamp-2">{product.name}</h3>
         <p className="font-body text-xs text-muted-foreground mb-1">{product.brand}</p>
         <div className="flex items-center gap-2 font-body text-sm">
-          <span className="font-bold text-neon">{product.price} BDT</span>
+          <span className="font-bold text-neon">{product.price} RM</span>
           {product.originalPrice && (
-            <span className="text-muted-foreground line-through text-xs">{product.originalPrice} BDT</span>
+            <span className="text-muted-foreground line-through text-xs">{product.originalPrice} RM</span>
           )}
         </div>
       </Link>
