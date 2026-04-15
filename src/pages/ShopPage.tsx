@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search, SlidersHorizontal } from 'lucide-react';
-import { brands } from '@/data/products';
 import { useActiveProducts } from '@/hooks/useDatabase';
 import { useActiveCategories } from '@/hooks/useCategories';
 import { useLanguage } from '@/context/LanguageContext';
@@ -18,19 +17,24 @@ const ShopPage = () => {
   const categoryFilter = searchParams.get('category') || '';
   const [search, setSearch] = useState('');
   const [brandFilter, setBrandFilter] = useState('');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [showFilters, setShowFilters] = useState(false);
 
   const products = useMemo(() => {
     return dbProducts.map(p => ({
       id: p.id, name: p.name, brand: p.brand, price: Number(p.price),
       originalPrice: p.original_price ? Number(p.original_price) : undefined,
-      category: p.category as any, image: p.image, images: p.images || [p.image],
-      sizes: p.sizes || [], colors: p.colors || [], description: p.description || '',
+      category: p.category as any, image: p.image, images: p.images || [p.image], colors: p.colors || [],
+      description: p.description || '',
       rating: Number(p.rating) || 4.5, reviews: p.reviews || 0,
       isTrending: p.is_trending || false, isNew: p.is_new || false,
     }));
   }, [dbProducts]);
+
+  const brands = useMemo(() => {
+    const brandSet = new Set(products.map(p => p.brand).filter(Boolean));
+    return Array.from(brandSet).sort();
+  }, [products]);
 
   const filtered = useMemo(() => {
     return products.filter(p => {

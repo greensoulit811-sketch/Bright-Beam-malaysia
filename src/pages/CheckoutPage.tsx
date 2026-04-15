@@ -57,7 +57,7 @@ const CheckoutPage = () => {
       address: form.address,
       area: '', notes: form.notes,
       cartItems: items.map(item => ({
-        productId: item.product.id, productName: item.product.name, size: item.size, color: item.color,
+        productId: item.product.id, productName: item.product.name, color: item.color,
         quantity: item.quantity, price: item.product.price,
       })),
       cartTotal: total,
@@ -77,7 +77,7 @@ const CheckoutPage = () => {
 
     setIsSubmitting(true);
     const orderItems = items.map(item => ({
-      productId: item.product.id, productName: item.product.name, size: item.size, color: item.color,
+      productId: item.product.id, productName: item.product.name, color: item.color,
       quantity: item.quantity, price: item.product.price,
     }));
     const shippingAddress = `${form.address}, Kuwait`;
@@ -233,7 +233,7 @@ const CheckoutPage = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-body text-xs font-bold truncate text-foreground">{item.product.name}</p>
-                        <p className="font-body text-xs text-muted-foreground">{t('size')} {item.size} · {item.color} · x{item.quantity}</p>
+                        <p className="font-body text-xs text-muted-foreground">{item.color ? `${item.color} · ` : ''}x{item.quantity}</p>
                         <p className="font-body text-xs font-bold text-primary">{(item.product.price * item.quantity).toFixed(2)} KWD</p>
                       </div>
                     </div>

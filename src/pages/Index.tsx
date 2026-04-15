@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Star, Zap, Truck, RefreshCw, Shield, ChevronRight, ChevronLeft } from 'lucide-react';
-import { brands } from '@/data/products';
 import { useActiveProducts, useActiveBanners } from '@/hooks/useDatabase';
 import { useActiveCategories } from '@/hooks/useCategories';
 import { useLanguage } from '@/context/LanguageContext';
@@ -9,7 +8,7 @@ import ProductCard from '@/components/ProductCard';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
 import basketballImg from '@/assets/shoe-basketball.jpg';
 import runnerImg from '@/assets/shoe-runner-1.jpg';
@@ -39,11 +38,17 @@ const Index = () => {
   const products = dbProducts.map(p => ({
     id: p.id, name: p.name, brand: p.brand, price: Number(p.price),
     originalPrice: p.original_price ? Number(p.original_price) : undefined,
-    category: p.category as any, image: p.image, images: p.images || [p.image],
-    sizes: p.sizes || [], colors: p.colors || [], description: p.description || '',
+    category: p.category as any, image: p.image, images: p.images || [p.image], colors: p.colors || [],
+    description: p.description || '',
     rating: Number(p.rating) || 4.5, reviews: p.reviews || 0,
     isTrending: p.is_trending || false, isNew: p.is_new || false,
   }));
+
+  const brands = useMemo(() => {
+    const brandSet = new Set(products.map(p => p.brand).filter(Boolean));
+    return Array.from(brandSet).sort();
+  }, [products]);
+
   const trendingProducts = products.filter(p => p.isTrending);
   const newProducts = products.filter(p => p.isNew);
   const [email, setEmail] = useState('');

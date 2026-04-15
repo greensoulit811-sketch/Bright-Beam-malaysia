@@ -23,7 +23,7 @@ const ProductPage = () => {
   const { fbTrackViewContent, fbTrackAddToCart } = useFacebookTracking();
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const [selectedSize, setSelectedSize] = useState<number | null>(null);
+
   const [selectedColor, setSelectedColor] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -32,25 +32,24 @@ const ProductPage = () => {
     id: p.id, name: p.name, brand: p.brand, price: Number(p.price),
     originalPrice: p.original_price ? Number(p.original_price) : undefined,
     category: p.category as any, image: p.image,
-    images: p.images || [p.image], sizes: p.sizes || [], colors: p.colors || [],
+    images: p.images || [p.image], colors: p.colors || [],
     description: p.description || '', rating: Number(p.rating) || 4.5,
     reviews: p.reviews || 0, isTrending: p.is_trending || false, isNew: p.is_new || false,
   })), [dbProducts]);
 
   const product = allProducts.find(p => p.id === id);
 
-  // Auto-select when only one size or color option
+  // Auto-select when only one color option
   useEffect(() => {
     if (product) {
-      if (product.sizes.length === 1) setSelectedSize(product.sizes[0]);
       if (product.colors.length === 1) setSelectedColor(product.colors[0]);
     }
   }, [product?.id]);
 
   const selectedVariation = useMemo(() => {
-    if (!selectedSize || !selectedColor || variations.length === 0) return null;
-    return variations.find(v => v.size === String(selectedSize) && v.color === selectedColor) || null;
-  }, [selectedSize, selectedColor, variations]);
+    if (!selectedColor || variations.length === 0) return null;
+    return variations.find(v => v.color === selectedColor) || null;
+  }, [selectedColor, variations]);
 
   const displayPrice = selectedVariation?.price ? Number(selectedVariation.price) : product?.price || 0;
   const variationStock = selectedVariation ? selectedVariation.stock : null;
@@ -91,8 +90,7 @@ const ProductPage = () => {
   const productNames = allProducts.map(p => p.name);
 
   const validateSelection = () => {
-    if (!selectedSize) { toast.error(t('product.select_size_error')); return false; }
-    if (!selectedColor) { toast.error(t('product.select_color_error')); return false; }
+    if (product.colors && product.colors.length > 0 && !selectedColor) { toast.error(t('product.select_color_error')); return false; }
     if (variationStock !== null && variationStock <= 0) { toast.error(t('product.out_of_stock_error')); return false; }
     return true;
   };
@@ -100,7 +98,7 @@ const ProductPage = () => {
   const handleAddToCart = () => {
     if (!validateSelection()) return;
     const cartProduct = { ...product, price: displayPrice };
-    addToCart(cartProduct, selectedSize, selectedColor);
+    addToCart(cartProduct, selectedColor);
     fbTrackAddToCart({
       content_ids: [product.id], content_name: product.name,
       value: displayPrice * quantity, num_items: quantity,
@@ -111,7 +109,7 @@ const ProductPage = () => {
   const handleBuyNow = () => {
     if (!validateSelection()) return;
     const cartProduct = { ...product, price: displayPrice };
-    addToCart(cartProduct, selectedSize, selectedColor);
+    addToCart(cartProduct, selectedColor);
     navigate('/checkout');
   };
 
@@ -179,29 +177,21 @@ const ProductPage = () => {
 
               <p className="font-body text-muted-foreground leading-relaxed mb-8">{product.description}</p>
 
-              <div className="mb-6">
-                <h3 className="font-heading font-bold uppercase tracking-wider text-sm mb-3 text-foreground">{t('product.select_size')}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {product.sizes.map(size => (
-                    <button key={size} onClick={() => setSelectedSize(size)}
-                      className={`w-12 h-12 border font-body text-sm font-semibold rounded-sm transition-all ${selectedSize === size ? 'border-neon bg-neon text-accent-foreground glow-neon' : 'border-border text-foreground hover:border-neon/50'}`}>
-                      {size}
-                    </button>
-                  ))}
-                </div>
-              </div>
 
-              <div className="mb-8">
-                <h3 className="font-heading font-bold uppercase tracking-wider text-sm mb-3 text-foreground">{t('product.color')}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {product.colors.map(color => (
-                    <button key={color} onClick={() => setSelectedColor(color)}
-                      className={`px-4 py-2 border font-body text-sm font-medium rounded-sm transition-all ${selectedColor === color ? 'border-neon bg-neon text-accent-foreground' : 'border-border text-foreground hover:border-neon/50'}`}>
-                      {color}
-                    </button>
-                  ))}
+
+              {product.colors && product.colors.length > 0 && (
+                <div className="mb-8">
+                  <h3 className="font-heading font-bold uppercase tracking-wider text-sm mb-3 text-foreground">{t('product.color')}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {product.colors.map(color => (
+                      <button key={color} onClick={() => setSelectedColor(color)}
+                        className={`px-4 py-2 border font-body text-sm font-medium rounded-sm transition-all ${selectedColor === color ? 'border-neon bg-neon text-accent-foreground' : 'border-border text-foreground hover:border-neon/50'}`}>
+                        {color}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="flex items-center gap-4 mb-8">
                 <div className="flex items-center border border-border rounded-sm">
@@ -227,7 +217,7 @@ const ProductPage = () => {
               </button>
 
               <a
-                href={`https://wa.me/96590993896?text=${encodeURIComponent(`Hi! I'd like to order:\n\nProduct: ${product.name}\nBrand: ${product.brand}\nSize: ${selectedSize || 'Not selected'}\nColor: ${selectedColor || 'Not selected'}\nQuantity: ${quantity}\nPrice: ${displayPrice} KWD\n\nPlease confirm my order. Thank you!`)}`}
+                href={`https://wa.me/96590993896?text=${encodeURIComponent(`Hi! I'd like to order:\n\nProduct: ${product.name}\nBrand: ${product.brand}\nColor: ${selectedColor || 'Not selected'}\nQuantity: ${quantity}\nPrice: ${displayPrice} KWD\n\nPlease confirm my order. Thank you!`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full h-12 bg-[#25D366] text-white font-body text-sm font-bold tracking-wider uppercase hover:bg-[#20bd5a] transition-all duration-300 rounded-sm flex items-center justify-center gap-2 mb-8"
