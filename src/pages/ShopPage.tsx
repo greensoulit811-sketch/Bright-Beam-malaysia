@@ -38,7 +38,7 @@ const ShopPage = () => {
 
   const filtered = useMemo(() => {
     return products.filter(p => {
-      if (categoryFilter && p.category !== categoryFilter) return false;
+      if (categoryFilter && p.category?.toLowerCase() !== categoryFilter.toLowerCase()) return false;
       if (brandFilter && p.brand !== brandFilter) return false;
       if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !p.brand.toLowerCase().includes(search.toLowerCase())) return false;
       if (p.price < priceRange[0] || p.price > priceRange[1]) return false;

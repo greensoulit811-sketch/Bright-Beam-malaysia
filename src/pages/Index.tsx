@@ -74,7 +74,7 @@ const Index = () => {
     imageUrl || fallbackImages[slug] || runnerImg;
 
   const getCategoryCount = (slug: string) =>
-    products.filter(p => p.category === slug).length;
+    products.filter(p => p.category?.toLowerCase() === slug.toLowerCase()).length;
 
   return (
     <div className="min-h-screen bg-background">
