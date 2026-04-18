@@ -88,78 +88,7 @@ const BecomeDealerPage = () => {
       <Navbar />
       
       {/* Spacer for Fixed Navbar */}
-      <div className="h-32 lg:h-36"></div>
-
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 lg:px-12 py-10 lg:py-20">
-        <div className="flex flex-col lg:flex-row items-center gap-12">
-          <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex-1 space-y-6"
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-bold uppercase tracking-wider">
-              <span className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse"></span>
-              Dealer Program
-            </div>
-            <h1 className="text-4xl lg:text-7xl font-black text-[#0A2342] leading-tight">
-              Become A <br /><span className="text-blue-600">Dealer</span>
-            </h1>
-            <p className="text-gray-500 text-lg lg:text-xl max-w-lg leading-relaxed">
-              Apply now to join our dealer program and gain access to exclusive benefits and leading tech brands.
-            </p>
-            <button className="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-200 transition-all active:scale-95 group">
-              Apply Now <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </motion.div>
-
-          {/* Hero Illustration Placeholder */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="flex-1 w-full max-w-2xl"
-          >
-            <div className="relative bg-blue-50/50 rounded-[40px] p-6 lg:p-12 border border-blue-100/50">
-               <div className="bg-white rounded-3xl shadow-2xl p-6 lg:p-8 space-y-6 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-4">
-                     <div className="bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                        Dealer Discount <CheckCircle2 className="w-3 h-3" />
-                     </div>
-                  </div>
-                  <div className="flex gap-4">
-                     <div className="w-12 h-2.5 bg-gray-100 rounded-full"></div>
-                     <div className="w-20 h-2.5 bg-blue-100 rounded-full"></div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                     <div className="p-4 bg-gray-50 rounded-2xl space-y-2">
-                        <span className="text-[10px] text-gray-400 font-bold uppercase">Orders</span>
-                        <p className="text-2xl font-black text-[#0A2342]">248</p>
-                     </div>
-                     <div className="p-4 bg-gray-50 rounded-2xl space-y-2">
-                        <span className="text-[10px] text-gray-400 font-bold uppercase">Savings</span>
-                        <p className="text-2xl font-black text-blue-600">18%</p>
-                     </div>
-                  </div>
-                  <div className="p-4 bg-green-50 border border-green-100 rounded-2xl flex items-center justify-between">
-                     <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                        <span className="text-sm font-bold text-green-700">ACTIVE STATUS</span>
-                     </div>
-                     <div className="w-12 h-6 bg-white rounded-md shadow-sm"></div>
-                  </div>
-                  <div className="space-y-2">
-                     {[1,2,3].map(i => (
-                        <div key={i} className="flex items-center justify-between p-3 border-b border-gray-50 last:border-0 opacity-40">
-                           <div className="w-24 h-2 bg-gray-100 rounded-full"></div>
-                           <div className="w-12 h-4 bg-green-100 rounded-md"></div>
-                        </div>
-                     ))}
-                  </div>
-               </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      <div className="h-20 lg:h-36"></div>
 
       {/* Benefits Section */}
       <section className="bg-gray-50/50 py-20">
