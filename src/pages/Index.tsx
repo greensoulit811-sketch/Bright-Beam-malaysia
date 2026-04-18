@@ -23,11 +23,11 @@ const fallbackImages: Record<string, string> = {
   training: trainingImg, lifestyle: lifestyleImg, trail: trailImg, women: womensImg,
 };
 
-const reviews = [
-  { name: 'Khalid A.', text: 'Authentic products, fast shipping. Best sneaker store in Kuwait!', rating: 5 },
-  { name: 'Fatima R.', text: 'Got my Air Jordans in 2 days. Perfect condition, 100% legit.', rating: 5 },
-  { name: 'Mohammed S.', text: 'Great selection of brands. The Ultraboost are incredibly comfortable.', rating: 5 },
-];
+// const reviews = [
+//   { name: 'Khalid A.', text: 'Authentic products, fast shipping. Best sneaker store in Kuwait!', rating: 5 },
+//   { name: 'Fatima R.', text: 'Got my Air Jordans in 2 days. Perfect condition, 100% legit.', rating: 5 },
+//   { name: 'Mohammed S.', text: 'Great selection of brands. The Ultraboost are incredibly comfortable.', rating: 5 },
+// ];
 
 const Index = () => {
   const { data: dbProducts = [] } = useActiveProducts();
@@ -74,7 +74,7 @@ const Index = () => {
     imageUrl || fallbackImages[slug] || runnerImg;
 
   const getCategoryCount = (slug: string) =>
-    products.filter(p => p.category?.toLowerCase() === slug.toLowerCase()).length;
+    products.filter(p => p.category?.toLowerCase().trim() === slug.toLowerCase().trim()).length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -270,13 +270,13 @@ const Index = () => {
       </section>
 
       {/* Reviews */}
-      <section className="py-20">
+      {/* <section className="py-20">
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
             <span className="text-neon font-body text-sm font-bold tracking-[0.3em] uppercase">{t('reviews.label')}</span>
             <h2 className="heading-display text-4xl md:text-6xl font-bold mt-2 text-foreground">{t('reviews.title')}</h2>
-          </motion.div>
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          </motion.div> */}
+          {/* <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {reviews.map((review, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                 className="bg-card p-8 border border-border rounded-lg hover:border-neon/20 hover:shadow-md transition-all">
@@ -289,9 +289,9 @@ const Index = () => {
                 <p className="font-heading font-bold text-sm uppercase tracking-wider text-foreground">{review.name}</p>
               </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
+          </div> */}
+        {/* </div>
+      </section> */}
 
       {/* Newsletter */}
       <section className="py-20 bg-primary text-primary-foreground">

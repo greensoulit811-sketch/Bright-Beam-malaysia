@@ -229,10 +229,14 @@ export const useUpdateSettings = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (updates: Partial<DbSettings>) => {
-      const { data: existing } = await supabase.from('site_settings').select('id').limit(1).single();
-      if (!existing) throw new Error('No settings row');
-      const { error } = await supabase.from('site_settings').update(updates).eq('id', existing.id);
-      if (error) throw error;
+      const { data: existing } = await supabase.from('site_settings').select('id').limit(1).maybeSingle();
+      if (!existing) {
+        const { error } = await supabase.from('site_settings').insert(updates as any);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('site_settings').update(updates).eq('id', existing.id);
+        if (error) throw error;
+      }
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['settings'] }),
   });

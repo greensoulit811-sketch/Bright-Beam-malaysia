@@ -64,10 +64,14 @@ const MarketingTrackingPage = () => {
 
     setSaving(true);
     try {
-      const { data: existing } = await supabase.from('site_settings').select('id').limit(1).single();
-      if (!existing) throw new Error('No settings row');
-      const { error } = await supabase.from('site_settings').update(form as any).eq('id', existing.id);
-      if (error) throw error;
+      const { data: existing } = await supabase.from('site_settings').select('id').limit(1).maybeSingle();
+      if (!existing) {
+        const { error } = await supabase.from('site_settings').insert(form as any);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('site_settings').update(form as any).eq('id', existing.id);
+        if (error) throw error;
+      }
       await queryClient.invalidateQueries({ queryKey: ['tracking-settings'] });
       toast.success('Marketing tracking settings saved!');
     } catch {

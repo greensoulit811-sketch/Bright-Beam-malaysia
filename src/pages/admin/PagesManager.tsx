@@ -92,7 +92,7 @@ const PagesManager = () => {
               <button onClick={() => setShowForm(false)}><X className="w-5 h-5 text-muted-foreground" /></button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Page Title</label>
                   <input value={form.page_title} onChange={e => setForm({ ...form, page_title: e.target.value })} required
@@ -110,7 +110,7 @@ const PagesManager = () => {
                   className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary resize-none" />
                 <p className="font-body text-xs text-muted-foreground mt-1">Use new lines to create paragraphs</p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Meta Title</label>
                   <input value={form.meta_title} onChange={e => setForm({ ...form, meta_title: e.target.value })}

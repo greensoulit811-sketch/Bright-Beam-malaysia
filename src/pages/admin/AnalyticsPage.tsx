@@ -92,7 +92,7 @@ const AnalyticsPage = () => {
                   <p className="font-body text-xs text-muted-foreground">{p.sales} sold</p>
                 </div>
               </div>
-              <span className="font-body text-sm font-bold text-primary">{p.revenue} KWD</span>
+              <span className="font-body text-sm font-bold text-primary">{p.revenue} RM</span>
             </div>
           ))}
         </div>

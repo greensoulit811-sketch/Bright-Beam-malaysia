@@ -85,7 +85,7 @@ const ProductPage = () => {
   }
 
   const galleryImages = product.images.length > 0 ? product.images : [product.image];
-  const related = allProducts.filter(p => p.category?.toLowerCase() === product.category?.toLowerCase() && p.id !== product.id).slice(0, 4);
+  const related = allProducts.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
   const wishlisted = isInWishlist(product.id);
   const productNames = allProducts.map(p => p.name);
 
@@ -217,7 +217,7 @@ const ProductPage = () => {
               </button>
 
               <a
-                href={`https://wa.me/96590993896?text=${encodeURIComponent(`Hi! I'd like to order:\n\nProduct: ${product.name}\nBrand: ${product.brand}\nColor: ${selectedColor || 'Not selected'}\nQuantity: ${quantity}\nPrice: ${displayPrice} RM\n\nPlease confirm my order. Thank you!`)}`}
+                href={`https://wa.me/+60193222058?text=${encodeURIComponent(`Hi! I'd like to order:\n\nProduct: ${product.name}\nBrand: ${product.brand}\nColor: ${selectedColor || 'Not selected'}\nQuantity: ${quantity}\nPrice: ${displayPrice} RM\n\nPlease confirm my order. Thank you!`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full h-12 bg-[#25D366] text-white font-body text-sm font-bold tracking-wider uppercase hover:bg-[#20bd5a] transition-all duration-300 rounded-sm flex items-center justify-center gap-2 mb-8"

@@ -291,7 +291,7 @@ const CategoriesManager = () => {
                   <input ref={imageRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Sort Order</label>
                   <Input type="number" value={form.sort_order} onChange={e => setForm({ ...form, sort_order: +e.target.value })} />

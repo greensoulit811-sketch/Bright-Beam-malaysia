@@ -90,7 +90,7 @@ const CouponsManager = () => {
                 <input value={form.code} onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })} required
                   className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary uppercase" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Type</label>
                   <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}
@@ -105,7 +105,7 @@ const CouponsManager = () => {
                     className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Min Order (KWD)</label>
                   <input type="number" value={form.min_order} onChange={e => setForm({ ...form, min_order: +e.target.value })}

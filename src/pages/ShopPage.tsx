@@ -17,7 +17,7 @@ const ShopPage = () => {
   const categoryFilter = searchParams.get('category') || '';
   const [search, setSearch] = useState('');
   const [brandFilter, setBrandFilter] = useState('');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000000]);
   const [showFilters, setShowFilters] = useState(false);
 
   const products = useMemo(() => {
@@ -38,9 +38,9 @@ const ShopPage = () => {
 
   const filtered = useMemo(() => {
     return products.filter(p => {
-      if (categoryFilter && p.category?.toLowerCase() !== categoryFilter.toLowerCase()) return false;
+      if (categoryFilter && p.category?.toLowerCase().trim() !== categoryFilter.toLowerCase().trim()) return false;
       if (brandFilter && p.brand !== brandFilter) return false;
-      if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !p.brand.toLowerCase().includes(search.toLowerCase())) return false;
+      if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !(p.brand || '').toLowerCase().includes(search.toLowerCase())) return false;
       if (p.price < priceRange[0] || p.price > priceRange[1]) return false;
       return true;
     });

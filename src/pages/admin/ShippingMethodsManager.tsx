@@ -123,7 +123,7 @@ const ShippingMethodsManager = () => {
                 <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">Area / Zone</label>
                 <Input value={form.area_zone} onChange={e => setForm(p => ({ ...p, area_zone: e.target.value }))} placeholder="All Kuwait" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">Charge (KWD)</label>
                   <Input type="number" step="0.001" min="0" value={form.charge} onChange={e => setForm(p => ({ ...p, charge: Number(e.target.value) }))} />

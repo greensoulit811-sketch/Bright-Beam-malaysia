@@ -205,7 +205,7 @@ const CheckoutLeadsManager = () => {
                 {viewingLead.contacted && <span className="text-xs font-body text-green-600 font-semibold">✓ Contacted</span>}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <p className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Name</p>
                   <p className="font-body text-sm font-semibold text-foreground">{viewingLead.customer_name || '—'}</p>

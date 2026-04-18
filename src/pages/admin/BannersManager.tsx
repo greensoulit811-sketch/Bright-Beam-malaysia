@@ -95,7 +95,7 @@ const BannersManager = () => {
                 )}
                 <p className="font-body text-xs text-muted-foreground mt-1">Use a high-quality wide image for best results on all screen sizes</p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Link URL</label>
                   <input value={form.link_url} onChange={e => setForm({ ...form, link_url: e.target.value })} className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />

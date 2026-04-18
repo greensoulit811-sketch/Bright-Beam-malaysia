@@ -124,12 +124,14 @@ const OrdersManager = () => {
                   {items.map((item: any, i: number) => (
                     <div key={i} className="flex justify-between font-body text-sm py-1 text-foreground">
                       <span>{item.productName} (Size {item.size}, {item.color}) x{item.quantity}</span>
-                      <span className="font-semibold">{item.price * item.quantity} KWD</span>
+                      <span className="font-semibold">{item.price * item.quantity} RM</span>
                     </div>
                   ))}
+                </div>
+                <div>
                   <div className="flex justify-between font-heading text-base font-bold mt-2 pt-2 border-t border-border text-foreground">
                     <span>Total</span>
-                    <span className="text-primary">{Number(order.total)} KWD</span>
+                    <span className="text-primary">{Number(order.total)} RM</span>
                   </div>
                 </div>
               </div>
