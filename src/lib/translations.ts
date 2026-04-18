@@ -7,15 +7,15 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.shop': 'Shop',
 
     // Hero
-    'hero.fuel': 'FUEL YOUR',
-    'hero.game': 'GAME',
-    'hero.subtitle': 'Authentic Nike, Adidas, Puma & more. Delivered to your door in Malaysia.',
-    'hero.shop_now': 'Shop Now',
+    'hero.fuel': 'READY FOR',
+    'hero.game': 'SUCCESS',
+    'hero.subtitle': 'Authorized ASUS, HP, Dell, Lenovo & more. Fast delivery across Malaysia.',
+    'hero.shop_now': 'Upgrade Now',
 
     // Categories
-    'categories.browse': 'Browse',
-    'categories.title': 'Shop by Sport',
-    'categories.all': 'All Categories',
+    'categories.browse': 'Search',
+    'categories.title': 'Shop by Tech',
+    'categories.all': 'All Devices',
     'categories.products': 'Products',
 
     // Trending
@@ -28,32 +28,32 @@ export const translations: Record<Language, Record<string, string>> = {
     'new.title': 'New Arrivals',
 
     // Why Choose Us
-    'why.label': 'The SRK Collection Difference',
-    'why.title': 'Why Athletes Choose Us',
-    'why.authentic': '100% Authentic',
-    'why.authentic_desc': 'Every pair verified genuine. We source directly from brands.',
-    'why.performance': 'Performance Gear',
-    'why.performance_desc': 'Latest tech from Nike, Adidas, Puma & top sport brands.',
+    'why.label': 'The Bright Beam Difference',
+    'why.title': 'Why Tech Lovers Choose Us',
+    'why.authentic': '100% Genuine',
+    'why.authentic_desc': 'Every machine verified original. Directly from authorized distributors.',
+    'why.performance': 'High Performance',
+    'why.performance_desc': 'Latest processors from Intel, AMD & NVIDIA graphics.',
     'why.delivery': 'Fast Delivery',
     'why.delivery_desc': 'Express delivery across Malaysia. Same-day in Kuala Lumpur.',
     'why.returns': 'Easy Returns',
     'why.returns_desc': '30-day hassle-free returns. No questions asked.',
 
     // Reviews
-    'reviews.label': 'Reviews',
-    'reviews.title': 'What Athletes Say',
+    'reviews.label': 'Ratings',
+    'reviews.title': 'What Customers Say',
 
     // Newsletter
-    'newsletter.label': 'Stay In The Game',
-    'newsletter.title': 'Get Exclusive Drops',
-    'newsletter.subtitle': 'Early access to new releases, exclusive deals, and athlete updates.',
+    'newsletter.label': 'Stay Updated',
+    'newsletter.title': 'Get Tech Deals',
+    'newsletter.subtitle': 'Early access to new releases, flash sales, and tech updates.',
     'newsletter.placeholder': 'Enter your email',
     'newsletter.subscribe': 'Subscribe',
 
     // Shop Page
     'shop.collection': 'Collection',
     'shop.all_products': 'All Products',
-    'shop.search': 'Search shoes, brands...',
+    'shop.search': 'Search laptops, brands...',
     'shop.filters': 'Filters',
     'shop.categories': 'Categories',
     'shop.brands': 'Brands',
@@ -72,7 +72,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.color': 'Color',
     'product.add_to_cart': 'Add to Cart',
     'product.buy_now': 'Buy Now',
-    'product.authentic': '100% Authentic - Verified by SRK Collection',
+    'product.authentic': '100% Authentic - Verified by Bright Beam',
     'product.free_delivery': 'Free delivery across Malaysia on orders over RM 150',
     'product.return_policy': '30-day easy return policy',
     'product.cod': 'Cash on Delivery available',
@@ -87,7 +87,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Cart Page
     'cart.title': 'Your Cart',
     'cart.empty': 'Cart is Empty',
-    'cart.empty_subtitle': 'Time to gear up',
+    'cart.empty_subtitle': 'Time to upgrade your tech',
     'cart.order_summary': 'Order Summary',
     'cart.subtotal': 'Subtotal',
     'cart.shipping': 'Shipping',
@@ -128,7 +128,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Wishlist
     'wishlist.title': 'Wishlist',
     'wishlist.empty': 'No Saved Items',
-    'wishlist.empty_subtitle': 'Save your favorite kicks here',
+    'wishlist.empty_subtitle': 'Save your favorite tech here',
     'wishlist.browse': 'Browse Collection',
 
     // Footer
@@ -156,12 +156,12 @@ export const translations: Record<Language, Record<string, string>> = {
     // Hero
     'hero.fuel': 'আপনার',
     'hero.game': 'গেম চালান',
-    'hero.subtitle': 'অরিজিনাল নাইকি, অ্যাডিডাস, পুমা এবং আরও অনেক কিছু। আপনার দরজায় ডেলিভারি।',
+    'hero.subtitle': 'অরিজিনাল ASUS, HP, Dell, Lenovo এবং আরও অনেক কিছু। আপনার দরজায় ডেলিভারি।',
     'hero.shop_now': 'এখনই কিনুন',
 
     // Categories
     'categories.browse': 'ব্রাউজ করুন',
-    'categories.title': 'স্পোর্ট অনুযায়ী কিনুন',
+    'categories.title': 'ডিভাইস অনুযায়ী কিনুন',
     'categories.all': 'সব ক্যাটাগরি',
     'categories.products': 'পণ্য',
 
@@ -175,12 +175,12 @@ export const translations: Record<Language, Record<string, string>> = {
     'new.title': 'নতুন পণ্য',
 
     // Why Choose Us
-    'why.label': 'SRK Collection এর বিশেষত্ব',
+    'why.label': 'Bright Beam এর বিশেষত্ব',
     'why.title': 'কেন আমাদের বেছে নেবেন',
     'why.authentic': '১০০% অরিজিনাল',
-    'why.authentic_desc': 'প্রতিটি পেয়ার যাচাই করা আসল। আমরা সরাসরি ব্র্যান্ড থেকে আনি।',
-    'why.performance': 'পারফরম্যান্স গিয়ার',
-    'why.performance_desc': 'নাইকি, অ্যাডিডাস, পুমা ও শীর্ষ ব্র্যান্ডের সর্বশেষ প্রযুক্তি।',
+    'why.authentic_desc': 'প্রতিটি ল্যাপটপ যাচাই করা আসল। সরাসরি অথোরাইজড সোর্স থেকে আনি।',
+    'why.performance': 'হাই পারফরম্যান্স',
+    'why.performance_desc': 'Intel, AMD ও NVIDIA-এর সর্বশেষ প্রযুক্তির প্রসেসর ও গ্রাফিক্স।',
     'why.delivery': 'দ্রুত ডেলিভারি',
     'why.delivery_desc': 'সারা দেশে এক্সপ্রেস ডেলিভারি। একই দিনে ডেলিভারি সম্ভব।',
     'why.returns': 'সহজ রিটার্ন',
@@ -200,7 +200,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Shop Page
     'shop.collection': 'কালেকশন',
     'shop.all_products': 'সব পণ্য',
-    'shop.search': 'জুতা, ব্র্যান্ড খুঁজুন...',
+    'shop.search': 'ল্যাপটপ, ব্র্যান্ড খুঁজুন...',
     'shop.filters': 'ফিল্টার',
     'shop.categories': 'ক্যাটাগরি',
     'shop.brands': 'ব্র্যান্ড',
@@ -219,7 +219,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.color': 'রঙ',
     'product.add_to_cart': 'কার্টে যোগ করুন',
     'product.buy_now': 'অর্ডার করুন',
-    'product.authentic': '১০০% অরিজিনাল - SRK Collection যাচাইকৃত',
+    'product.authentic': '১০০% অরিজিনাল - Bright Beam যাচাইকৃত',
     'product.free_delivery': 'সারা দেশে ফ্রি ডেলিভারি',
     'product.return_policy': '৩০ দিনের সহজ রিটার্ন নীতি',
     'product.cod': 'ক্যাশ অন ডেলিভারি সুবিধা আছে',
@@ -234,7 +234,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Cart Page
     'cart.title': 'আপনার কার্ট',
     'cart.empty': 'কার্ট খালি',
-    'cart.empty_subtitle': 'পণ্য কেনার সময় এসে গেছে',
+    'cart.empty_subtitle': 'আপনার টেক আপগ্রেড করার সময় এসেছে',
     'cart.order_summary': 'অর্ডার সারাংশ',
     'cart.subtotal': 'সাবটোটাল',
     'cart.shipping': 'শিপিং',
@@ -275,7 +275,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Wishlist
     'wishlist.title': 'উইশলিস্ট',
     'wishlist.empty': 'কোনো সেভ করা আইটেম নেই',
-    'wishlist.empty_subtitle': 'আপনার পছন্দের পণ্য এখানে সেভ করুন',
+    'wishlist.empty_subtitle': 'আপনার পছন্দের ডিভাইস এখানে সেভ করুন',
     'wishlist.browse': 'কালেকশন দেখুন',
 
     // Footer

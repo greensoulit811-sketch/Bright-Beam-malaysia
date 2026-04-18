@@ -52,7 +52,7 @@ const Dashboard = () => {
     <div>
       <div className="mb-8">
         <h1 className="font-heading text-3xl font-bold uppercase tracking-wider text-foreground">Dashboard</h1>
-        <p className="font-body text-sm text-muted-foreground mt-1">Welcome back to SRK Collection admin</p>
+        <p className="font-body text-sm text-muted-foreground mt-1">Welcome back to Bright Beam admin</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

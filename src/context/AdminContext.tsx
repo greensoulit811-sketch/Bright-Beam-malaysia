@@ -85,10 +85,10 @@ interface AdminContextType {
 }
 
 const defaultSettings: SiteSettings = {
-  siteName: 'SRK Collection',
-  siteDescription: 'Premium sports shoes in Malaysia',
-  metaTitle: 'SRK Collection - Premium Sports Shoes in Malaysia',
-  metaDescription: 'Shop authentic Nike, Adidas, Puma sports shoes in Malaysia. Fast delivery and COD.',
+  siteName: 'Bright Beam',
+  siteDescription: 'Premium laptops and computing accessories in Malaysia',
+  metaTitle: 'Bright Beam - Best Laptops in Malaysia | ASUS, HP, Dell',
+  metaDescription: 'Shop authentic ASUS, HP, Dell, and Lenovo laptops in Malaysia. Fast delivery and COD.',
   whatsappNumber: '+96512345678',
   instagramHandle: 'srkcollectionkw',
   freeShippingThreshold: 30,
