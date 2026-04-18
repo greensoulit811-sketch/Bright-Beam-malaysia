@@ -15,7 +15,8 @@ const ShopPage = () => {
   const { data: dbCategories = [] } = useActiveCategories();
   const { t } = useLanguage();
   const categoryFilter = searchParams.get('category') || '';
-  const [search, setSearch] = useState('');
+  const searchFilter = searchParams.get('search') || '';
+  const [search, setSearch] = useState(searchFilter);
   const [brandFilter, setBrandFilter] = useState('');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000000]);
   const [showFilters, setShowFilters] = useState(false);
@@ -40,11 +41,14 @@ const ShopPage = () => {
     return products.filter(p => {
       if (categoryFilter && p.category?.toLowerCase().trim() !== categoryFilter.toLowerCase().trim()) return false;
       if (brandFilter && p.brand !== brandFilter) return false;
-      if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !(p.brand || '').toLowerCase().includes(search.toLowerCase())) return false;
+      
+      const currentSearch = search || searchFilter;
+      if (currentSearch && !p.name.toLowerCase().includes(currentSearch.toLowerCase()) && !(p.brand || '').toLowerCase().includes(currentSearch.toLowerCase())) return false;
+      
       if (p.price < priceRange[0] || p.price > priceRange[1]) return false;
       return true;
     });
-  }, [products, categoryFilter, brandFilter, search, priceRange]);
+  }, [products, categoryFilter, brandFilter, search, searchFilter, priceRange]);
 
   const setCategory = (cat: string) => {
     if (cat) setSearchParams({ category: cat });
@@ -56,7 +60,7 @@ const ShopPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="pt-20 lg:pt-24">
+      <div className="pt-32 lg:pt-36">
         <div className="bg-card border-b border-border py-12">
           <div className="container mx-auto px-4 lg:px-8">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -69,21 +73,16 @@ const ShopPage = () => {
         </div>
 
         <div className="container mx-auto px-4 lg:px-8 py-10">
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <div className="relative flex-1">
-              <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input type="text" placeholder={t('shop.search')} value={search} onChange={(e) => setSearch(e.target.value)}
-                className="w-full ps-11 pe-4 py-3 border border-border bg-background font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-neon transition-colors rounded-sm" />
-            </div>
+          <div className="flex flex-col md:flex-row gap-4 mb-8 md:hidden">
             <button onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-6 py-3 border border-border bg-background font-body text-sm text-foreground hover:border-neon transition-colors md:hidden rounded-sm">
+              className="flex items-center gap-2 px-6 py-3 border border-border bg-background font-body text-sm text-foreground hover:border-neon transition-colors w-full rounded-sm">
               <SlidersHorizontal className="w-4 h-4" /> {t('shop.filters')}
             </button>
           </div>
 
           <div className="flex gap-8">
             <aside className={`${showFilters ? 'block' : 'hidden'} md:block w-full md:w-56 shrink-0`}>
-              <div className="sticky top-28 space-y-8">
+              <div className="sticky top-36 space-y-8">
                 <div>
                   <h3 className="font-heading font-bold uppercase tracking-wider text-sm mb-4 text-foreground">{t('shop.categories')}</h3>
                   <div className="space-y-2">

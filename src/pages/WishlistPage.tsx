@@ -13,7 +13,7 @@ const WishlistPage = () => {
   const wishlistProducts = products.filter(p => wishlist.includes(p.id));
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-32 lg:pt-36">
       <Navbar />
       <div className="pt-20 lg:pt-24">
         <div className="container mx-auto px-4 lg:px-8 py-10">

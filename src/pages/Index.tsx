@@ -77,7 +77,7 @@ const Index = () => {
     products.filter(p => p.category?.toLowerCase().trim() === slug.toLowerCase().trim()).length;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-16 lg:pt-32">
       <Navbar />
 
       {/* Hero Banner Section */}
