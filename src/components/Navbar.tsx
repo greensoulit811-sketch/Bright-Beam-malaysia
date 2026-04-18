@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, Search, Menu, X, ChevronDown } from 'lucide-react';
+import { ShoppingBag, Search, Menu, X, ChevronDown, Phone, Globe, LayoutGrid } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useActiveCategories } from '@/hooks/useCategories';
 import { useLanguage } from '@/context/LanguageContext';
@@ -34,6 +34,7 @@ const Navbar = () => {
     if (searchQuery.trim()) {
       navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery('');
+      setMobileOpen(false);
     }
   };
 
@@ -50,7 +51,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm lg:shadow-none">
       {/* Top Row: Logo, Centered Nav & Hotline */}
       <div className="border-b border-gray-100">
         <div className="container mx-auto px-4 lg:px-8">
@@ -62,7 +63,7 @@ const Navbar = () => {
               </Link>
             </div>
 
-            {/* Main Links - Perfectly Centered */}
+            {/* Main Links - Perfectly Centered (Desktop) */}
             <div className="hidden lg:flex flex-1 justify-center h-full">
               <div className="flex items-center gap-4 xl:gap-8 h-full">
                 {navLinks.map((link) => (
@@ -116,7 +117,7 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* Right Side - Hotline & LanguageSwitcher */}
+            {/* Right Side - Hotline & LanguageSwitcher (Desktop) */}
             <div className="hidden lg:flex flex-shrink-0 justify-end items-center gap-4 xl:gap-8">
               <div className="flex flex-col items-end">
                 <span className="text-[10px] text-gray-400 font-bold leading-none uppercase tracking-tight">Hotline:</span>
@@ -127,38 +128,40 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* Mobile Menu Toggle & Cart */}
-            <div className="lg:hidden ml-auto flex items-center gap-4">
-              <Link to="/cart" className="relative group p-2">
-                <ShoppingBag className="w-6 h-6 text-gray-700" />
+            {/* Mobile Header Actions (Visible only on mobile) */}
+            <div className="lg:hidden ml-auto flex items-center gap-3">
+              <Link to="/cart" className="relative p-2">
+                <ShoppingBag className="w-6 h-6 text-[#0A2342]" />
                 {cartCount > 0 && (
                   <span className="absolute top-0 right-0 w-4 h-4 bg-blue-600 text-white rounded-full text-[9px] flex items-center justify-center font-bold">
                     {cartCount}
                   </span>
                 )}
               </Link>
-              <button className="text-gray-700" onClick={() => setMobileOpen(!mobileOpen)}>
-                {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              <button 
+                className="w-10 h-10 flex items-center justify-center bg-[#0A2342] text-white rounded-md" 
+                onClick={() => setMobileOpen(true)}
+              >
+                <Menu className="w-6 h-6" />
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bottom Row: Actions Bar */}
-      <div className="bg-[#0A2342] text-white">
+      {/* Bottom Row: Actions Bar (Desktop Only) */}
+      <div className="hidden lg:block bg-[#0A2342] text-white">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center h-14 lg:h-16 gap-3 lg:gap-12">
+          <div className="flex items-center h-16 gap-12">
             
             {/* All Categories Dropdown */}
             <div className="relative h-full flex items-center" ref={dropdownRef}>
               <button 
-                className="flex items-center gap-2 text-white font-bold uppercase text-[10px] lg:text-[12px] hover:text-blue-400 transition-colors whitespace-nowrap"
+                className="flex items-center gap-2 text-white font-bold uppercase text-[12px] hover:text-blue-400 transition-colors whitespace-nowrap"
                 onClick={() => setCatMenuOpen(!catMenuOpen)}
               >
-                <Menu className="w-4 h-4 lg:w-5 h-5 flex-shrink-0" />
-                <span className="hidden xs:inline">All Categories</span>
-                <span className="xs:hidden">Categories</span>
+                <Menu className="w-5 h-5 flex-shrink-0" />
+                <span>All Categories</span>
                 <ChevronDown className={`w-3 h-3 transition-transform ${catMenuOpen ? 'rotate-180' : ''}`} />
               </button>
 
@@ -190,23 +193,23 @@ const Navbar = () => {
             </div>
 
             {/* Search Bar */}
-            <div className="flex-1 flex justify-center h-full items-center py-2 lg:py-0">
-              <form onSubmit={handleSearch} className="w-full max-w-2xl relative h-9 lg:h-10 flex">
+            <div className="flex-1 flex justify-center h-full items-center">
+              <form onSubmit={handleSearch} className="w-full max-w-2xl relative h-10 flex">
                 <input 
                   type="text" 
                   placeholder="Search..." 
-                  className="w-full h-full bg-white rounded-l-full px-4 lg:px-6 text-[12px] lg:text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none"
+                  className="w-full h-full bg-white rounded-l-full px-6 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button type="submit" className="h-full w-10 lg:w-14 flex items-center justify-center bg-[#5BC0DE] text-white rounded-r-full hover:bg-[#46b8da] transition-colors flex-shrink-0">
-                  <Search className="w-4 h-4 lg:w-5 h-5" />
+                <button type="submit" className="h-full w-14 flex items-center justify-center bg-[#5BC0DE] text-white rounded-r-full hover:bg-[#46b8da] transition-colors flex-shrink-0">
+                  <Search className="w-5 h-5" />
                 </button>
               </form>
             </div>
 
             {/* Shopping Cart */}
-            <Link to="/cart" className="hidden lg:flex items-center gap-3 group shrink-0">
+            <Link to="/cart" className="flex items-center gap-3 group shrink-0">
               <div className="relative">
                 <ShoppingBag className="w-7 h-7 text-white" />
                 {cartCount > 0 && (
@@ -224,73 +227,153 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Drawer Design */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div 
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            className="fixed inset-0 z-[200] lg:hidden bg-white"
-          >
-            <div className="p-6 h-full flex flex-col">
-              <div className="flex items-center justify-between mb-8">
+          <>
+            {/* Backdrop */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] lg:hidden"
+            />
+            
+            {/* Drawer */}
+            <motion.div 
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 bottom-0 w-[85%] max-w-sm bg-white z-[210] lg:hidden overflow-hidden flex flex-col shadow-2xl"
+            >
+              {/* Drawer Header */}
+              <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10">
                 <img src="/logos.png" alt="Logo" className="h-8 w-auto" />
-                <button onClick={() => setMobileOpen(false)} className="p-2 border border-blue-600 rounded-full text-blue-600">
+                <button 
+                  onClick={() => setMobileOpen(false)}
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
+                >
                   <X className="w-6 h-6" />
                 </button>
               </div>
 
-              <div className="space-y-6 overflow-y-auto flex-1">
-                {navLinks.map((link) => (
-                  <div key={link.title} className="space-y-3">
-                    <div className="flex items-center justify-between text-lg font-bold text-gray-800 uppercase">
-                      {link.dropdown ? (
-                        <span className="flex-1">{link.title}</span>
-                      ) : (
-                        <Link to="/shop" onClick={() => setMobileOpen(false)} className="flex-1">{link.title}</Link>
-                      )}
-                    </div>
-                    {link.dropdown && (
-                      <div className="grid grid-cols-2 gap-3 pl-4">
-                        {link.items && link.items.length > 0 ? link.items.map((item) => (
-                          <Link 
-                            key={item.id} 
-                            to={`/shop?category=${item.slug}`}
-                            className="text-sm font-semibold text-gray-500 py-1"
-                            onClick={() => setMobileOpen(false)}
-                          >
-                            {item.name}
-                          </Link>
-                        )) : (
-                          ['Intel', 'AMD', 'Nvidia', 'Home & Office'].map(item => (
-                            <Link 
-                              key={item} 
-                              to={`/shop?search=${item}`}
-                              className="text-sm font-semibold text-gray-500 py-1"
-                              onClick={() => setMobileOpen(false)}
-                            >
-                              {item}
-                            </Link>
-                          ))
+              {/* Drawer Content */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-8">
+                
+                {/* Search in Drawer */}
+                <div className="space-y-3">
+                  <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Search Products</h3>
+                  <form onSubmit={handleSearch} className="relative flex shadow-sm">
+                    <input 
+                      type="text" 
+                      placeholder="What are you looking for?" 
+                      className="w-full bg-gray-50 py-3.5 px-6 rounded-l-xl text-sm border-y border-l border-gray-100 focus:outline-none focus:bg-white focus:ring-1 focus:ring-blue-100 transition-all"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <button type="submit" className="bg-[#5BC0DE] px-5 rounded-r-xl text-white hover:bg-[#46b8da] transition-colors">
+                      <Search className="w-5 h-5" />
+                    </button>
+                  </form>
+                </div>
+
+                {/* Main Navigation */}
+                <div className="space-y-4">
+                  <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Main Menu</h3>
+                  <div className="bg-gray-50 rounded-2xl p-2 space-y-1">
+                    {navLinks.map((link) => (
+                      <div key={link.title} className="group">
+                        <div className="flex items-center justify-between p-3.5 text-sm font-bold text-[#0A2342] uppercase rounded-xl hover:bg-white hover:shadow-sm transition-all">
+                          {link.dropdown ? (
+                            <span className="flex-1">{link.title}</span>
+                          ) : (
+                            <Link to="/shop" onClick={() => setMobileOpen(false)} className="flex-1">{link.title}</Link>
+                          )}
+                          {link.dropdown && <ChevronDown className="w-4 h-4 text-gray-400" />}
+                        </div>
+                        {link.dropdown && (
+                          <div className="mt-1 ml-4 border-l-2 border-blue-50 space-y-1 py-1">
+                            {link.items && link.items.length > 0 ? link.items.map((item) => (
+                              <Link 
+                                key={item.id} 
+                                to={`/shop?category=${item.slug}`}
+                                className="block px-4 py-2 text-[13px] font-semibold text-gray-500 hover:text-blue-600 transition-colors"
+                                onClick={() => setMobileOpen(false)}
+                              >
+                                {item.name}
+                              </Link>
+                            )) : (
+                              ['Intel', 'AMD', 'Nvidia', 'Gaming Laptops'].map(item => (
+                                <Link 
+                                  key={item} 
+                                  to={`/shop?search=${item}`}
+                                  className="block px-4 py-2 text-[13px] font-semibold text-gray-500 hover:text-blue-600 transition-colors"
+                                  onClick={() => setMobileOpen(false)}
+                                >
+                                  {item}
+                                </Link>
+                              ))
+                            )}
+                          </div>
                         )}
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
+                </div>
+
+                {/* Categories Section */}
+                <div className="space-y-4">
+                   <div className="flex items-center gap-2 pl-1">
+                      <LayoutGrid className="w-4 h-4 text-blue-600" />
+                      <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Shop Categories</h3>
+                   </div>
+                   <div className="grid grid-cols-2 gap-3">
+                      {parentCategories.slice(0, 6).map(cat => (
+                        <Link 
+                          key={cat.id} 
+                          to={`/shop?category=${cat.slug}`}
+                          className="flex flex-col items-center justify-center p-4 bg-white border border-gray-100 rounded-2xl hover:border-blue-200 hover:bg-blue-50 transition-all text-center group"
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          <span className="text-[11px] font-bold text-[#0A2342] uppercase group-hover:text-blue-600">{cat.name}</span>
+                        </Link>
+                      ))}
+                      <Link 
+                        to="/shop" 
+                        onClick={() => setMobileOpen(false)}
+                        className="flex flex-col items-center justify-center p-4 bg-blue-600 rounded-2xl text-center shadow-lg shadow-blue-200 group"
+                      >
+                        <span className="text-[11px] font-bold text-white uppercase">View All</span>
+                      </Link>
+                   </div>
+                </div>
+
               </div>
 
-              <div className="mt-auto pt-8 border-t border-gray-100 flex flex-col gap-4">
-                <div className="flex flex-col">
-                  <span className="text-xs text-gray-400 font-bold uppercase tracking-tight">Hotline:</span>
-                  <a href={`tel:${hotline}`} className="text-xl font-black text-[#0A2342]">{hotline}</a>
+              {/* Drawer Footer */}
+              <div className="p-6 bg-gray-50 border-t border-gray-100 flex flex-col gap-5">
+                <div className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100">
+                  <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">
+                    <Phone className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-gray-400 font-bold uppercase leading-none mb-1">Our Hotline</span>
+                    <a href={`tel:${hotline}`} className="text-base font-black text-[#0A2342] hover:text-blue-600 transition-colors">{hotline}</a>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
+                
+                <div className="flex items-center justify-between px-2">
+                   <div className="flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-gray-400" />
+                      <span className="text-xs font-bold text-gray-500 uppercase">Language</span>
+                   </div>
                    <LanguageSwitcher />
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </nav>
