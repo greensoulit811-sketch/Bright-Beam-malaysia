@@ -27,6 +27,7 @@ const ProductPage = () => {
   const [selectedColor, setSelectedColor] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [customSpecs, setCustomSpecs] = useState<Record<string, string>>({});
 
   const allProducts = useMemo(() => dbProducts.map(p => ({
     id: p.id, name: p.name, brand: p.brand, price: Number(p.price),
@@ -98,7 +99,7 @@ const ProductPage = () => {
   const handleAddToCart = () => {
     if (!validateSelection()) return;
     const cartProduct = { ...product, price: displayPrice };
-    addToCart(cartProduct, selectedColor);
+    addToCart(cartProduct, selectedColor, Object.keys(customSpecs).length > 0 ? customSpecs : undefined);
     fbTrackAddToCart({
       content_ids: [product.id], content_name: product.name,
       value: displayPrice * quantity, num_items: quantity,
@@ -109,7 +110,7 @@ const ProductPage = () => {
   const handleBuyNow = () => {
     if (!validateSelection()) return;
     const cartProduct = { ...product, price: displayPrice };
-    addToCart(cartProduct, selectedColor);
+    addToCart(cartProduct, selectedColor, Object.keys(customSpecs).length > 0 ? customSpecs : undefined);
     navigate('/checkout');
   };
 
@@ -188,6 +189,36 @@ const ProductPage = () => {
                         className={`px-4 py-2 border font-body text-sm font-medium rounded-sm transition-all ${selectedColor === color ? 'border-neon bg-neon text-accent-foreground' : 'border-border text-foreground hover:border-neon/50'}`}>
                         {color}
                       </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* DIY PC Configuration Section */}
+              {product.category?.toLowerCase().includes('diy') && (
+                <div className="mb-8 space-y-6 border-y border-border py-8">
+                  <h3 className="font-heading font-bold uppercase tracking-wider text-lg text-neon">Configure Your DIY PC</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {[
+                      { label: 'Processor', key: 'processor', options: ['Intel Core i5', 'Intel Core i7', 'Intel Core i9', 'AMD Ryzen 5', 'AMD Ryzen 7', 'AMD Ryzen 9'] },
+                      { label: 'Motherboard', key: 'motherboard', options: ['B760M', 'Z790', 'B650M', 'X670E'] },
+                      { label: 'RAM', key: 'ram', options: ['16GB DDR4', '32GB DDR4', '16GB DDR5', '32GB DDR5', '64GB DDR5'] },
+                      { label: 'Graphics Card', key: 'gpu', options: ['RTX 4060', 'RTX 4070', 'RTX 4080', 'RTX 4090', 'RX 7800 XT'] },
+                      { label: 'Storage (SSD)', key: 'ssd', options: ['512GB NVMe', '1TB NVMe', '2TB NVMe'] },
+                      { label: 'Power Supply', key: 'psu', options: ['650W 80+', '750W 80+', '850W 80+', '1000W 80+'] },
+                    ].map((config) => (
+                      <div key={config.key}>
+                        <label className="font-body text-xs font-bold uppercase text-muted-foreground block mb-2">{config.label}</label>
+                        <select 
+                          className="w-full h-11 bg-background border border-border rounded-sm px-3 text-sm font-body text-foreground focus:outline-none focus:border-neon"
+                          value={customSpecs[config.key] || ''}
+                          onChange={(e) => setCustomSpecs(prev => ({ ...prev, [config.key]: e.target.value }))}
+                        >
+                          <option value="">Select {config.label}</option>
+                          {config.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                      </div>
                     ))}
                   </div>
                 </div>

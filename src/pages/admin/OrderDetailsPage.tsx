@@ -127,6 +127,19 @@ const OrderDetailsPage = () => {
                     >
                       {item.productName}
                     </Link>
+                    {item.color && <p className="text-xs text-muted-foreground mt-0.5">Color: {item.color}</p>}
+                    {item.customSpecs && Object.keys(item.customSpecs).length > 0 && (
+                      <div className="mt-2 space-y-1 bg-muted/30 p-2 rounded border border-dashed border-border">
+                        {Object.entries(item.customSpecs).map(([key, value]) => (
+                          value && (
+                            <div key={key} className="flex justify-between items-center text-[10px] uppercase font-bold tracking-tight">
+                              <span className="text-muted-foreground">{key}:</span>
+                              <span className="text-foreground">{value as string}</span>
+                            </div>
+                          )
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div className="text-right">
                     <p className="font-body text-sm font-bold text-foreground">{(item.price * item.quantity).toFixed(3)} RM</p>

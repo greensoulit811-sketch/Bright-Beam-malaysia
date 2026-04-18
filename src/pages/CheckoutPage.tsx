@@ -59,6 +59,7 @@ const CheckoutPage = () => {
       cartItems: items.map(item => ({
         productId: item.product.id, productName: item.product.name, color: item.color,
         quantity: item.quantity, price: item.product.price,
+        customSpecs: item.customSpecs,
       })),
       cartTotal: total,
     });
@@ -79,6 +80,7 @@ const CheckoutPage = () => {
     const orderItems = items.map(item => ({
       productId: item.product.id, productName: item.product.name, color: item.color,
       quantity: item.quantity, price: item.product.price,
+      customSpecs: item.customSpecs,
     }));
     const shippingAddress = `${form.address}, Malaysia`;
     const orderNumber = `ORD${String(Date.now()).slice(-6)}`;
@@ -231,7 +233,11 @@ const CheckoutPage = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-body text-xs font-bold truncate text-foreground">{item.product.name}</p>
-                        <p className="font-body text-xs text-muted-foreground">{item.color ? `${item.color} · ` : ''}x{item.quantity}</p>
+                        <p className="font-body text-xs text-muted-foreground">
+                          {item.color ? `${item.color} · ` : ''}
+                          {item.customSpecs && Object.entries(item.customSpecs).map(([k, v]) => v ? `${k}: ${v} · ` : '').join('')}
+                          x{item.quantity}
+                        </p>
                         <p className="font-body text-xs font-bold text-primary">{(item.product.price * item.quantity).toFixed(2)} RM</p>
                       </div>
                     </div>

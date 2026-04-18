@@ -5,12 +5,13 @@ export interface CartItem {
   product: Product;
   quantity: number;
   color: string;
+  customSpecs?: Record<string, string>;
 }
 
 interface CartContextType {
   items: CartItem[];
   wishlist: string[];
-  addToCart: (product: Product, color: string) => void;
+  addToCart: (product: Product, color: string, customSpecs?: Record<string, string>) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -36,9 +37,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => { localStorage.setItem('cart', JSON.stringify(items)); }, [items]);
   useEffect(() => { localStorage.setItem('wishlist', JSON.stringify(wishlist)); }, [wishlist]);
 
-  const addToCart = useCallback((product: Product, color: string) => {
+  const addToCart = useCallback((product: Product, color: string, customSpecs?: Record<string, string>) => {
     setItems(prev => {
-      const existing = prev.find(i => i.product.id === product.id && i.color === color);
+      // For items with custom specs, we treat them as unique even if the product ID and color match
+      if (customSpecs && Object.keys(customSpecs).length > 0) {
+        return [...prev, { product, quantity: 1, color, customSpecs }];
+      }
+      
+      const existing = prev.find(i => i.product.id === product.id && i.color === color && (!i.customSpecs || Object.keys(i.customSpecs).length === 0));
       if (existing) {
         return prev.map(i => i === existing ? { ...i, quantity: i.quantity + 1 } : i);
       }
