@@ -68,18 +68,18 @@ export const printInvoice = (order: DbOrder) => {
           <td>${item.size}</td>
           <td>${item.color}</td>
           <td>${item.quantity}</td>
-          <td style="text-align:right">${Number(item.price).toFixed(3)} KWD</td>
-          <td style="text-align:right">${(item.price * item.quantity).toFixed(3)} KWD</td>
+          <td style="text-align:right">${Number(item.price).toFixed(2)} RM</td>
+          <td style="text-align:right">${(item.price * item.quantity).toFixed(2)} RM</td>
         </tr>
       `).join('')}
     </tbody>
   </table>
   <div class="totals">
-    <div class="row"><span>Subtotal:</span><span>${Number(order.total).toFixed(3)} KWD</span></div>
-    <div class="row total-row"><span>Total:</span><span>${Number(order.total).toFixed(3)} KWD</span></div>
+    <div class="row"><span>Subtotal:</span><span>${Number(order.total).toFixed(2)} RM</span></div>
+    <div class="row total-row"><span>Total:</span><span>${Number(order.total).toFixed(2)} RM</span></div>
   </div>
   <div class="footer">
-    <p>Thank you for shopping with SRK Collection · Kuwait</p>
+    <p>Thank you for shopping with SRK Collection · Malaysia</p>
   </div>
 </body>
 </html>`;
@@ -137,7 +137,7 @@ export const printCourierSlip = (order: DbOrder) => {
       </div>
     </div>
     <div class="cod-badge">Cash on Delivery</div>
-    <div class="total-amount">${Number(order.total).toFixed(3)} KWD</div>
+    <div class="total-amount">${Number(order.total).toFixed(2)} RM</div>
     <div class="footer">
       <p>Date: ${new Date(order.created_at).toLocaleDateString('en-GB')}</p>
     </div>

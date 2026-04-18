@@ -56,8 +56,8 @@ const CouponsManager = () => {
                 {c.is_active ? 'Active' : 'Inactive'}
               </span>
             </div>
-            <p className="font-body text-2xl font-bold mb-1 text-foreground">{c.type === 'percentage' ? `${Number(c.value)}% OFF` : `${Number(c.value)} KWD OFF`}</p>
-            <p className="font-body text-xs text-muted-foreground mb-3">Min order: {Number(c.min_order)} KWD</p>
+            <p className="font-body text-2xl font-bold mb-1 text-foreground">{c.type === 'percentage' ? `${Number(c.value)}% OFF` : `${Number(c.value).toFixed(2)} RM OFF`}</p>
+            <p className="font-body text-xs text-muted-foreground mb-3">Min order: {Number(c.min_order).toFixed(2)} RM</p>
             <div className="flex justify-between font-body text-xs text-muted-foreground mb-4">
               <span>Used: {c.used_count}/{c.max_uses}</span>
               <span>Expires: {c.expires_at}</span>
@@ -107,7 +107,7 @@ const CouponsManager = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Min Order (KWD)</label>
+                  <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Min Order (RM)</label>
                   <input type="number" value={form.min_order} onChange={e => setForm({ ...form, min_order: +e.target.value })}
                     className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
                 </div>

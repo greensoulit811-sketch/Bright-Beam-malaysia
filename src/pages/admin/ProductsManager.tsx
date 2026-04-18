@@ -282,8 +282,8 @@ const ProductsManager = () => {
                   </td>
                   <td className="p-4 font-body text-sm text-muted-foreground hidden md:table-cell">{(p as any).sku || '—'}</td>
                   <td className="p-4">
-                    <p className="font-body text-sm font-bold text-primary">{Number(p.price)} KWD</p>
-                    {p.original_price && <p className="font-body text-xs text-muted-foreground line-through">{Number(p.original_price)} KWD</p>}
+                    <p className="font-body text-sm font-bold text-primary">{Number(p.price).toFixed(2)} RM</p>
+                    {p.original_price && <p className="font-body text-xs text-muted-foreground line-through">{Number(p.original_price).toFixed(2)} RM</p>}
                   </td>
                   <td className="p-4 font-body text-sm capitalize text-foreground hidden md:table-cell">{p.category}</td>
                   <td className="p-4 font-body text-sm text-foreground">{p.stock}</td>
@@ -353,11 +353,11 @@ const ProductsManager = () => {
                 <h3 className="font-heading text-sm font-bold uppercase tracking-wider text-muted-foreground">Pricing & Stock</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Regular Price (KWD) *</label>
+                    <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Regular Price (RM) *</label>
                     <Input type="number" step="0.01" value={form.price} onChange={e => setForm({ ...form, price: +e.target.value })} required />
                   </div>
                   <div>
-                    <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Discount Price (KWD)</label>
+                    <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Discount Price (RM)</label>
                     <Input type="number" step="0.01" value={form.original_price || ''} onChange={e => setForm({ ...form, original_price: e.target.value ? +e.target.value : null })} placeholder="Original before discount" />
                     <p className="font-body text-xs text-muted-foreground mt-1">Set original price here if on sale</p>
                   </div>

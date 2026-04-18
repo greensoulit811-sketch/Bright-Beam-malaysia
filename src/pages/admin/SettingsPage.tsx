@@ -31,7 +31,7 @@ const SettingsPage = () => {
   const s = settings as any;
   const [form, setForm] = useState({
     site_name: '', site_description: '', meta_title: '', meta_description: '',
-    whatsapp_number: '', instagram_handle: '', free_shipping_threshold: 30, currency: 'KWD',
+    whatsapp_number: '', instagram_handle: '', free_shipping_threshold: 150, currency: 'RM',
     language: 'en',
     logo_url: '', favicon_url: '', footer_description: '', footer_copyright: '', footer_tagline: '',
     contact_email: '', contact_phone: '', contact_address: '',
@@ -44,7 +44,7 @@ const SettingsPage = () => {
         site_name: s.site_name || '', site_description: s.site_description || '',
         meta_title: s.meta_title || '', meta_description: s.meta_description || '',
         whatsapp_number: s.whatsapp_number || '', instagram_handle: s.instagram_handle || '',
-        free_shipping_threshold: Number(s.free_shipping_threshold) || 30, currency: s.currency || 'KWD',
+        free_shipping_threshold: Number(s.free_shipping_threshold) || 150, currency: s.currency || 'RM',
         language: s.language || 'en',
         logo_url: s.logo_url || '/logo.png', favicon_url: s.favicon_url || '/favicon.ico',
         footer_description: s.footer_description || '', footer_copyright: s.footer_copyright || '', footer_tagline: s.footer_tagline || '',
@@ -116,7 +116,7 @@ const SettingsPage = () => {
             <Field label="Contact Email" field="contact_email" placeholder="info@example.com" form={form} setForm={setForm} />
             <Field label="Contact Phone" field="contact_phone" placeholder="+965 1234 5678" form={form} setForm={setForm} />
           </div>
-          <Field label="Address" field="contact_address" placeholder="Kuwait City, Kuwait" form={form} setForm={setForm} />
+          <Field label="Address" field="contact_address" placeholder="Kuala Lumpur, Malaysia" form={form} setForm={setForm} />
           <Field label="WhatsApp Number" field="whatsapp_number" placeholder="+96512345678" form={form} setForm={setForm} />
         </Section>
 
@@ -135,7 +135,7 @@ const SettingsPage = () => {
         <Section title="Footer Settings">
           <TextArea label="Footer Description" field="footer_description" form={form} setForm={setForm} />
           <Field label="Copyright Text" field="footer_copyright" placeholder="© 2026 Store Name. All rights reserved." form={form} setForm={setForm} />
-          <Field label="Footer Tagline" field="footer_tagline" placeholder="🇰🇼 Free delivery across Kuwait" form={form} setForm={setForm} />
+          <Field label="Footer Tagline" field="footer_tagline" placeholder="🇲🇾 Free delivery across Malaysia" form={form} setForm={setForm} />
         </Section>
 
         <button type="submit" disabled={updateSettings.isPending}

@@ -28,7 +28,7 @@ const ProductReviews = ({ productId }: { productId: string }) => {
             </div>
             <div>
               <h2 className="heading-display text-2xl md:text-3xl font-bold text-foreground">2,000+ Reviews</h2>
-              <p className="font-body text-sm text-muted-foreground">Trusted by customers across Kuwait</p>
+              <p className="font-body text-sm text-muted-foreground">Trusted by customers across Malaysia</p>
             </div>
           </div>
           <div className="flex flex-col items-center md:items-end gap-1">

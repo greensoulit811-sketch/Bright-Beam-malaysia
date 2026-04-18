@@ -47,8 +47,8 @@ const AnalyticsPage = () => {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Total Revenue', value: `${totalRevenue.toLocaleString()} KWD` },
-          { label: 'Avg Order Value', value: `${avgOrderValue.toFixed(1)} KWD` },
+          { label: 'Total Revenue', value: `${totalRevenue.toLocaleString()} RM` },
+          { label: 'Avg Order Value', value: `${avgOrderValue.toFixed(2)} RM` },
           { label: 'Total Orders', value: orders.length },
           { label: 'Delivered', value: orders.filter(o => o.status === 'delivered').length },
         ].map(kpi => (

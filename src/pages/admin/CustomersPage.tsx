@@ -64,7 +64,7 @@ const CustomersPage = () => {
                     <p className="font-body text-xs text-muted-foreground flex items-center gap-1 mt-1"><Phone className="w-3 h-3" /> {c.phone}</p>
                   </td>
                   <td className="p-4 font-body text-sm font-semibold text-foreground">{c.orders}</td>
-                  <td className="p-4 font-body text-sm font-bold text-primary">{c.totalSpent} KWD</td>
+                  <td className="p-4 font-body text-sm font-bold text-primary">{Number(c.totalSpent).toFixed(2)} RM</td>
                   <td className="p-4 font-body text-sm text-muted-foreground">{new Date(c.lastOrder).toLocaleDateString()}</td>
                 </tr>
               ))}

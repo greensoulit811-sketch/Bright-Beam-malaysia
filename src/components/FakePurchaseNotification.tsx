@@ -8,7 +8,7 @@ const names = [
   'Abdulaziz', 'Noura', 'Bader', 'Shaikha', 'Jaber', 'Aisha', 'Nasser', 'Dana',
 ];
 
-const cities = ['Kuwait City', 'Hawalli', 'Salmiya', 'Jahra', 'Farwaniya', 'Ahmadi', 'Mangaf', 'Fintas'];
+const cities = ['Kuala Lumpur', 'Petaling Jaya', 'Johor Bahru', 'Shah Alam', 'Georgetown', 'Ipoh', 'Kuching', 'Kota Kinabalu', 'Klang', 'Seremban'];
 
 const timeAgo = ['2 minutes ago', '5 minutes ago', '8 minutes ago', '12 minutes ago', '15 minutes ago', '20 minutes ago', '1 minute ago', '3 minutes ago'];
 

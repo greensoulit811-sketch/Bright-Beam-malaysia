@@ -86,7 +86,7 @@ const ShippingMethodsManager = () => {
                   </div>
                 </td>
                 <td className="p-4 font-body text-sm text-foreground">{m.area_zone || '—'}</td>
-                <td className="p-4 font-body text-sm font-bold text-primary">{m.charge === 0 ? 'Free' : `${Number(m.charge).toFixed(3)} KWD`}</td>
+                <td className="p-4 font-body text-sm font-bold text-primary">{m.charge === 0 ? 'Free' : `${Number(m.charge).toFixed(2)} RM`}</td>
                 <td className="p-4 font-body text-xs text-muted-foreground hidden md:table-cell">{m.estimated_delivery || '—'}</td>
                 <td className="p-4">
                   <Switch checked={m.is_active} onCheckedChange={() => toggleActive(m)} />
@@ -121,11 +121,11 @@ const ShippingMethodsManager = () => {
               </div>
               <div>
                 <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">Area / Zone</label>
-                <Input value={form.area_zone} onChange={e => setForm(p => ({ ...p, area_zone: e.target.value }))} placeholder="All Kuwait" />
+                <Input value={form.area_zone} onChange={e => setForm(p => ({ ...p, area_zone: e.target.value }))} placeholder="All Malaysia" />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">Charge (KWD)</label>
+                  <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">Charge (RM)</label>
                   <Input type="number" step="0.001" min="0" value={form.charge} onChange={e => setForm(p => ({ ...p, charge: Number(e.target.value) }))} />
                 </div>
                 <div>

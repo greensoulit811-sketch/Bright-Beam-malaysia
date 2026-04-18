@@ -80,7 +80,7 @@ const CheckoutPage = () => {
       productId: item.product.id, productName: item.product.name, color: item.color,
       quantity: item.quantity, price: item.product.price,
     }));
-    const shippingAddress = `${form.address}, Kuwait`;
+    const shippingAddress = `${form.address}, Malaysia`;
     const orderNumber = `ORD${String(Date.now()).slice(-6)}`;
 
     try {
@@ -150,15 +150,15 @@ const CheckoutPage = () => {
                 <div className="space-y-4">
                   <div>
                     <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.full_name')} *</label>
-                    <Input name="fullName" value={form.fullName} onChange={handleChange} placeholder="Ahmed Al-Sabah" required />
+                    <Input name="fullName" value={form.fullName} onChange={handleChange} placeholder="Ahmad bin Ismail" required />
                   </div>
                   <div>
                     <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.phone')} *</label>
-                    <Input name="phone" value={form.phone} onChange={handleChange} placeholder="+965 9900 1122" required />
+                    <Input name="phone" value={form.phone} onChange={handleChange} placeholder="+60 12-345 6789" required />
                   </div>
                   <div>
                     <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.shipping_address')} *</label>
-                    <Input name="address" value={form.address} onChange={handleChange} placeholder="Area, Block 5, Street 10, Building 3" required />
+                    <Input name="address" value={form.address} onChange={handleChange} placeholder="Apartment, Street, City, State" required />
                   </div>
                   <div>
                     <label className="font-body text-xs uppercase tracking-wider text-muted-foreground mb-1 block">{t('checkout.notes')}</label>

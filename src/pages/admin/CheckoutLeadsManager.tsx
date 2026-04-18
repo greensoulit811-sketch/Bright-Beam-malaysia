@@ -150,7 +150,7 @@ const CheckoutLeadsManager = () => {
                     </p>
                   </td>
                   <td className="p-4">
-                    <p className="font-body text-sm font-bold text-foreground">{Number(lead.cart_total).toFixed(3)} KWD</p>
+                    <p className="font-body text-sm font-bold text-foreground">{Number(lead.cart_total).toFixed(2)} RM</p>
                   </td>
                   <td className="p-4">
                     <span className={`px-2 py-1 text-xs font-body font-bold rounded-full uppercase ${statusColors[lead.status] || 'bg-muted text-muted-foreground'}`}>
@@ -245,7 +245,7 @@ const CheckoutLeadsManager = () => {
                     {((viewingLead.cart_items as any[]) || []).map((item: any, i: number) => (
                       <div key={i} className="flex justify-between font-body text-sm py-1.5 border-b border-border last:border-0">
                         <span className="text-foreground">{item.productName || item.name} {item.size ? `(Size ${item.size})` : ''} {item.color ? `· ${item.color}` : ''} ×{item.quantity}</span>
-                        <span className="font-semibold text-foreground">{((item.price || 0) * (item.quantity || 1)).toFixed(3)} KWD</span>
+                        <span className="font-semibold text-foreground">{((item.price || 0) * (item.quantity || 1)).toFixed(2)} RM</span>
                       </div>
                     ))}
                   </div>
@@ -256,7 +256,7 @@ const CheckoutLeadsManager = () => {
 
               <div className="flex justify-between items-center border-t border-border pt-4">
                 <span className="font-heading text-lg font-bold text-foreground">Total</span>
-                <span className="font-heading text-lg font-bold text-primary">{Number(viewingLead.cart_total).toFixed(3)} KWD</span>
+                <span className="font-heading text-lg font-bold text-primary">{Number(viewingLead.cart_total).toFixed(2)} RM</span>
               </div>
 
               <div className="grid grid-cols-2 gap-4 text-xs font-body text-muted-foreground">

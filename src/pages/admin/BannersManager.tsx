@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useBanners, useAddBanner, useUpdateBanner, useDeleteBanner, type DbBanner } from '@/hooks/useDatabase';
-import { Plus, Pencil, Trash2, X, Eye, EyeOff } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Eye, EyeOff, Upload, ImageIcon, Loader2 } from 'lucide-react';
+import { uploadProductImage, deleteProductImage } from '@/lib/image-upload';
 import { toast } from 'sonner';
 
 const images = [
@@ -16,9 +17,33 @@ const BannersManager = () => {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<DbBanner | null>(null);
   const [form, setForm] = useState({ title: '', subtitle: '', image_url: '', link_url: '/shop', is_active: true, position: 'hero' as string });
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const openAdd = () => { setEditing(null); setForm({ title: '', subtitle: '', image_url: '', link_url: '/shop', is_active: true, position: 'hero' }); setShowForm(true); };
   const openEdit = (b: DbBanner) => { setEditing(b); setForm({ title: b.title, subtitle: b.subtitle || '', image_url: b.image_url, link_url: b.link_url || '/shop', is_active: b.is_active ?? true, position: b.position }); setShowForm(true); };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const url = await uploadProductImage(file, 'banners');
+      setForm(f => ({ ...f, image_url: url }));
+      toast.success('Banner image uploaded');
+    } catch { 
+      toast.error('Upload failed'); 
+    } finally { 
+      setUploading(false); 
+    }
+  };
+
+  const removeImage = async () => {
+    if (form.image_url && form.image_url.includes('supabase.co')) {
+      try { await deleteProductImage(form.image_url); } catch { /* ignore */ }
+    }
+    setForm(f => ({ ...f, image_url: '' }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,14 +111,33 @@ const BannersManager = () => {
                 <input value={form.subtitle} onChange={e => setForm({ ...form, subtitle: e.target.value })} className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary" />
               </div>
               <div>
-                <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Image URL</label>
-                <input value={form.image_url} onChange={e => setForm({ ...form, image_url: e.target.value })} placeholder="Paste image URL" required className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary mb-2" />
-                {form.image_url && (
-                  <div className="aspect-video border border-border rounded-md overflow-hidden">
-                    <img src={form.image_url} alt="Preview" className="w-full h-full object-cover" />
+                <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Banner Image</label>
+                <div className="flex items-start gap-4 mb-3">
+                  {form.image_url ? (
+                    <div className="relative w-32 h-20 rounded-md overflow-hidden border border-border bg-secondary">
+                      <img src={form.image_url} alt="Banner" className="w-full h-full object-cover" />
+                      <button type="button" onClick={removeImage}
+                        className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="w-32 h-20 rounded-md border-2 border-dashed border-border flex items-center justify-center bg-secondary/50">
+                      <ImageIcon className="w-6 h-6 text-muted-foreground" />
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                    <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading}
+                      className="flex items-center gap-2 px-4 py-2 border border-border rounded-md font-body text-sm hover:bg-secondary transition-colors disabled:opacity-50 text-foreground">
+                      {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                      {uploading ? 'Uploading...' : 'Upload Image'}
+                    </button>
+                    <p className="font-body text-[10px] text-muted-foreground mt-2 uppercase tracking-wide">Or paste image URL below</p>
                   </div>
-                )}
-                <p className="font-body text-xs text-muted-foreground mt-1">Use a high-quality wide image for best results on all screen sizes</p>
+                </div>
+                <input value={form.image_url} onChange={e => setForm({ ...form, image_url: e.target.value })} placeholder="Paste image URL (optional if uploaded)" required className="w-full px-4 py-2.5 border border-border bg-background rounded-md font-body text-sm text-foreground focus:outline-none focus:border-primary mb-2" />
+                <p className="font-body text-[10px] text-muted-foreground mt-1">USE A HIGH-QUALITY WIDE IMAGE FOR BEST RESULTS ON ALL SCREEN SIZES</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>

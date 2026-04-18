@@ -11,7 +11,7 @@ const Dashboard = () => {
   const deliveredOrders = orders.filter(o => o.status === 'delivered').length;
 
   const stats = [
-    { label: 'Total Revenue', value: `${totalRevenue} KWD`, icon: DollarSign, change: `${orders.length} orders` },
+    { label: 'Total Revenue', value: `${totalRevenue.toFixed(2)} RM`, icon: DollarSign, change: `${orders.length} orders` },
     { label: 'Total Orders', value: orders.length, icon: ShoppingCart, change: `${pendingOrders} pending` },
     { label: 'Products', value: products.length, icon: Package, change: `${products.filter(p => p.is_active).length} active` },
     { label: 'Delivered', value: deliveredOrders, icon: Clock, change: `${Math.round((deliveredOrders / (orders.length || 1)) * 100)}% rate` },
@@ -119,7 +119,7 @@ const Dashboard = () => {
                   <p className="font-body text-xs text-muted-foreground">{order.customer_name}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-body text-sm font-bold text-primary">{Number(order.total)} KWD</p>
+                  <p className="font-body text-sm font-bold text-primary">{Number(order.total).toFixed(2)} RM</p>
                   <span className={`inline-block px-2 py-0.5 text-xs font-body font-semibold rounded-full uppercase ${statusColors[order.status] || ''}`}>{order.status}</span>
                 </div>
               </div>

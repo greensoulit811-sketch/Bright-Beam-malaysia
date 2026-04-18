@@ -17,7 +17,7 @@ const Footer = () => {
           <div>
             <img src={s?.logo_url || '/logos.png'} alt={s?.site_name || 'Store'} className="h-14 w-auto mb-4" />
             <p className="text-primary-foreground/60 font-body text-sm leading-relaxed mb-6">
-              {s?.footer_description || 'Your ultimate destination for authentic sports footwear in Kuwait.'}
+              {s?.footer_description || 'Your ultimate destination for authentic sports footwear in Malaysia.'}
             </p>
             <div className="flex gap-4">
               {s?.instagram_url && <a href={s.instagram_url} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/40 hover:text-neon transition-colors"><Instagram className="w-5 h-5" /></a>}
@@ -65,7 +65,7 @@ const Footer = () => {
 
         <div className="border-t border-primary-foreground/10 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="font-body text-xs text-primary-foreground/40">{s?.footer_copyright || '© 2026 SRK Collection. All rights reserved.'}</p>
-          <p className="font-body text-xs text-primary-foreground/40">{s?.footer_tagline || '🇰🇼 Free delivery across Kuwait · Cash on Delivery available'}</p>
+          <p className="font-body text-xs text-primary-foreground/40">{s?.footer_tagline || '🇲🇾 Free delivery across Malaysia · Cash on Delivery available'}</p>
         </div>
       </div>
     </footer>

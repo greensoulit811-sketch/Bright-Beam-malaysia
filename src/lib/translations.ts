@@ -9,7 +9,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Hero
     'hero.fuel': 'FUEL YOUR',
     'hero.game': 'GAME',
-    'hero.subtitle': 'Authentic Nike, Adidas, Puma & more. Delivered to your door in Kuwait.',
+    'hero.subtitle': 'Authentic Nike, Adidas, Puma & more. Delivered to your door in Malaysia.',
     'hero.shop_now': 'Shop Now',
 
     // Categories
@@ -35,7 +35,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'why.performance': 'Performance Gear',
     'why.performance_desc': 'Latest tech from Nike, Adidas, Puma & top sport brands.',
     'why.delivery': 'Fast Delivery',
-    'why.delivery_desc': 'Express delivery across Kuwait. Same-day in Kuwait City.',
+    'why.delivery_desc': 'Express delivery across Malaysia. Same-day in Kuala Lumpur.',
     'why.returns': 'Easy Returns',
     'why.returns_desc': '30-day hassle-free returns. No questions asked.',
 
@@ -58,7 +58,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'shop.categories': 'Categories',
     'shop.brands': 'Brands',
     'shop.all_brands': 'All Brands',
-    'shop.price': 'Price (KWD)',
+    'shop.price': 'Price (RM)',
     'shop.products_found': 'products found',
     'shop.loading': 'Loading products...',
     'shop.no_results': 'No Results',
@@ -73,7 +73,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'product.add_to_cart': 'Add to Cart',
     'product.buy_now': 'Buy Now',
     'product.authentic': '100% Authentic - Verified by SRK Collection',
-    'product.free_delivery': 'Free delivery across Kuwait on orders over 30 KWD',
+    'product.free_delivery': 'Free delivery across Malaysia on orders over RM 150',
     'product.return_policy': '30-day easy return policy',
     'product.cod': 'Cash on Delivery available',
     'product.related': 'You May Also Like',
@@ -94,7 +94,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'cart.free': 'Free',
     'cart.total': 'Total',
     'cart.checkout': 'Proceed to Checkout',
-    'cart.cod_available': 'Cash on Delivery available 🇰🇼',
+    'cart.cod_available': 'Cash on Delivery available 🇲🇾',
 
     // Checkout Page
     'checkout.title': 'Checkout',
@@ -113,12 +113,12 @@ export const translations: Record<Language, Record<string, string>> = {
     'checkout.no_shipping': 'No shipping methods available',
     'checkout.payment_method': 'Payment Method',
     'checkout.cod': 'Cash on Delivery (COD)',
-    'checkout.cod_desc': 'Pay when you receive your order 🇰🇼',
+    'checkout.cod_desc': 'Pay when you receive your order 🇲🇾',
     'checkout.place_order': 'Place Order',
     'checkout.placing': 'Placing Order...',
     'checkout.order_confirmed': 'Order Confirmed! 🎉',
     'checkout.order_placed': 'has been placed',
-    'checkout.payment_cod': 'Payment: Cash on Delivery 🇰🇼',
+    'checkout.payment_cod': 'Payment: Cash on Delivery 🇲🇾',
     'checkout.continue_shopping': 'Continue Shopping',
     'checkout.go_home': 'Go Home',
     'checkout.fill_required': 'Please fill in all required fields',
@@ -205,7 +205,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'shop.categories': 'ক্যাটাগরি',
     'shop.brands': 'ব্র্যান্ড',
     'shop.all_brands': 'সব ব্র্যান্ড',
-    'shop.price': 'মূল্য (BDT)',
+    'shop.price': 'মূল্য (RM)',
     'shop.products_found': 'টি পণ্য পাওয়া গেছে',
     'shop.loading': 'পণ্য লোড হচ্ছে...',
     'shop.no_results': 'কোনো ফলাফল নেই',

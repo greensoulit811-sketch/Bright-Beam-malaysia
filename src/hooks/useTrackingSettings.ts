@@ -42,7 +42,7 @@ export const useTrackingSettings = () => useQuery({
       tracking_purchase: (data as any).tracking_purchase ?? true,
       tracking_lead: (data as any).tracking_lead ?? true,
       tracking_complete_registration: (data as any).tracking_complete_registration ?? true,
-      currency: (data as any).currency || 'KWD',
+      currency: (data as any).currency || 'RM',
       default_content_type: (data as any).default_content_type || 'product',
     };
   },
