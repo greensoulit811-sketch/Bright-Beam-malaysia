@@ -77,7 +77,11 @@ const Navbar = () => {
                     onMouseLeave={() => setHoveredLink(null)}
                   >
                     <div className={`flex items-center gap-1.5 text-[11px] xl:text-[13px] font-bold uppercase tracking-tight text-gray-700 transition-colors group-hover:text-blue-600 ${hoveredLink === link.title ? 'text-blue-600' : ''}`}>
-                      {link.dropdown ? <span>{link.title}</span> : <Link to="/shop">{link.title}</Link>}
+                      {link.dropdown ? (
+                        <Link to={link.title === 'DIY PC Packages' ? '/' : '#'}>{link.title}</Link>
+                      ) : (
+                        <Link to="/shop">{link.title}</Link>
+                      )}
                       {link.dropdown && <ChevronDown className={`w-3.5 h-3.5 transition-transform ${hoveredLink === link.title ? 'rotate-180' : ''}`} />}
                     </div>
                     <div className={`absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 transition-transform duration-300 ${hoveredLink === link.title ? 'scale-x-100' : 'scale-x-0'}`} />
