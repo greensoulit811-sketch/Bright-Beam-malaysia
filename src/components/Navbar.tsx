@@ -37,7 +37,7 @@ const Navbar = () => {
   };
 
   const parentCategories = categories.filter(c => !c.parent_id);
-  const hotline = "+60 10-839 6094"; // Example hotline from user image
+  const hotline = "+60 19-322 2058"; // Example hotline from user image
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background shadow-sm">
