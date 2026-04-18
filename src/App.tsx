@@ -37,8 +37,6 @@ import MarketingTrackingPage from "./pages/admin/MarketingTrackingPage.tsx";
 import PagesManager from "./pages/admin/PagesManager.tsx";
 import AboutPage from "./pages/AboutPage.tsx";
 import ContactPage from "./pages/ContactPage.tsx";
-import BecomeDealerPage from "./pages/BecomeDealerPage.tsx";
-import BrandsManager from "./pages/admin/BrandsManager.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -62,7 +60,6 @@ const App = () => (
               <Route path="/wishlist" element={<WishlistPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<AboutPage />} />
-              <Route path="/become-a-dealer" element={<BecomeDealerPage />} />
               <Route path="/admin/login" element={<AdminLoginPage />} />
               <Route path="/admin" element={
                 <ProtectedAdminRoute>
@@ -77,7 +74,6 @@ const App = () => (
                 <Route path="coupons" element={<CouponsManager />} />
                 <Route path="checkout-leads" element={<CheckoutLeadsManager />} />
                 <Route path="banners" element={<BannersManager />} />
-                <Route path="brands" element={<BrandsManager />} />
                 <Route path="analytics" element={<AnalyticsPage />} />
                 <Route path="visitor-analytics" element={<VisitorAnalyticsPage />} />
                 <Route path="customers" element={<CustomersPage />} />

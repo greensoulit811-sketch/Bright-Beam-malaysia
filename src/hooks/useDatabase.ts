@@ -10,16 +10,6 @@ export type DbCoupon = Database['public']['Tables']['coupons']['Row'];
 export type DbCouponInsert = Database['public']['Tables']['coupons']['Insert'];
 export type DbBanner = Database['public']['Tables']['banners']['Row'];
 export type DbBannerInsert = Database['public']['Tables']['banners']['Insert'];
-export type DbBrand = {
-  id: string;
-  title: string;
-  image_url: string;
-  link_url?: string | null;
-  is_active: boolean;
-  sort_order: number;
-  created_at: string;
-};
-export type DbBrandInsert = Omit<DbBrand, 'id' | 'created_at'>;
 export type DbSettings = Database['public']['Tables']['site_settings']['Row'];
 
 // ==================== PRODUCTS ====================
@@ -222,59 +212,6 @@ export const useDeleteBanner = () => {
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['banners'] }),
-  });
-};
-
-// ==================== BRANDS ====================
-export const useBrands = () => useQuery({
-  queryKey: ['brands'],
-  queryFn: async () => {
-    const { data, error } = await supabase.from('brands').select('*').order('sort_order', { ascending: true });
-    if (error) throw error;
-    return data as DbBrand[];
-  },
-});
-
-export const useActiveBrands = () => useQuery({
-  queryKey: ['brands', 'active'],
-  queryFn: async () => {
-    const { data, error } = await supabase.from('brands').select('*').eq('is_active', true).order('sort_order', { ascending: true });
-    if (error) throw error;
-    return data as DbBrand[];
-  },
-});
-
-export const useAddBrand = () => {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async (brand: DbBrandInsert) => {
-      const { data, error } = await supabase.from('brands').insert(brand as any).select().single();
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['brands'] }),
-  });
-};
-
-export const useUpdateBrand = () => {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<DbBrand> & { id: string }) => {
-      const { error } = await supabase.from('brands').update(updates as any).eq('id', id);
-      if (error) throw error;
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['brands'] }),
-  });
-};
-
-export const useDeleteBrand = () => {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from('brands').delete().eq('id', id);
-      if (error) throw error;
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['brands'] }),
   });
 };
 
