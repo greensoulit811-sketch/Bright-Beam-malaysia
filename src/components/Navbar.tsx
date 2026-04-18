@@ -49,11 +49,11 @@ const Navbar = () => {
   const hotline = "+60 19-322 2058"; 
 
   const navLinks = [
-    { title: 'DIY PC Packages', dropdown: true, items: diySubCategories },
-    { title: 'Commercial', dropdown: false },
-    { title: 'Become A Dealer', dropdown: false },
-    { title: 'Pricelist', dropdown: false },
-    { title: 'Quotation', dropdown: false },
+    { title: 'DIY PC Packages', dropdown: true, items: diySubCategories, path: '/' },
+    { title: 'Commercial', dropdown: false, path: '/shop' },
+    { title: 'Become A Dealer', dropdown: false, path: '/become-a-dealer' },
+    { title: 'Pricelist', dropdown: false, path: '/shop' },
+    { title: 'Quotation', dropdown: false, path: '/shop' },
   ];
 
   return (
@@ -77,11 +77,7 @@ const Navbar = () => {
                     onMouseLeave={() => setHoveredLink(null)}
                   >
                     <div className={`flex items-center gap-1.5 text-[11px] xl:text-[13px] font-bold uppercase tracking-tight text-gray-700 transition-colors group-hover:text-blue-600 ${hoveredLink === link.title ? 'text-blue-600' : ''}`}>
-                      {link.dropdown ? (
-                        <Link to={link.title === 'DIY PC Packages' ? '/' : '#'}>{link.title}</Link>
-                      ) : (
-                        <Link to="/shop">{link.title}</Link>
-                      )}
+                      <Link to={link.path || '#'}>{link.title}</Link>
                       {link.dropdown && <ChevronDown className={`w-3.5 h-3.5 transition-transform ${hoveredLink === link.title ? 'rotate-180' : ''}`} />}
                     </div>
                     <div className={`absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 transition-transform duration-300 ${hoveredLink === link.title ? 'scale-x-100' : 'scale-x-0'}`} />
@@ -124,7 +120,6 @@ const Navbar = () => {
       {/* Desktop Bottom Row */}
       <div className="hidden lg:block bg-[#0A2342] text-white">
         <div className="container mx-auto px-4 lg:px-8 flex items-center h-16 gap-12">
-          {/* All Categories Dropdown Content Restored */}
           <div className="relative h-full flex items-center" ref={dropdownRef}>
             <button className="flex items-center gap-2 text-white font-bold uppercase text-[12px] hover:text-blue-400 transition-colors" onClick={() => setCatMenuOpen(!catMenuOpen)}>
               <Menu className="w-5 h-5" /> All Categories <ChevronDown className={`w-3 h-3 transition-transform ${catMenuOpen ? 'rotate-180' : ''}`} />
@@ -160,7 +155,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Header (Standard Row) */}
+      {/* Mobile Header */}
       <div className="lg:hidden flex items-center justify-between h-16 px-4 bg-white border-b border-gray-100">
         <button className="p-2" onClick={() => setMobileOpen(true)}><Menu className="w-6 h-6 text-[#0A2342]" /></button>
         <Link to="/"><img src="/logos.png" alt="Logo" className="h-7 w-auto" /></Link>
@@ -170,7 +165,7 @@ const Navbar = () => {
         </Link>
       </div>
 
-      {/* Tabbed Mobile Drawer (Same as previous) */}
+      {/* Tabbed Mobile Drawer */}
       <AnimatePresence>
         {mobileOpen && (
           <>
@@ -200,7 +195,7 @@ const Navbar = () => {
                        {navLinks.map((link) => (
                          <div key={link.title} className="flex flex-col">
                             <div className="flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors">
-                               {link.dropdown ? <span className="text-[14px] font-bold text-[#0A2342] flex-1">{link.title}</span> : <Link to="/shop" onClick={() => setMobileOpen(false)} className="text-[14px] font-bold text-[#0A2342] flex-1">{link.title}</Link>}
+                               <Link to={link.path || '#'} onClick={() => setMobileOpen(false)} className="text-[14px] font-bold text-[#0A2342] flex-1">{link.title}</Link>
                                {link.dropdown && <button onClick={() => toggleExpanded(link.title)} className="p-1 px-3 border border-gray-100 rounded text-gray-400 hover:text-blue-600 transition-colors">{expandedLinks.includes(link.title) ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}</button>}
                             </div>
                             {link.dropdown && expandedLinks.includes(link.title) && (

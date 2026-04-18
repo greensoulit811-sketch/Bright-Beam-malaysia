@@ -37,6 +37,7 @@ import MarketingTrackingPage from "./pages/admin/MarketingTrackingPage.tsx";
 import PagesManager from "./pages/admin/PagesManager.tsx";
 import AboutPage from "./pages/AboutPage.tsx";
 import ContactPage from "./pages/ContactPage.tsx";
+import BecomeDealerPage from "./pages/BecomeDealerPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -59,7 +60,8 @@ const App = () => (
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/wishlist" element={<WishlistPage />} />
               <Route path="/about" element={<AboutPage />} />
-              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/contact" element={<AboutPage />} />
+              <Route path="/become-a-dealer" element={<BecomeDealerPage />} />
               <Route path="/admin/login" element={<AdminLoginPage />} />
               <Route path="/admin" element={
                 <ProtectedAdminRoute>
