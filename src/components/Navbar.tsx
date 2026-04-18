@@ -14,6 +14,7 @@ const Navbar = () => {
   const { t } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [catMenuOpen, setCatMenuOpen] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -37,7 +38,16 @@ const Navbar = () => {
   };
 
   const parentCategories = categories.filter(c => !c.parent_id);
+  const diySubCategories = categories.filter(c => c.parent_id !== null).slice(0, 8); // Simulation for DIY subcategories
   const hotline = "+60 19-322 2058"; 
+
+  const navLinks = [
+    { title: 'DIY PC Packages', dropdown: true, items: diySubCategories },
+    { title: 'Commercial', dropdown: false },
+    { title: 'Become A Dealer', dropdown: false },
+    { title: 'Pricelist', dropdown: false },
+    { title: 'Quotation', dropdown: false },
+  ];
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white">
@@ -52,17 +62,62 @@ const Navbar = () => {
 
             {/* Main Links & Hotline */}
             <div className="hidden lg:flex items-center gap-10">
-              <div className="flex items-center gap-8 text-[11px] font-bold uppercase tracking-tight text-gray-700">
-                <Link to="/" className="hover:text-blue-600 transition-colors uppercase">DIY PC Packages</Link>
-                <Link to="/shop" className="hover:text-blue-600 transition-colors uppercase">Commercial</Link>
-                <Link to="/shop" className="hover:text-blue-600 transition-colors uppercase">Become A Dealer</Link>
-                <Link to="/shop" className="hover:text-blue-600 transition-colors uppercase">Pricelist</Link>
-                <Link to="/shop" className="hover:text-blue-600 transition-colors uppercase">Quotation</Link>
+              <div className="flex items-center gap-6 h-full">
+                {navLinks.map((link) => (
+                  <div 
+                    key={link.title} 
+                    className="relative h-20 flex items-center group cursor-pointer"
+                    onMouseEnter={() => setHoveredLink(link.title)}
+                    onMouseLeave={() => setHoveredLink(null)}
+                  >
+                    <div className={`flex items-center gap-1 text-[11px] font-bold uppercase tracking-tight text-gray-700 transition-colors group-hover:text-blue-600 ${hoveredLink === link.title ? 'text-blue-600' : ''}`}>
+                      {link.title}
+                      {link.dropdown && <ChevronDown className={`w-3 h-3 transition-transform ${hoveredLink === link.title ? 'rotate-180' : ''}`} />}
+                    </div>
+                    
+                    {/* Active Underline Effect */}
+                    <div className={`absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 transition-transform duration-300 ${hoveredLink === link.title ? 'scale-x-100' : 'scale-x-0'}`} />
+
+                    {/* Nav Dropdown Menu */}
+                    <AnimatePresence>
+                      {link.dropdown && hoveredLink === link.title && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          className="absolute top-full left-0 w-56 bg-white shadow-xl border border-gray-100 py-3 z-[110]"
+                        >
+                          {link.items && link.items.length > 0 ? link.items.map((item) => (
+                            <Link 
+                              key={item.id} 
+                              to={`/shop?category=${item.slug}`}
+                              className="block px-6 py-2.5 text-[11px] font-bold text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition-colors uppercase"
+                              onClick={() => setHoveredLink(null)}
+                            >
+                              {item.name}
+                            </Link>
+                          )) : (
+                            ['Intel', 'AMD', 'Nvidia', 'Home & Office', 'Gaming', 'Workstation', 'Powered By ASUS', 'Powered By MSI'].map(item => (
+                              <Link 
+                                key={item} 
+                                to={`/shop?search=${item}`}
+                                className="block px-6 py-2.5 text-[11px] font-bold text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition-colors uppercase"
+                                onClick={() => setHoveredLink(null)}
+                              >
+                                {item}
+                              </Link>
+                            ))
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ))}
               </div>
               
               <div className="flex flex-col items-end border-l pl-8 border-gray-100">
                 <span className="text-[10px] text-gray-400 font-bold leading-none">Hotline:</span>
-                <a href={`tel:${hotline}`} className="text-[14px] font-bold text-[#0A2342]">{hotline}</a>
+                <a href={`tel:${hotline}`} className="text-[14px] font-bold text-[#0A2342] whitespace-nowrap">{hotline}</a>
               </div>
               
               <div className="pl-4">
@@ -141,9 +196,11 @@ const Navbar = () => {
             <Link to="/cart" className="flex items-center gap-3 group shrink-0">
               <div className="relative">
                 <ShoppingBag className="w-7 h-7 text-white" />
-                <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-white text-[#0A2342] rounded-full text-[11px] flex items-center justify-center font-bold border-2 border-[#0A2342]">
-                  {cartCount}
-                </span>
+                {cartCount > 0 && (
+                  <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-white text-[#0A2342] rounded-full text-[11px] flex items-center justify-center font-bold border-2 border-[#0A2342]">
+                    {cartCount}
+                  </span>
+                )}
               </div>
               <div className="flex items-center">
                 <span className="text-[15px] font-bold text-white uppercase tracking-tighter">RM {cartTotal.toFixed(2)}</span>
@@ -193,9 +250,11 @@ const Navbar = () => {
                   <LanguageSwitcher />
                   <Link to="/cart" onClick={() => setMobileOpen(false)} className="relative shrink-0">
                     <ShoppingBag className="w-7 h-7 text-[#0A2342]" />
-                    <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#0A2342] text-white rounded-full text-[10px] flex items-center justify-center font-bold">
-                      {cartCount}
-                    </span>
+                    {cartCount > 0 && (
+                      <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#0A2342] text-white rounded-full text-[10px] flex items-center justify-center font-bold">
+                        {cartCount}
+                      </span>
+                    )}
                   </Link>
                 </div>
               </div>
