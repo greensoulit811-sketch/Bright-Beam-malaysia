@@ -11,11 +11,10 @@ import {
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { useBanners } from '@/hooks/useDatabase';
+import { useActiveBrands } from '@/hooks/useDatabase';
 
 const BecomeDealerPage = () => {
-  const { data: allBanners = [] } = useBanners();
-  const dbBrands = allBanners.filter(b => b.position === 'brand_logo' && b.is_active);
+  const { data: dbBrands = [] } = useActiveBrands();
 
   const benefits = [
     {

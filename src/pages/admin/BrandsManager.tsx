@@ -1,23 +1,21 @@
 import { useState, useRef } from 'react';
-import { useBanners, useAddBanner, useUpdateBanner, useDeleteBanner, type DbBanner } from '@/hooks/useDatabase';
+import { useBrands, useAddBrand, useUpdateBrand, useDeleteBrand, type DbBrand } from '@/hooks/useDatabase';
 import { uploadProductImage, deleteProductImage } from '@/lib/image-upload';
-import { Plus, Pencil, Trash2, X, Upload, ImageIcon, Loader2, Link as LinkIcon, Globe } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload, ImageIcon, Loader2, Globe } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 const BrandsManager = () => {
-  const { data: allBanners = [], isLoading } = useBanners();
-  const addBanner = useAddBanner();
-  const updateBanner = useUpdateBanner();
-  const deleteBanner = useDeleteBanner();
+  const { data: brands = [], isLoading } = useBrands();
+  const addBrand = useAddBrand();
+  const updateBrand = useUpdateBrand();
+  const deleteBrand = useDeleteBrand();
   
-  // Filter for brand logos only
-  const brands = allBanners.filter(b => b.position === 'brand_logo');
-
   const [showForm, setShowForm] = useState(false);
-  const [editing, setEditing] = useState<DbBanner | null>(null);
+  const [editing, setEditing] = useState<DbBrand | null>(null);
   const [uploading, setUploading] = useState(false);
   const imageRef = useRef<HTMLInputElement>(null);
 
@@ -26,21 +24,23 @@ const BrandsManager = () => {
     image_url: '',
     link_url: '',
     is_active: true,
+    sort_order: 0,
   });
 
   const openAdd = () => {
     setEditing(null);
-    setForm({ title: '', image_url: '', link_url: '', is_active: true });
+    setForm({ title: '', image_url: '', link_url: '', is_active: true, sort_order: brands.length });
     setShowForm(true);
   };
 
-  const openEdit = (brand: DbBanner) => {
+  const openEdit = (brand: DbBrand) => {
     setEditing(brand);
     setForm({
       title: brand.title,
       image_url: brand.image_url,
       link_url: brand.link_url || '',
       is_active: brand.is_active ?? true,
+      sort_order: brand.sort_order ?? 0,
     });
     setShowForm(true);
   };
@@ -72,15 +72,15 @@ const BrandsManager = () => {
       image_url: form.image_url,
       link_url: form.link_url,
       is_active: form.is_active,
-      position: 'brand_logo', // Fixed position for filtering
+      sort_order: form.sort_order,
     };
 
     try {
       if (editing) {
-        await updateBanner.mutateAsync({ id: editing.id, ...data });
+        await updateBrand.mutateAsync({ id: editing.id, ...data });
         toast.success('Brand updated');
       } else {
-        await addBanner.mutateAsync(data);
+        await addBrand.mutateAsync(data);
         toast.success('Brand added');
       }
       setShowForm(false);
@@ -92,7 +92,7 @@ const BrandsManager = () => {
   const handleDelete = async (id: string, name: string) => {
     if (!window.confirm(`Delete brand "${name}"?`)) return;
     try {
-      await deleteBanner.mutateAsync(id);
+      await deleteBrand.mutateAsync(id);
       toast.success(`"${name}" deleted`);
     } catch {
       toast.error('Failed to delete');
@@ -172,21 +172,27 @@ const BrandsManager = () => {
                   </div>
                 </div>
 
+                <div className="grid grid-cols-2 gap-4">
+                   <div>
+                      <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Sort Order</label>
+                      <Input type="number" value={form.sort_order} onChange={e => setForm({ ...form, sort_order: +e.target.value })} className="rounded-xl border-gray-100 bg-gray-50/50" />
+                   </div>
+                   <div className="flex flex-col">
+                      <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Status</label>
+                      <div className="flex items-center gap-2 h-10 px-4 bg-gray-50 rounded-xl border border-gray-100">
+                         <span className="text-xs font-bold text-gray-500">Active</span>
+                         <Switch checked={form.is_active} onCheckedChange={checked => setForm({ ...form, is_active: checked })} />
+                      </div>
+                   </div>
+                </div>
+
                 <div>
                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Official Website (Optional)</label>
                    <Input value={form.link_url} onChange={e => setForm({ ...form, link_url: e.target.value })} placeholder="https://..." className="rounded-xl border-gray-100 bg-gray-50/50" />
                 </div>
 
-                <div className="flex items-center justify-between bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                   <div className="flex items-center gap-2">
-                      <Globe className="w-4 h-4 text-blue-600" />
-                      <span className="text-sm font-bold text-[#0A2342]">Show on website</span>
-                   </div>
-                   <Switch checked={form.is_active} onCheckedChange={checked => setForm({ ...form, is_active: checked })} />
-                </div>
-
-                <Button type="submit" disabled={uploading} className="w-full h-14 bg-blue-600 hover:bg-blue-700 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-blue-200 mt-4">
-                   {editing ? 'Update Brand' : 'Save Brand'}
+                <Button type="submit" disabled={uploading || addBrand.isPending || updateBrand.isPending} className="w-full h-14 bg-blue-600 hover:bg-blue-700 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-blue-200 mt-4">
+                   {uploading ? 'Uploading...' : editing ? 'Update Brand' : 'Save Brand'}
                 </Button>
              </form>
           </motion.div>
