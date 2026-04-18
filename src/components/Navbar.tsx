@@ -63,7 +63,7 @@ const Navbar = () => {
             </div>
 
             {/* Main Links - Perfectly Centered */}
-            <div className="hidden lg:flex flex-1 justify-center h-full overflow-hidden">
+            <div className="hidden lg:flex flex-1 justify-center h-full">
               <div className="flex items-center gap-4 xl:gap-8 h-full">
                 {navLinks.map((link) => (
                   <div 
