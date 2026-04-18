@@ -56,15 +56,15 @@ const Navbar = () => {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center h-16 lg:h-20">
             {/* Logo Side - Left */}
-            <div className="w-1/2 lg:w-1/4">
+            <div className="flex-shrink-0 w-40 lg:w-48">
               <Link to="/" className="flex items-center">
                 <img src="/logos.png" alt="Bright Beam" className="h-8 lg:h-12 w-auto" />
               </Link>
             </div>
 
-            {/* Main Links - Perfectly Centered (Large Screen Only) */}
-            <div className="hidden lg:flex flex-1 justify-center h-full">
-              <div className="flex items-center gap-8 h-full">
+            {/* Main Links - Perfectly Centered */}
+            <div className="hidden lg:flex flex-1 justify-center h-full overflow-hidden">
+              <div className="flex items-center gap-4 xl:gap-8 h-full">
                 {navLinks.map((link) => (
                   <div 
                     key={link.title} 
@@ -72,7 +72,7 @@ const Navbar = () => {
                     onMouseEnter={() => setHoveredLink(link.title)}
                     onMouseLeave={() => setHoveredLink(null)}
                   >
-                    <div className={`flex items-center gap-1 text-[13px] xl:text-[14px] font-bold uppercase tracking-wide text-gray-700 transition-colors group-hover:text-blue-600 ${hoveredLink === link.title ? 'text-blue-600' : ''}`}>
+                    <div className={`flex items-center gap-1 text-[11px] xl:text-[13px] font-bold uppercase tracking-tight text-gray-700 transition-colors group-hover:text-blue-600 whitespace-nowrap ${hoveredLink === link.title ? 'text-blue-600' : ''}`}>
                       {link.title}
                       {link.dropdown && <ChevronDown className={`w-3.5 h-3.5 transition-transform ${hoveredLink === link.title ? 'rotate-180' : ''}`} />}
                     </div>
@@ -97,7 +97,7 @@ const Navbar = () => {
                               {item.name}
                             </Link>
                           )) : (
-                            ['Intel', 'AMD', 'Nvidia', 'Home & Office', 'Gaming', 'Workstation', 'Powered By ASUS', 'Powered By MSI'].map(item => (
+                            ['Intel', 'AMD', 'Nvidia', 'Home & Office'].map(item => (
                               <Link 
                                 key={item} 
                                 to={`/shop?search=${item}`}
@@ -117,10 +117,10 @@ const Navbar = () => {
             </div>
 
             {/* Right Side - Hotline & LanguageSwitcher */}
-            <div className="hidden lg:flex w-1/4 justify-end items-center gap-8">
+            <div className="hidden lg:flex flex-shrink-0 justify-end items-center gap-4 xl:gap-8">
               <div className="flex flex-col items-end">
-                <span className="text-[11px] text-gray-400 font-bold leading-none uppercase tracking-tight">Hotline:</span>
-                <a href={`tel:${hotline}`} className="text-[17px] font-black text-[#0A2342] whitespace-nowrap">{hotline}</a>
+                <span className="text-[10px] text-gray-400 font-bold leading-none uppercase tracking-tight">Hotline:</span>
+                <a href={`tel:${hotline}`} className="text-[14px] xl:text-[16px] font-black text-[#0A2342] whitespace-nowrap">{hotline}</a>
               </div>
               <div className="border-l pl-4 border-gray-100">
                 <LanguageSwitcher />
@@ -145,7 +145,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Bottom Row: Actions Bar (Dark Blue Background #0A2342) */}
+      {/* Bottom Row: Actions Bar */}
       <div className="bg-[#0A2342] text-white">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center h-14 lg:h-16 gap-3 lg:gap-12">
@@ -205,7 +205,7 @@ const Navbar = () => {
               </form>
             </div>
 
-            {/* Shopping Cart (Large Screen Only) */}
+            {/* Shopping Cart */}
             <Link to="/cart" className="hidden lg:flex items-center gap-3 group shrink-0">
               <div className="relative">
                 <ShoppingBag className="w-7 h-7 text-white" />
@@ -216,7 +216,7 @@ const Navbar = () => {
                 )}
               </div>
               <div className="flex items-center">
-                <span className="text-[16px] xl:text-[18px] font-black text-white uppercase tracking-tighter">RM {cartTotal.toFixed(2)}</span>
+                <span className="text-[16px] xl:text-[18px] font-black text-white uppercase tracking-tighter whitespace-nowrap">RM {cartTotal.toFixed(2)}</span>
               </div>
             </Link>
 
@@ -287,9 +287,6 @@ const Navbar = () => {
                 </div>
                 <div className="flex items-center justify-between">
                    <LanguageSwitcher />
-                   <div className="flex gap-4">
-                      {/* Socials placeholder */}
-                   </div>
                 </div>
               </div>
             </div>
