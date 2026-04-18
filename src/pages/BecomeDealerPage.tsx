@@ -7,13 +7,16 @@ import {
   Truck, 
   History, 
   BadgePercent,
-  CheckCircle2,
   ArrowRight
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useBanners } from '@/hooks/useDatabase';
 
 const BecomeDealerPage = () => {
+  const { data: allBanners = [] } = useBanners();
+  const dbBrands = allBanners.filter(b => b.position === 'brand_logo' && b.is_active);
+
   const benefits = [
     {
       title: 'Simple application process',
@@ -68,19 +71,6 @@ const BecomeDealerPage = () => {
       title: 'Discount Activation',
       desc: 'Once approved, dealer discount is applied directly to your account.'
     }
-  ];
-
-  const brands = [
-    { name: 'Apple', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg' },
-    { name: 'Acer', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/ad/Acer_Logo.svg' },
-    { name: 'ASUS', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg' },
-    { name: 'AOC', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/AOC_logo.svg' },
-    { name: 'BenQ', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e8/BenQ_logo.svg' },
-    { name: 'Dell', logo: 'https://upload.wikimedia.org/wikipedia/commons/8/82/Dell_Logo.svg' },
-    { name: 'HP', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/ad/HP_logo_2012.svg' },
-    { name: 'JOI', logo: 'https://www.joi.com.my/image/catalog/logo/JOI-Logo.png' },
-    { name: 'Lenovo', logo: 'https://upload.wikimedia.org/wikipedia/commons/b/b8/Lenovo_logo_2015.svg' },
-    { name: 'Microsoft', logo: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg' }
   ];
 
   return (
@@ -157,19 +147,26 @@ const BecomeDealerPage = () => {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
-               {brands.map((brand, idx) => (
+               {dbBrands.length > 0 ? dbBrands.map((brand, idx) => (
                  <motion.div 
-                   key={idx}
+                   key={brand.id}
                    whileHover={{ scale: 1.02 }}
                    className="bg-white p-8 lg:p-10 rounded-3xl border border-gray-100 flex items-center justify-center group"
                  >
                    <img 
-                     src={brand.logo} 
-                     alt={brand.name} 
+                     src={brand.image_url} 
+                     alt={brand.title} 
                      className="max-h-12 w-auto grayscale group-hover:grayscale-0 transition-all opacity-60 group-hover:opacity-100" 
                    />
                  </motion.div>
-               ))}
+               )) : (
+                 // Fallback if no brands in DB
+                 [1,2,3,4,5].map(i => (
+                   <div key={i} className="bg-white p-8 lg:p-10 rounded-3xl border border-gray-100 flex items-center justify-center opacity-20">
+                     <div className="w-20 h-8 bg-gray-200 rounded-lg"></div>
+                   </div>
+                 ))
+               )}
                <div className="bg-white p-8 lg:p-10 rounded-3xl border border-gray-100 flex items-center justify-center opacity-40">
                   <span className="text-xs font-bold uppercase text-gray-400">And Many More</span>
                </div>
