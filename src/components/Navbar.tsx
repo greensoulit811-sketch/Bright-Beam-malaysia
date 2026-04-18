@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, Search, Menu, X, ChevronDown, Phone, Heart } from 'lucide-react';
+import { ShoppingBag, Search, Menu, X, ChevronDown } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useActiveCategories } from '@/hooks/useCategories';
 import { useLanguage } from '@/context/LanguageContext';
@@ -37,57 +37,61 @@ const Navbar = () => {
   };
 
   const parentCategories = categories.filter(c => !c.parent_id);
-  const hotline = "+60 19-322 2058"; // Example hotline from user image
+  const hotline = "+60 19-322 2058"; 
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background shadow-sm">
-      {/* Top Row: Logo & Main Nav */}
-      <div className="border-b border-border bg-background">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white">
+      {/* Top Row: Logo & Main Nav (White Background) */}
+      <div className="border-b border-gray-100">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-20">
+          <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2">
-              <img src="/logos.png" alt="Bright Beam" className="h-10 lg:h-12 w-auto" />
+            <Link to="/" className="flex items-center">
+              <img src="/logos.png" alt="Bright Beam" className="h-12 w-auto" />
             </Link>
 
-            {/* Main Links */}
-            <div className="hidden lg:flex items-center gap-8 font-body text-xs tracking-widest uppercase font-bold text-foreground">
-              <Link to="/" className="hover:text-neon transition-colors duration-300">{t('nav.home')}</Link>
-              <Link to="/shop" className="hover:text-neon transition-colors duration-300">{t('nav.shop')}</Link>
-              <Link to="/about" className="hover:text-neon transition-colors duration-300">{t('footer.about')}</Link>
-              <Link to="/contact" className="hover:text-neon transition-colors duration-300">{t('footer.contact')}</Link>
+            {/* Main Links & Hotline */}
+            <div className="hidden lg:flex items-center gap-10">
+              <div className="flex items-center gap-8 text-[11px] font-bold uppercase tracking-tight text-gray-700">
+                <Link to="/" className="hover:text-blue-600 transition-colors uppercase">DIY PC Packages</Link>
+                <Link to="/shop" className="hover:text-blue-600 transition-colors uppercase">Commercial</Link>
+                <Link to="/shop" className="hover:text-blue-600 transition-colors uppercase">Become A Dealer</Link>
+                <Link to="/shop" className="hover:text-blue-600 transition-colors uppercase">Pricelist</Link>
+                <Link to="/shop" className="hover:text-blue-600 transition-colors uppercase">Quotation</Link>
+              </div>
+              
+              <div className="flex flex-col items-end border-l pl-8 border-gray-100">
+                <span className="text-[10px] text-gray-400 font-bold leading-none">Hotline:</span>
+                <a href={`tel:${hotline}`} className="text-[14px] font-bold text-[#0A2342]">{hotline}</a>
+              </div>
+              
+              <div className="pl-4">
+                <LanguageSwitcher />
+              </div>
             </div>
 
-            {/* Right Side Info */}
-            <div className="flex items-center gap-6">
-              <div className="hidden sm:flex flex-col items-end">
-                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Hotline:</span>
-                <a href={`tel:${hotline}`} className="text-sm font-heading font-black text-foreground hover:text-neon transition-colors">{hotline}</a>
-              </div>
-              <div className="flex items-center gap-4">
-                <LanguageSwitcher />
-                <button className="lg:hidden text-foreground hover:text-neon transition-colors" onClick={() => setMobileOpen(!mobileOpen)}>
-                  {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                </button>
-              </div>
-            </div>
+            {/* Mobile Menu Toggle */}
+            <button className="lg:hidden text-gray-700" onClick={() => setMobileOpen(!mobileOpen)}>
+              {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Bottom Row: Actions Bar */}
-      <div className="hidden lg:block bg-[#0A192F] text-white">
+      {/* Bottom Row: Actions Bar (Dark Blue Background #0A2342) */}
+      <div className="bg-[#0A2342] text-white">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center h-14 gap-8">
+          <div className="flex items-center h-16 gap-12">
+            
             {/* All Categories Dropdown */}
-            <div className="relative h-full" ref={dropdownRef}>
+            <div className="relative h-full flex items-center" ref={dropdownRef}>
               <button 
-                className="flex items-center gap-3 bg-neon h-full px-6 text-accent-foreground font-heading font-bold uppercase tracking-wider text-sm hover:brightness-110 transition-all"
+                className="flex items-center gap-2 text-white font-bold uppercase text-[12px] hover:text-blue-400 transition-colors"
                 onClick={() => setCatMenuOpen(!catMenuOpen)}
               >
                 <Menu className="w-5 h-5" />
                 <span>All Categories</span>
-                <ChevronDown className={`w-4 h-4 transition-transform ${catMenuOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3 h-3 transition-transform ${catMenuOpen ? 'rotate-180' : ''}`} />
               </button>
 
               <AnimatePresence>
@@ -103,7 +107,7 @@ const Navbar = () => {
                         <Link 
                           key={cat.id} 
                           to={`/shop?category=${cat.slug}`}
-                          className="flex items-center px-6 py-3 text-sm text-foreground hover:bg-neon/10 hover:text-neon font-body transition-colors border-b border-border/50 last:border-0"
+                          className="flex items-center px-6 py-3 text-sm text-foreground hover:bg-gray-50 hover:text-blue-600 font-medium transition-colors border-b border-gray-50 last:border-0"
                           onClick={() => setCatMenuOpen(false)}
                         >
                           {cat.name}
@@ -117,98 +121,81 @@ const Navbar = () => {
               </AnimatePresence>
             </div>
 
-            {/* Search Bar - Centered */}
+            {/* Search Bar - Notebook Plaza Style */}
             <div className="flex-1 flex justify-center h-full items-center">
-              <form onSubmit={handleSearch} className="w-full max-w-2xl relative h-10">
+              <form onSubmit={handleSearch} className="w-full max-w-2xl relative h-10 flex">
                 <input 
                   type="text" 
-                  placeholder="Search laptops, components, accessories..." 
-                  className="w-full h-full bg-white/10 border border-white/20 rounded-md px-4 pr-12 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-neon focus:bg-white/15 transition-all font-body"
+                  placeholder="Search..." 
+                  className="w-full h-full bg-white rounded-l-full px-6 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button type="submit" className="absolute right-0 top-0 h-full w-12 flex items-center justify-center bg-neon/80 hover:bg-neon text-accent-foreground rounded-r-md transition-colors">
+                <button type="submit" className="h-full w-14 flex items-center justify-center bg-[#5BC0DE] text-white rounded-r-full hover:bg-[#46b8da] transition-colors">
                   <Search className="w-5 h-5" />
                 </button>
               </form>
             </div>
 
-            {/* Shopping Cart Side */}
-            <Link to="/cart" className="flex items-center gap-3 hover:text-neon transition-colors ml-auto group">
+            {/* Shopping Cart - Notebook Plaza Style */}
+            <Link to="/cart" className="flex items-center gap-3 group shrink-0">
               <div className="relative">
-                <div className="bg-white/10 p-2 rounded-full group-hover:bg-neon group-hover:text-accent-foreground transition-all">
-                  <ShoppingBag className="w-5 h-5" />
-                </div>
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-neon text-accent-foreground rounded-full text-[10px] flex items-center justify-center font-bold border-2 border-[#0A192F]">
-                    {cartCount}
-                  </span>
-                )}
+                <ShoppingBag className="w-7 h-7 text-white" />
+                <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-white text-[#0A2342] rounded-full text-[11px] flex items-center justify-center font-bold border-2 border-[#0A2342]">
+                  {cartCount}
+                </span>
               </div>
-              <div className="flex flex-col leading-none">
-                <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">My Cart</span>
-                <span className="text-sm font-heading font-black">RM {cartTotal.toFixed(2)}</span>
+              <div className="flex items-center">
+                <span className="text-[15px] font-bold text-white uppercase tracking-tighter">RM {cartTotal.toFixed(2)}</span>
               </div>
             </Link>
+
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu (Same compact design) */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div 
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-background border-t border-border overflow-hidden"
+            className="lg:hidden bg-white border-t border-gray-100 overflow-hidden"
           >
             <div className="p-4 space-y-4">
-              {/* Mobile Search */}
-              <form onSubmit={handleSearch} className="relative">
+              <form onSubmit={handleSearch} className="relative flex">
                 <input 
                   type="text" 
                   placeholder="Search products..." 
-                  className="w-full bg-secondary py-3 px-4 rounded-md text-sm border border-border focus:ring-1 focus:ring-neon focus:outline-none"
+                  className="w-full bg-gray-50 py-3 px-6 rounded-l-full text-sm border border-gray-200 focus:outline-none"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                <button type="submit" className="bg-[#5BC0DE] px-4 rounded-r-full text-white">
                   <Search className="w-5 h-5" />
                 </button>
               </form>
 
-              <div className="flex flex-col gap-2 font-body text-sm tracking-widest uppercase font-bold text-foreground">
-                <Link to="/" onClick={() => setMobileOpen(false)} className="hover:text-neon py-3 border-b border-border/50">{t('nav.home')}</Link>
-                <Link to="/shop" onClick={() => setMobileOpen(false)} className="hover:text-neon py-3 border-b border-border/50">{t('nav.shop')}</Link>
-                
-                {/* Mobile Categories Accordion would go here, using a simpler list for now */}
-                <div className="py-2">
-                  <p className="text-[10px] text-muted-foreground mb-2">Categories</p>
-                  <div className="flex flex-wrap gap-2">
-                    {parentCategories.map(cat => (
-                      <Link key={cat.id} to={`/shop?category=${cat.slug}`} onClick={() => setMobileOpen(false)} className="text-[11px] bg-secondary px-3 py-1.5 rounded-full hover:bg-neon hover:text-accent-foreground transition-all">
-                        {cat.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
+              <div className="flex flex-col gap-1 font-bold text-[12px] uppercase text-gray-700">
+                <Link to="/" onClick={() => setMobileOpen(false)} className="py-3 border-b border-gray-50 uppercase">Home</Link>
+                <Link to="/shop" onClick={() => setMobileOpen(false)} className="py-3 border-b border-gray-50 uppercase">Shop</Link>
+                <Link to="/about" onClick={() => setMobileOpen(false)} className="py-3 border-b border-gray-50 uppercase">About Us</Link>
+                <Link to="/contact" onClick={() => setMobileOpen(false)} className="py-3 border-b border-gray-50 uppercase">Contact Us</Link>
               </div>
 
-              <div className="pt-4 border-t border-border flex items-center justify-between">
+              <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
                 <div className="flex flex-col">
-                  <span className="text-[10px] text-muted-foreground uppercase font-bold">Hotline:</span>
-                  <span className="text-sm font-bold">{hotline}</span>
+                  <span className="text-[10px] text-gray-400 font-bold uppercase">Hotline:</span>
+                  <span className="text-sm font-bold text-[#0A2342]">{hotline}</span>
                 </div>
                 <div className="flex items-center gap-4">
                   <LanguageSwitcher />
-                  <Link to="/cart" onClick={() => setMobileOpen(false)} className="relative bg-neon/10 p-2 rounded-full text-neon">
-                    <ShoppingBag className="w-6 h-6" />
-                    {cartCount > 0 && (
-                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-neon text-accent-foreground rounded-full text-[10px] flex items-center justify-center font-bold">
-                        {cartCount}
-                      </span>
-                    )}
+                  <Link to="/cart" onClick={() => setMobileOpen(false)} className="relative shrink-0">
+                    <ShoppingBag className="w-7 h-7 text-[#0A2342]" />
+                    <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#0A2342] text-white rounded-full text-[10px] flex items-center justify-center font-bold">
+                      {cartCount}
+                    </span>
                   </Link>
                 </div>
               </div>
