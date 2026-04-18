@@ -38,7 +38,7 @@ const Navbar = () => {
   };
 
   const parentCategories = categories.filter(c => !c.parent_id);
-  const diySubCategories = categories.filter(c => c.parent_id !== null).slice(0, 8); // Simulation for DIY subcategories
+  const diySubCategories = categories.filter(c => c.parent_id !== null).slice(0, 8); 
   const hotline = "+60 19-322 2058"; 
 
   const navLinks = [
@@ -51,17 +51,19 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white">
-      {/* Top Row: Logo & Main Nav (White Background) */}
+      {/* Top Row: Logo, Centered Nav & Hotline (White Background) */}
       <div className="border-b border-gray-100">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            {/* Logo */}
-            <Link to="/" className="flex items-center">
-              <img src="/logos.png" alt="Bright Beam" className="h-12 w-auto" />
-            </Link>
+          <div className="flex items-center h-20">
+            {/* Logo Side - Left */}
+            <div className="w-1/4">
+              <Link to="/" className="flex items-center">
+                <img src="/logos.png" alt="Bright Beam" className="h-12 w-auto" />
+              </Link>
+            </div>
 
-            {/* Main Links & Hotline */}
-            <div className="hidden lg:flex items-center gap-10">
+            {/* Main Links - Perfectly Centered */}
+            <div className="hidden lg:flex flex-1 justify-center h-full">
               <div className="flex items-center gap-6 h-full">
                 {navLinks.map((link) => (
                   <div 
@@ -85,7 +87,7 @@ const Navbar = () => {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 10 }}
-                          className="absolute top-full left-0 w-56 bg-white shadow-xl border border-gray-100 py-3 z-[110]"
+                          className="absolute top-full left-1/2 -translate-x-1/2 w-56 bg-white shadow-xl border border-gray-100 py-3 z-[110]"
                         >
                           {link.items && link.items.length > 0 ? link.items.map((item) => (
                             <Link 
@@ -114,21 +116,25 @@ const Navbar = () => {
                   </div>
                 ))}
               </div>
-              
-              <div className="flex flex-col items-end border-l pl-8 border-gray-100">
-                <span className="text-[10px] text-gray-400 font-bold leading-none">Hotline:</span>
-                <a href={`tel:${hotline}`} className="text-[14px] font-bold text-[#0A2342] whitespace-nowrap">{hotline}</a>
+            </div>
+
+            {/* Right Side - Hotline & LanguageSwitcher */}
+            <div className="hidden lg:flex w-1/4 justify-end items-center gap-8">
+              <div className="flex flex-col items-end">
+                <span className="text-[10px] text-gray-400 font-bold leading-none uppercase tracking-tighter">Hotline:</span>
+                <a href={`tel:${hotline}`} className="text-[15px] font-extrabold text-[#0A2342] whitespace-nowrap">{hotline}</a>
               </div>
-              
-              <div className="pl-4">
+              <div className="border-l pl-4 border-gray-100">
                 <LanguageSwitcher />
               </div>
             </div>
 
             {/* Mobile Menu Toggle */}
-            <button className="lg:hidden text-gray-700" onClick={() => setMobileOpen(!mobileOpen)}>
-              {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            <div className="lg:hidden ml-auto">
+              <button className="text-gray-700" onClick={() => setMobileOpen(!mobileOpen)}>
+                {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -211,7 +217,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu (Same compact design) */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div 
