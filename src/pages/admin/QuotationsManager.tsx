@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { useQuotations, useUpdateQuotation, useDeleteQuotation, type Quotation } from '@/hooks/useQuotations';
-import { Search, Trash2, Eye, FileText, CheckCircle, Clock, X, Building2, Mail, Phone, MapPin } from 'lucide-react';
+import { Search, Trash2, Eye, FileText, CheckCircle, Clock, X, Building2, Mail, Phone, MapPin, Edit2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 
 const statusColors: Record<string, string> = {
@@ -27,6 +28,8 @@ const QuotationsManager = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [viewingQuotation, setViewingQuotation] = useState<Quotation | null>(null);
+  const [isEditingPrice, setIsEditingPrice] = useState(false);
+  const [editedPrice, setEditedPrice] = useState('');
 
   const filtered = useMemo(() => {
     return quotations.filter(q => {
@@ -48,7 +51,23 @@ const QuotationsManager = () => {
     try {
       await updateQuotation.mutateAsync({ id, status: newStatus as any });
       toast.success(`Status updated to ${statusLabels[newStatus]}`);
+      if (viewingQuotation) {
+        setViewingQuotation({ ...viewingQuotation, status: newStatus as any });
+      }
     } catch { toast.error('Failed to update status'); }
+  };
+
+  const handleUpdatePrice = async () => {
+    if (!viewingQuotation) return;
+    try {
+      await updateQuotation.mutateAsync({ 
+        id: viewingQuotation.id, 
+        cart_total: Number(editedPrice) 
+      });
+      setViewingQuotation({ ...viewingQuotation, cart_total: Number(editedPrice) });
+      setIsEditingPrice(false);
+      toast.success('Price updated successfully');
+    } catch { toast.error('Failed to update price'); }
   };
 
   const handleSendEmail = (quotation: Quotation) => {
@@ -79,6 +98,8 @@ const QuotationsManager = () => {
 
   const handleView = (quotation: Quotation) => {
     setViewingQuotation(quotation);
+    setEditedPrice(quotation.cart_total.toString());
+    setIsEditingPrice(false);
     if (quotation.status === 'pending') {
       handleStatusChange(quotation.id, 'viewed');
     }
@@ -293,7 +314,30 @@ const QuotationsManager = () => {
                     <tfoot>
                       <tr className="bg-muted/30 font-bold border-t border-border">
                         <td colSpan={3} className="p-4 text-right uppercase text-xs tracking-widest">Estimated Total</td>
-                        <td className="p-4 text-right text-lg text-primary">RM {Number(viewingQuotation.cart_total).toFixed(2)}</td>
+                        <td className="p-4 text-right text-lg text-primary">
+                          <div className="flex items-center justify-end gap-2">
+                            {isEditingPrice ? (
+                              <div className="flex items-center gap-1">
+                                <span className="text-sm font-normal text-muted-foreground mr-1">RM</span>
+                                <Input 
+                                  type="number" 
+                                  value={editedPrice} 
+                                  onChange={(e) => setEditedPrice(e.target.value)}
+                                  className="w-24 h-8 text-right font-bold text-primary"
+                                />
+                                <Button size="sm" variant="outline" className="h-8 px-2" onClick={handleUpdatePrice}>Save</Button>
+                                <Button size="sm" variant="ghost" className="h-8 px-2" onClick={() => setIsEditingPrice(false)}>Cancel</Button>
+                              </div>
+                            ) : (
+                              <>
+                                <span>RM {Number(viewingQuotation.cart_total).toFixed(2)}</span>
+                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setIsEditingPrice(true)}>
+                                  <Edit2 className="w-3 h-3 text-muted-foreground" />
+                                </Button>
+                              </>
+                            )}
+                          </div>
+                        </td>
                       </tr>
                     </tfoot>
                   </table>

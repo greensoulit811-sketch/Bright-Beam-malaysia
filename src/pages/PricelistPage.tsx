@@ -31,7 +31,7 @@ const PricelistPage = () => {
     (p.brand || '').toLowerCase().includes(search.toLowerCase())
   );
 
-  const googleSheetUrl = "https://docs.google.com/spreadsheets/d/your-id-here/edit"; 
+  const googleSheetUrl = "https://docs.google.com/spreadsheets/d/1O-H09_0fWLpuiaY_6kLnZsFTg6zFKnauXGl49aJLTAA/edit?usp=sharing"; 
    return (
     <div className="min-h-screen bg-white">
       <Navbar />
