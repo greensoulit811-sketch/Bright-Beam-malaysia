@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Star, Zap, Truck, RefreshCw, Shield, ChevronRight, ChevronLeft } from 'lucide-react';
+import { ArrowRight, Zap, Truck, RefreshCw, Shield, ChevronRight, ChevronLeft } from 'lucide-react';
 import { useActiveProducts, useActiveBanners } from '@/hooks/useDatabase';
 import { useActiveCategories } from '@/hooks/useCategories';
 import { useLanguage } from '@/context/LanguageContext';
@@ -10,24 +10,8 @@ import Footer from '@/components/Footer';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
-import basketballImg from '@/assets/shoe-basketball.jpg';
-import runnerImg from '@/assets/shoe-runner-1.jpg';
-import footballImg from '@/assets/shoe-football.jpg';
-import trainingImg from '@/assets/shoe-training.jpg';
-import lifestyleImg from '@/assets/shoe-lifestyle.jpg';
-import trailImg from '@/assets/shoe-trail.jpg';
-import womensImg from '@/assets/shoe-womens-run.jpg';
-
-const fallbackImages: Record<string, string> = {
-  running: runnerImg, basketball: basketballImg, football: footballImg,
-  training: trainingImg, lifestyle: lifestyleImg, trail: trailImg, women: womensImg,
-};
-
-// const reviews = [
-//   { name: 'Khalid A.', text: 'Authentic products, fast shipping. Best sneaker store in Kuwait!', rating: 5 },
-//   { name: 'Fatima R.', text: 'Got my Air Jordans in 2 days. Perfect condition, 100% legit.', rating: 5 },
-//   { name: 'Mohammed S.', text: 'Great selection of brands. The Ultraboost are incredibly comfortable.', rating: 5 },
-// ];
+// Using a generic laptop/tech placeholder for categories without images
+const techPlaceholder = "/placeholder.svg";
 
 const Index = () => {
   const { data: dbProducts = [] } = useActiveProducts();
@@ -35,6 +19,7 @@ const Index = () => {
   const { data: banners = [] } = useActiveBanners();
   const { t } = useLanguage();
   const [currentBanner, setCurrentBanner] = useState(0);
+  
   const products = dbProducts.map(p => ({
     id: p.id, name: p.name, brand: p.brand, price: Number(p.price),
     originalPrice: p.original_price ? Number(p.original_price) : undefined,
@@ -71,7 +56,7 @@ const Index = () => {
   }, [heroBanners.length, nextBanner]);
 
   const getCategoryImage = (slug: string, imageUrl: string | null) =>
-    imageUrl || fallbackImages[slug] || runnerImg;
+    imageUrl || techPlaceholder;
 
   const getCategoryCount = (slug: string) =>
     products.filter(p => p.category?.toLowerCase().trim() === slug.toLowerCase().trim()).length;
@@ -268,30 +253,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-      {/* Reviews */}
-      {/* <section className="py-20">
-        <div className="container mx-auto px-4 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
-            <span className="text-neon font-body text-sm font-bold tracking-[0.3em] uppercase">{t('reviews.label')}</span>
-            <h2 className="heading-display text-4xl md:text-6xl font-bold mt-2 text-foreground">{t('reviews.title')}</h2>
-          </motion.div> */}
-          {/* <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {reviews.map((review, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                className="bg-card p-8 border border-border rounded-lg hover:border-neon/20 hover:shadow-md transition-all">
-                <div className="flex gap-1 mb-4">
-                  {Array.from({ length: review.rating }).map((_, j) => (
-                    <Star key={j} className="w-4 h-4 fill-neon text-neon" />
-                  ))}
-                </div>
-                <p className="font-body text-sm text-muted-foreground mb-4 leading-relaxed">"{review.text}"</p>
-                <p className="font-heading font-bold text-sm uppercase tracking-wider text-foreground">{review.name}</p>
-              </motion.div>
-            ))}
-          </div> */}
-        {/* </div>
-      </section> */}
 
       {/* Newsletter */}
       <section className="py-20 bg-primary text-primary-foreground">
