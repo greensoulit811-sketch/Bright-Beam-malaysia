@@ -51,6 +51,24 @@ const QuotationsManager = () => {
     } catch { toast.error('Failed to update status'); }
   };
 
+  const handleSendEmail = (quotation: Quotation) => {
+    if (!quotation.customer_email) {
+      toast.error('No email address found');
+      return;
+    }
+    
+    // Still copy to clipboard just in case
+    navigator.clipboard.writeText(quotation.customer_email);
+    toast.success('Email address copied!');
+    
+    const subject = encodeURIComponent(`Quotation: ${quotation.company_name}`);
+    const body = encodeURIComponent(`Dear ${quotation.customer_name},\n\nWe have prepared your quotation. Please check the attachment.\n\nTotal: RM ${Number(quotation.cart_total).toFixed(2)}\n\nBest regards,\nBright Beam Team`);
+    
+    // Open directly in Gmail (Web)
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${quotation.customer_email}&su=${subject}&body=${body}`;
+    window.open(gmailUrl, '_blank');
+  };
+
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this quotation request?')) return;
     try {
@@ -122,7 +140,7 @@ const QuotationsManager = () => {
               {filtered.map(q => (
                 <tr key={q.id} className="hover:bg-secondary/50 transition-colors">
                   <td className="p-4 text-muted-foreground">
-                    {new Date(q.created_at).toLocaleDateString('en-MY')}
+                    {new Date(q.created_at).toLocaleDateString('en-GB')}
                   </td>
                   <td className="p-4">
                     <div className="font-bold text-foreground">{q.company_name}</div>
@@ -146,6 +164,9 @@ const QuotationsManager = () => {
                     <div className="flex items-center justify-end gap-1">
                       <Button variant="ghost" size="icon" onClick={() => handleView(q)} title="View Details">
                         <Eye className="w-4 h-4 text-muted-foreground" />
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => handleSendEmail(q)} title="Send Email">
+                        <Mail className="w-4 h-4 text-blue-500" />
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => handleStatusChange(q.id, 'completed')} title="Mark Sent" disabled={q.status === 'completed'}>
                         <CheckCircle className="w-4 h-4 text-green-500" />
@@ -260,7 +281,7 @@ const QuotationsManager = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border text-sm">
-                      {viewingQuotation.cart_items?.map((item: any, i: number) => (
+                      {(viewingQuotation.cart_items as any[])?.map((item: any, i: number) => (
                         <tr key={i}>
                           <td className="p-4 font-bold">{item.name || item.productName}</td>
                           <td className="p-4 text-center">{item.quantity}</td>
