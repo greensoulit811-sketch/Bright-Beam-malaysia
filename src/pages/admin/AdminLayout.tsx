@@ -132,7 +132,6 @@ const AdminLayout = () => {
         <div className="h-16 flex items-center justify-between px-4 border-b border-sidebar-border">
           {!collapsed && (
             <Link to="/admin" className="flex items-center gap-2">
-              <img src="/logo.png" alt="Bright Beam" className="h-10 w-auto brightness-0 invert" />
               <span className="text-xs text-sidebar-foreground/60 font-body font-normal">Admin</span>
             </Link>
           )}
