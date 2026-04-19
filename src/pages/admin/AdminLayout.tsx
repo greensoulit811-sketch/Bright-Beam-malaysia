@@ -19,6 +19,7 @@ const navItems = [
   { path: '/admin/customers', label: 'Customers', icon: Users },
   { path: '/admin/marketing', label: 'Marketing', icon: Megaphone },
   { path: '/admin/shipping', label: 'Shipping Methods', icon: Truck },
+  { path: '/admin/quotations', label: 'Quotations', icon: FileText },
   { path: '/admin/pages', label: 'Pages', icon: FileText },
   { path: '/admin/settings', label: 'Settings', icon: Settings },
 ];

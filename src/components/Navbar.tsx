@@ -51,8 +51,8 @@ const Navbar = () => {
   const navLinks = [
     { title: 'DIY PC Packages', dropdown: true, items: diySubCategories, path: '/' },
     { title: 'Shop', dropdown: false, path: '/shop' },
-    { title: 'Pricelist', dropdown: false, path: '/shop' },
-    { title: 'Quotation', dropdown: false, path: '/shop' },
+    { title: 'Pricelist', dropdown: false, path: '/pricelist' },
+    { title: 'Quotation', dropdown: false, path: '/quotation' },
   ];
 
   return (

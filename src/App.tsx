@@ -38,6 +38,11 @@ import PagesManager from "./pages/admin/PagesManager.tsx";
 import AboutPage from "./pages/AboutPage.tsx";
 import ContactPage from "./pages/ContactPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import QuotationPage from "./pages/QuotationPage.tsx";
+import QuotationsManager from "./pages/admin/QuotationsManager.tsx";
+import PricelistPage from "./pages/PricelistPage.tsx";
+
+
 
 const queryClient = new QueryClient();
 
@@ -59,7 +64,11 @@ const App = () => (
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/wishlist" element={<WishlistPage />} />
               <Route path="/about" element={<AboutPage />} />
-              <Route path="/contact" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/quotation" element={<QuotationPage />} />
+              <Route path="/pricelist" element={<PricelistPage />} />
+
+
               <Route path="/admin/login" element={<AdminLoginPage />} />
               <Route path="/admin" element={
                 <ProtectedAdminRoute>
@@ -81,6 +90,8 @@ const App = () => (
                 <Route path="marketing" element={<MarketingTrackingPage />} />
                 <Route path="shipping" element={<ShippingMethodsManager />} />
                 <Route path="reviews" element={<ReviewsManager />} />
+                <Route path="quotations" element={<QuotationsManager />} />
+
                 <Route path="pages" element={<PagesManager />} />
               </Route>
               <Route path="*" element={<NotFound />} />
