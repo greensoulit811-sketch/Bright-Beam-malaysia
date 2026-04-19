@@ -12,15 +12,29 @@ const CartPage = () => {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
-        <div className="pt-32 text-center px-4">
-          <ShoppingBag className="w-16 h-16 mx-auto mb-6 text-muted-foreground" />
-          <h1 className="heading-display text-4xl font-bold mb-4 text-foreground">{t('cart.empty')}</h1>
-          <p className="font-body text-muted-foreground mb-8">{t('cart.empty_subtitle')}</p>
-          <Link to="/shop" className="inline-flex items-center gap-2 bg-neon text-accent-foreground px-8 py-4 font-body text-sm font-bold tracking-wider uppercase glow-neon hover:bg-neon-glow transition-all rounded-sm">
-            {t('hero.shop_now')} <ArrowRight className="w-4 h-4" />
-          </Link>
+        <div className="flex-1 flex flex-col items-center justify-center px-4 pt-40 pb-20">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="text-center"
+          >
+            <div className="w-24 h-24 bg-card border border-border rounded-full flex items-center justify-center mx-auto mb-8 shadow-sm">
+              <ShoppingBag className="w-10 h-10 text-muted-foreground/60" />
+            </div>
+            <h1 className="heading-display text-4xl md:text-5xl font-bold mb-4 text-foreground uppercase tracking-tight">
+              {t('cart.empty')}
+            </h1>
+            <p className="font-body text-muted-foreground max-w-sm mx-auto mb-10 text-lg">
+              {t('cart.empty_subtitle')}
+            </p>
+            <Link to="/shop" 
+              className="inline-flex items-center gap-3 bg-neon text-accent-foreground px-10 py-4 font-body text-sm font-bold tracking-[0.2em] uppercase glow-neon hover:bg-neon-glow transition-all duration-300 rounded-sm">
+              {t('hero.shop_now')} <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
         </div>
         <Footer />
       </div>

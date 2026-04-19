@@ -67,7 +67,7 @@ const Index = () => {
 
       {/* Hero Banner Section */}
       {heroBanners.length > 0 && (
-        <section className="relative w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-screen overflow-hidden">
+        <section className="relative w-full h-[45vh] sm:h-[60vh] md:h-[75vh] lg:h-screen overflow-hidden">
           <AnimatePresence mode="wait">
             <motion.div key={currentBanner} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }} className="absolute inset-0">
               <img src={heroBanners[currentBanner].image_url} alt={heroBanners[currentBanner].title} className="w-full h-full object-cover" />

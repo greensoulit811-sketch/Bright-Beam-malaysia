@@ -147,9 +147,18 @@ const Navbar = () => {
               <button type="submit" className="w-14 bg-[#5BC0DE] text-white rounded-r-full hover:bg-[#46b8da] transition-colors"><Search className="w-5 h-5 mx-auto" /></button>
             </form>
           </div>
-          <Link to="/cart" className="flex items-center gap-3 shrink-0">
-             <div className="relative"><ShoppingBag className="w-7 h-7 text-white" />{cartCount > 0 && <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-white text-[#0A2342] rounded-full text-[11px] flex items-center justify-center font-bold border-2 border-[#0A2342]">{cartCount}</span>}</div>
-             <span className="text-[16px] font-black uppercase tracking-tighter">RM {cartTotal.toFixed(2)}</span>
+          <Link to="/cart" className="flex items-center gap-3 shrink-0 group transition-colors">
+             <div className="relative">
+               <ShoppingBag className="w-7 h-7 text-white group-hover:text-blue-500 transition-colors" />
+               {cartCount > 0 && (
+                 <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-white text-[#0A2342] rounded-full text-[11px] flex items-center justify-center font-bold border-2 border-[#0A2342] group-hover:border-blue-500 group-hover:text-blue-500 transition-colors">
+                   {cartCount}
+                 </span>
+               )}
+             </div>
+             <span className="text-[16px] font-black uppercase tracking-tighter group-hover:text-blue-600 transition-colors">
+               RM {cartTotal.toFixed(2)}
+             </span>
           </Link>
         </div>
       </div>
