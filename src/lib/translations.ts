@@ -113,7 +113,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'checkout.no_shipping': 'No shipping methods available',
     'checkout.payment_method': 'Payment Method',
     'checkout.cod': 'Cash on Delivery (COD)',
-    'checkout.cod_desc': 'Pay when you receive your order 🇲🇾',
+    'checkout.cod_desc': 'Pay when you receive your order',
     'checkout.place_order': 'Place Order',
     'checkout.placing': 'Placing Order...',
     'checkout.order_confirmed': 'Order Confirmed! 🎉',
