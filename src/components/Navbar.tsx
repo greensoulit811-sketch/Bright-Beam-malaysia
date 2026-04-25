@@ -2,22 +2,28 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, Search, Menu, X, ChevronDown, Phone, Globe, LayoutGrid, Plus, Minus } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useActiveCategories } from '@/hooks/useCategories';
+import { useActiveProducts } from '@/hooks/useDatabase';
 import { useLanguage } from '@/context/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronRight } from 'lucide-react';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { cartCount, cartTotal } = useCart();
   const { data: categories = [] } = useActiveCategories();
+  const { data: products = [] } = useActiveProducts();
   const { t } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [catMenuOpen, setCatMenuOpen] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const [hoveredCatId, setHoveredCatId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileTab, setMobileTab] = useState<'menu' | 'categories'>('menu');
   const [expandedLinks, setExpandedLinks] = useState<string[]>([]);
+  const [expandedCats, setExpandedCats] = useState<string[]>([]);
+  const [showAllCats, setShowAllCats] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -44,9 +50,33 @@ const Navbar = () => {
     setExpandedLinks(prev => prev.includes(title) ? prev.filter(t => t !== title) : [...prev, title]);
   };
 
-  const parentCategories = categories.filter(c => !c.parent_id);
+  const toggleCatExpanded = (id: string) => {
+    setExpandedCats(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
+
+  const parentCategories = useMemo(() => categories.filter(c => !c.parent_id), [categories]);
   const diySubCategories = categories.filter(c => c.parent_id !== null).slice(0, 8); 
   const hotline = "+60 19-322 2058"; 
+  
+  // Get brands for each category
+  const categoryBrandsMap = useMemo(() => {
+    const map: Record<string, string[]> = {};
+    
+    parentCategories.forEach(parent => {
+      const children = categories.filter(c => c.parent_id === parent.id);
+      const childSlugs = [parent.slug, ...children.map(c => c.slug)];
+      
+      const brands = new Set<string>();
+      products.forEach(p => {
+        if (childSlugs.includes(p.category)) {
+          if (p.brand) brands.add(p.brand);
+        }
+      });
+      map[parent.id] = Array.from(brands).sort();
+    });
+    
+    return map;
+  }, [categories, parentCategories, products]);
 
   const navLinks = [
     { title: 'DIY PC Packages', dropdown: true, items: diySubCategories, path: '/' },
@@ -126,16 +156,106 @@ const Navbar = () => {
             <AnimatePresence>
               {catMenuOpen && (
                 <motion.div 
-                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
-                  className="absolute top-full left-0 w-64 bg-white shadow-2xl rounded-b-lg overflow-hidden border border-border z-[150]"
+                  initial={{ opacity: 0, y: 0, width: 260 }} 
+                  animate={{ 
+                    opacity: 1, 
+                    y: 0, 
+                    width: hoveredCatId ? 560 : 260 
+                  }} 
+                  exit={{ opacity: 0, y: 0 }}
+                  transition={{ type: "tween", duration: 0.2 }}
+                  className="absolute top-full left-0 z-[150] flex min-h-[450px]"
+                  onMouseLeave={() => setHoveredCatId(null)}
                 >
-                  <div className="py-2">
-                    {parentCategories.map(cat => (
-                      <Link key={cat.id} to={`/shop?category=${cat.slug}`} className="flex items-center px-6 py-3 text-sm text-foreground hover:bg-gray-50 hover:text-blue-600 font-medium transition-colors border-b border-gray-50 last:border-0" onClick={() => setCatMenuOpen(false)}>
-                        {cat.name}
-                      </Link>
+                  {/* Left Column: Categories List */}
+                  <div className="w-[260px] bg-white shadow-lg border border-gray-200 py-2 relative h-fit max-h-[80vh] overflow-y-auto custom-scrollbar">
+                    {(showAllCats ? parentCategories : parentCategories.slice(0, 8)).map((cat, index) => (
+                      <div 
+                        key={cat.id}
+                        className={`group flex items-center justify-between px-7 py-3 cursor-pointer transition-colors ${hoveredCatId === cat.id ? 'bg-[#f8f8f8] text-gray-900' : 'text-gray-700 hover:bg-[#f8f8f8]'}`}
+                        onMouseEnter={() => setHoveredCatId(cat.id)}
+                        onClick={() => {
+                          navigate(`/shop?category=${cat.slug}`);
+                          setCatMenuOpen(false);
+                        }}
+                      >
+                        <span className="text-[15px] font-normal">{cat.name}</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-400" />
+                      </div>
                     ))}
+                    
+                    {parentCategories.length > 8 && (
+                      <div className="mt-2 px-7 py-3 border-t border-gray-50">
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowAllCats(!showAllCats);
+                          }}
+                          className="text-[14px] text-gray-600 hover:text-blue-500 transition-colors flex items-center gap-1"
+                        >
+                          {showAllCats ? '- Show Less' : `+ More Categories (${parentCategories.length - 8})`}
+                        </button>
+                      </div>
+                    )}
                   </div>
+
+                  {/* Right Column: Flying-out Card */}
+                  <AnimatePresence>
+                    {hoveredCatId && (
+                      <motion.div 
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ 
+                          opacity: 1, 
+                          x: 0,
+                          y: (parentCategories.findIndex(c => c.id === hoveredCatId) * 48)
+                        }}
+                        exit={{ opacity: 0, x: -10 }}
+                        className="absolute left-[260px] w-[300px] bg-white shadow-xl border border-gray-100 py-8 px-10 z-[160]"
+                        style={{ top: '8px' }}
+                      >
+                        <div className="flex flex-col">
+                          <div className="mb-4">
+                            <h4 className="text-[16px] font-bold text-[#333]">
+                              {categories.find(c => c.id === hoveredCatId)?.name}
+                            </h4>
+                          </div>
+                          
+                          <div className="flex flex-col gap-y-2.5">
+                            {/* Priority 1: Subcategories from DB */}
+                            {categories.some(c => c.parent_id === hoveredCatId) ? (
+                              categories.filter(c => c.parent_id === hoveredCatId).map(sub => (
+                                <Link 
+                                  key={sub.id} 
+                                  to={`/shop?category=${sub.slug}`}
+                                  className="text-[15px] text-[#555] hover:text-blue-600 transition-colors"
+                                  onClick={() => setCatMenuOpen(false)}
+                                >
+                                  {sub.name}
+                                </Link>
+                              ))
+                            ) : (
+                              /* Priority 2: Brands from Products */
+                              categoryBrandsMap[hoveredCatId]?.map(brand => (
+                                <Link 
+                                  key={brand} 
+                                  to={`/shop?category=${categories.find(c => c.id === hoveredCatId)?.slug}&brand=${encodeURIComponent(brand)}`}
+                                  className="text-[15px] text-[#555] hover:text-blue-600 transition-colors"
+                                  onClick={() => setCatMenuOpen(false)}
+                                >
+                                  {brand}
+                                </Link>
+                              ))
+                            )}
+                            
+                            {/* Empty State */}
+                            {!categories.some(c => c.parent_id === hoveredCatId) && (!categoryBrandsMap[hoveredCatId] || categoryBrandsMap[hoveredCatId].length === 0) && (
+                              <p className="text-[13px] text-gray-400 italic">No items found.</p>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -222,7 +342,33 @@ const Navbar = () => {
                     </motion.div>
                   ) : (
                     <motion.div key="cat" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="divide-y divide-gray-50">
-                       {parentCategories.map(cat => <Link key={cat.id} to={`/shop?category=${cat.slug}`} className="flex items-center justify-between p-4 text-[14px] font-bold text-[#0A2342] bg-white hover:bg-gray-50 transition-colors" onClick={() => setMobileOpen(false)}>{cat.name} <ChevronDown className="w-4 h-4 -rotate-90 text-gray-300" /></Link>)}
+                       {parentCategories.map(cat => {
+                         const brands = categoryBrandsMap[cat.id] || [];
+                         const subCats = categories.filter(c => c.parent_id === cat.id);
+                         const hasItems = brands.length > 0 || subCats.length > 0;
+                         
+                         return (
+                           <div key={cat.id} className="flex flex-col">
+                             <div className="flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors">
+                               <Link to={`/shop?category=${cat.slug}`} onClick={() => setMobileOpen(false)} className="text-[14px] font-bold text-[#0A2342] flex-1 uppercase">{cat.name}</Link>
+                               {hasItems && (
+                                 <button onClick={() => toggleCatExpanded(cat.id)} className="p-1 px-3 border border-gray-100 rounded text-gray-400">
+                                   {expandedCats.includes(cat.id) ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                                 </button>
+                               )}
+                             </div>
+                             {hasItems && expandedCats.includes(cat.id) && (
+                               <div className="bg-gray-50 divide-y divide-gray-100">
+                                 {brands.length > 0 ? brands.map(brand => (
+                                   <Link key={brand} to={`/shop?category=${cat.slug}&brand=${encodeURIComponent(brand)}`} className="block p-4 pl-8 text-[13px] font-semibold text-gray-500 hover:text-blue-600" onClick={() => setMobileOpen(false)}>{brand}</Link>
+                                 )) : subCats.map(sub => (
+                                   <Link key={sub.id} to={`/shop?category=${sub.slug}`} className="block p-4 pl-8 text-[13px] font-semibold text-gray-500 hover:text-blue-600" onClick={() => setMobileOpen(false)}>{sub.name}</Link>
+                                 ))}
+                               </div>
+                             )}
+                           </div>
+                         );
+                       })}
                     </motion.div>
                   )}
                 </AnimatePresence>
