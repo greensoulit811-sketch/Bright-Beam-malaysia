@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { useActiveProducts } from '@/hooks/useDatabase';
@@ -15,11 +15,17 @@ const ShopPage = () => {
   const { data: dbCategories = [] } = useActiveCategories();
   const { t } = useLanguage();
   const categoryFilter = searchParams.get('category') || '';
+  const urlBrand = searchParams.get('brand') || '';
   const searchFilter = searchParams.get('search') || '';
   const [search, setSearch] = useState(searchFilter);
-  const [brandFilter, setBrandFilter] = useState('');
+  const [brandFilter, setBrandFilter] = useState(urlBrand);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000000]);
   const [showFilters, setShowFilters] = useState(false);
+
+  // Sync brand filter with URL
+  useEffect(() => {
+    setBrandFilter(urlBrand);
+  }, [urlBrand]);
 
   const products = useMemo(() => {
     return dbProducts.map(p => ({
@@ -60,8 +66,8 @@ const ShopPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="pt-32 lg:pt-36">
-        <div className="bg-card border-b border-border py-12">
+      <div className="pt-24 lg:pt-36">
+        <div className="bg-card border-b border-border py-8 lg:py-12">
           <div className="container mx-auto px-4 lg:px-8">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
               <span className="text-neon font-body text-sm font-bold tracking-[0.3em] uppercase">{t('shop.collection')}</span>
