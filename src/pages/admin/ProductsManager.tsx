@@ -44,6 +44,7 @@ const ProductsManager = () => {
   const mainImageRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
   const [autoOpened, setAutoOpened] = useState(false);
+  const [isUploading, setIsUploading] = useState<string | null>(null);
 
   // Auto-open product from URL params
   useEffect(() => {
@@ -70,7 +71,6 @@ const ProductsManager = () => {
           const matchesSize = productSize
             ? (p.sizes || []).some(size => String(size) === String(productSize))
             : true;
-
           return matchesName && matchesPrice && matchesColor && matchesSize;
         });
 
@@ -120,6 +120,34 @@ const ProductsManager = () => {
       })));
     }
   }, [existingVariations, editing?.id]);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'main' | 'gallery' | 'feature', index?: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const uploadKey = `${type}-${index ?? 'main'}`;
+    setIsUploading(uploadKey);
+    try {
+      const url = await uploadProductImage(file);
+      if (type === 'main') {
+        setForm({ ...form, image: url });
+      } else if (type === 'gallery' && index !== undefined) {
+        const newImages = [...form.images];
+        newImages[index] = url;
+        setForm({ ...form, images: newImages });
+      } else if (type === 'feature' && index !== undefined) {
+        const newFeatures = [...form.features];
+        newFeatures[index].image = url;
+        setForm({ ...form, features: newFeatures });
+      }
+      toast.success('Image uploaded successfully');
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to upload image');
+    } finally {
+      setIsUploading(null);
+    }
+  };
 
   const handleMainImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -583,11 +611,19 @@ const ProductsManager = () => {
                         }} className="text-destructive hover:text-destructive/80"><Trash2 className="w-4 h-4" /></button>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <Input placeholder="Image URL" value={feature.image} onChange={(e) => {
-                          const newFeatures = [...form.features];
-                          newFeatures[idx].image = e.target.value;
-                          setForm({ ...form, features: newFeatures });
-                        }} />
+                        <div className="flex gap-2">
+                          <Input placeholder="Image URL" value={feature.image} onChange={(e) => {
+                            const newFeatures = [...form.features];
+                            newFeatures[idx].image = e.target.value;
+                            setForm({ ...form, features: newFeatures });
+                          }} />
+                          <div className="relative">
+                            <Input type="file" accept="image/*" className="hidden" id={`feature-upload-${idx}`} onChange={(e) => handleUpload(e, 'feature', idx)} />
+                            <label htmlFor={`feature-upload-${idx}`} className="flex items-center justify-center w-10 h-10 border border-input rounded-md cursor-pointer hover:bg-secondary/50 transition-colors">
+                              {isUploading === `feature-${idx}` ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                            </label>
+                          </div>
+                        </div>
                         <Input placeholder="Feature Title" value={feature.title} onChange={(e) => {
                           const newFeatures = [...form.features];
                           newFeatures[idx].title = e.target.value;
