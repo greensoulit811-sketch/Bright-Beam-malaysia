@@ -22,6 +22,7 @@ const emptyForm = {
   image: '', images: [] as string[], sku: '',
   sizes: '', colors: '', description: '', stock: 50,
   is_active: true, is_trending: false, is_new: false,
+  specifications: {} as Record<string, string>,
 };
 
 const ProductsManager = () => {
@@ -102,6 +103,7 @@ const ProductsManager = () => {
       sizes: (p.sizes || []).join(', '), colors: (p.colors || []).join(', '),
       description: p.description || '', stock: p.stock || 50,
       is_active: p.is_active ?? true, is_trending: p.is_trending ?? false, is_new: p.is_new ?? false,
+      specifications: (p as any).specifications || {},
     });
     setShowForm(true);
   };
@@ -198,6 +200,7 @@ const ProductsManager = () => {
       colors: form.colors.split(',').map(c => c.trim()).filter(Boolean),
       description: form.description, stock: form.stock,
       is_active: form.is_active, is_trending: form.is_trending, is_new: form.is_new,
+      specifications: form.specifications,
     };
 
     try {
@@ -499,6 +502,59 @@ const ProductsManager = () => {
                   className="flex items-center gap-1 font-body text-xs font-bold text-muted-foreground hover:text-foreground transition-colors">
                   <Plus className="w-3 h-3" /> Add Row
                 </button>
+              </div>
+
+              {/* Specifications Section */}
+              <div className="bg-secondary/30 border border-border rounded-lg p-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-heading text-sm font-bold uppercase tracking-wider text-muted-foreground">Data Sheet (Specifications)</h3>
+                </div>
+                <div className="space-y-3">
+                  {Object.entries(form.specifications).map(([key, value], idx) => (
+                    <div key={idx} className="flex gap-2">
+                      <Input 
+                        placeholder="Label (e.g. CPU)" 
+                        value={key} 
+                        onChange={(e) => {
+                          const newSpecs = { ...form.specifications };
+                          const oldVal = newSpecs[key];
+                          delete newSpecs[key];
+                          newSpecs[e.target.value] = oldVal;
+                          setForm({ ...form, specifications: newSpecs });
+                        }}
+                        className="h-9 text-sm"
+                      />
+                      <Input 
+                        placeholder="Value (e.g. Intel i7)" 
+                        value={value} 
+                        onChange={(e) => {
+                          const newSpecs = { ...form.specifications };
+                          newSpecs[key] = e.target.value;
+                          setForm({ ...form, specifications: newSpecs });
+                        }}
+                        className="h-9 text-sm"
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          const newSpecs = { ...form.specifications };
+                          delete newSpecs[key];
+                          setForm({ ...form, specifications: newSpecs });
+                        }}
+                        className="p-2 text-destructive hover:bg-destructive/10 rounded-md"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                  <button 
+                    type="button" 
+                    onClick={() => setForm({ ...form, specifications: { ...form.specifications, '': '' } })}
+                    className="flex items-center gap-1 font-body text-xs font-bold text-primary hover:text-primary/80 transition-colors"
+                  >
+                    <Plus className="w-3 h-3" /> Add Specification
+                  </button>
+                </div>
               </div>
 
               {/* Status Toggles */}

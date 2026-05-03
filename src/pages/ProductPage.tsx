@@ -28,6 +28,7 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [customSpecs, setCustomSpecs] = useState<Record<string, string>>({});
+  const [activeTab, setActiveTab] = useState<'description' | 'specifications'>('description');
 
   const allProducts = useMemo(() => dbProducts.map(p => ({
     id: p.id, name: p.name, brand: p.brand, price: Number(p.price),
@@ -36,6 +37,7 @@ const ProductPage = () => {
     images: p.images || [p.image], colors: p.colors || [],
     description: p.description || '', rating: Number(p.rating) || 4.5,
     reviews: p.reviews || 0, isTrending: p.is_trending || false, isNew: p.is_new || false,
+    specifications: (p as any).specifications as Record<string, string> || {},
   })), [dbProducts]);
 
   const product = allProducts.find(p => p.id === id);
@@ -270,6 +272,53 @@ const ProductPage = () => {
                 ))}
               </div>
             </motion.div>
+          </div>
+
+          {/* Product Description & Specifications Tabs */}
+          <div className="mt-16 border-t border-border pt-10">
+            <div className="flex gap-8 border-b border-border mb-8">
+              <button 
+                onClick={() => setActiveTab('description')}
+                className={`pb-4 font-heading text-sm font-bold uppercase tracking-widest transition-all relative ${activeTab === 'description' ? 'text-neon' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                Description
+                {activeTab === 'description' && <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-neon" />}
+              </button>
+              <button 
+                onClick={() => setActiveTab('specifications')}
+                className={`pb-4 font-heading text-sm font-bold uppercase tracking-widest transition-all relative ${activeTab === 'specifications' ? 'text-neon' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                Data Sheet
+                {activeTab === 'specifications' && <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-neon" />}
+              </button>
+            </div>
+
+            <div className="min-h-[300px]">
+              {activeTab === 'description' ? (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="prose prose-invert max-w-none">
+                  <p className="font-body text-muted-foreground leading-relaxed text-lg whitespace-pre-wrap">{product.description}</p>
+                </motion.div>
+              ) : (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                  {Object.keys(product.specifications).length > 0 ? (
+                    <div className="overflow-hidden border border-border rounded-lg bg-card/50">
+                      <table className="w-full text-left border-collapse">
+                        <tbody>
+                          {Object.entries(product.specifications).map(([key, value], idx) => (
+                            <tr key={idx} className="border-b border-border last:border-0 hover:bg-secondary/30 transition-colors">
+                              <td className="py-4 px-6 font-heading text-xs uppercase tracking-wider text-muted-foreground bg-secondary/20 w-1/3 md:w-1/4">{key}</td>
+                              <td className="py-4 px-6 font-body text-sm text-foreground">{value}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <p className="font-body text-muted-foreground italic">No specifications available for this product.</p>
+                  )}
+                </motion.div>
+              )}
+            </div>
           </div>
 
           <ProductReviews productId={product.id} />

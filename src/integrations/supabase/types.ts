@@ -365,6 +365,7 @@ export type Database = {
           reviews: number | null
           sizes: number[] | null
           sku: string | null
+          specifications: Json | null
           stock: number | null
           updated_at: string
         }
