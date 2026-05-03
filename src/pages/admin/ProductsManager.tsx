@@ -190,6 +190,12 @@ const ProductsManager = () => {
       toast.error('Name and Brand are required');
       return;
     }
+    // Filter out empty keys from specifications
+    const filteredSpecs = Object.entries(form.specifications).reduce((acc, [key, value]) => {
+      if (key.trim()) acc[key.trim()] = value;
+      return acc;
+    }, {} as Record<string, string>);
+
     const data: any = {
       name: form.name, brand: form.brand, price: form.price,
       original_price: form.original_price, category: form.category,
@@ -200,7 +206,7 @@ const ProductsManager = () => {
       colors: form.colors.split(',').map(c => c.trim()).filter(Boolean),
       description: form.description, stock: form.stock,
       is_active: form.is_active, is_trending: form.is_trending, is_new: form.is_new,
-      specifications: form.specifications,
+      specifications: filteredSpecs,
     };
 
     try {
