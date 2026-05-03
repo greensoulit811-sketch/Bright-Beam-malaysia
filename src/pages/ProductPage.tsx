@@ -38,6 +38,7 @@ const ProductPage = () => {
     description: p.description || '', rating: Number(p.rating) || 4.5,
     reviews: p.reviews || 0, isTrending: p.is_trending || false, isNew: p.is_new || false,
     specifications: (p as any).specifications as Record<string, string> || {},
+    features: (p as any).features as { image: string, title: string, description: string }[] || [],
   })), [dbProducts]);
 
   const product = allProducts.find(p => p.id === id);
@@ -275,46 +276,62 @@ const ProductPage = () => {
           </div>
 
           {/* Product Description & Specifications Tabs */}
-          <div className="mt-16 border-t border-border pt-10">
-            <div className="flex gap-8 border-b border-border mb-8">
+          <div className="mt-24 border-t border-border pt-10">
+            <div className="flex justify-center gap-12 border-b border-border mb-12">
               <button 
                 onClick={() => setActiveTab('description')}
-                className={`pb-4 font-heading text-sm font-bold uppercase tracking-widest transition-all relative ${activeTab === 'description' ? 'text-neon' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`pb-4 font-heading text-lg font-bold uppercase tracking-widest transition-all relative ${activeTab === 'description' ? 'text-neon' : 'text-muted-foreground hover:text-foreground'}`}
               >
                 Description
                 {activeTab === 'description' && <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-neon" />}
               </button>
               <button 
                 onClick={() => setActiveTab('specifications')}
-                className={`pb-4 font-heading text-sm font-bold uppercase tracking-widest transition-all relative ${activeTab === 'specifications' ? 'text-neon' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`pb-4 font-heading text-lg font-bold uppercase tracking-widest transition-all relative ${activeTab === 'specifications' ? 'text-neon' : 'text-muted-foreground hover:text-foreground'}`}
               >
                 Data Sheet
                 {activeTab === 'specifications' && <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-neon" />}
               </button>
             </div>
 
-            <div className="min-h-[300px]">
+            <div className="min-h-[400px]">
               {activeTab === 'description' ? (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="prose prose-invert max-w-none">
-                  <p className="font-body text-muted-foreground leading-relaxed text-lg whitespace-pre-wrap">{product.description}</p>
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-16">
+                  {product.features.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {product.features.map((feature, idx) => (
+                        <div key={idx} className="group">
+                          <div className="aspect-square rounded-lg overflow-hidden border border-border bg-card mb-6 group-hover:border-neon/50 transition-colors">
+                            <img src={feature.image} alt={feature.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                          </div>
+                          <h3 className="font-heading text-xl font-bold mb-3 text-foreground">{feature.title}</h3>
+                          <p className="font-body text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="max-w-4xl mx-auto">
+                      <p className="font-body text-muted-foreground leading-relaxed text-lg whitespace-pre-wrap text-center">{product.description}</p>
+                    </div>
+                  )}
                 </motion.div>
               ) : (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-5xl mx-auto">
                   {Object.keys(product.specifications).length > 0 ? (
-                    <div className="overflow-hidden border border-border rounded-lg bg-card/50">
+                    <div className="overflow-hidden border border-border rounded-sm">
                       <table className="w-full text-left border-collapse">
                         <tbody>
                           {Object.entries(product.specifications).map(([key, value], idx) => (
-                            <tr key={idx} className="border-b border-border last:border-0 hover:bg-secondary/30 transition-colors">
-                              <td className="py-4 px-6 font-heading text-xs uppercase tracking-wider text-muted-foreground bg-secondary/20 w-1/3 md:w-1/4">{key}</td>
-                              <td className="py-4 px-6 font-body text-sm text-foreground">{value}</td>
+                            <tr key={idx} className={`${idx % 2 === 0 ? 'bg-secondary/10' : 'bg-transparent'} hover:bg-neon/5 transition-colors`}>
+                              <td className="py-4 px-6 font-heading text-xs font-bold uppercase tracking-widest text-muted-foreground w-1/3 md:w-1/4 border-r border-border/50">{key}</td>
+                              <td className="py-4 px-6 font-body text-sm text-foreground leading-relaxed whitespace-pre-wrap">{value}</td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
                     </div>
                   ) : (
-                    <p className="font-body text-muted-foreground italic">No specifications available for this product.</p>
+                    <p className="font-body text-muted-foreground italic text-center">No specifications available for this product.</p>
                   )}
                 </motion.div>
               )}

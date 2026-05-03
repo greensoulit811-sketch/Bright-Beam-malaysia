@@ -23,6 +23,7 @@ const emptyForm = {
   sizes: '', colors: '', description: '', stock: 50,
   is_active: true, is_trending: false, is_new: false,
   specifications: {} as Record<string, string>,
+  features: [] as { image: string, title: string, description: string }[],
 };
 
 const ProductsManager = () => {
@@ -104,6 +105,7 @@ const ProductsManager = () => {
       description: p.description || '', stock: p.stock || 50,
       is_active: p.is_active ?? true, is_trending: p.is_trending ?? false, is_new: p.is_new ?? false,
       specifications: (p as any).specifications || {},
+      features: (p as any).features || [],
     });
     setShowForm(true);
   };
@@ -207,6 +209,7 @@ const ProductsManager = () => {
       description: form.description, stock: form.stock,
       is_active: form.is_active, is_trending: form.is_trending, is_new: form.is_new,
       specifications: filteredSpecs,
+      features: form.features,
     };
 
     try {
@@ -559,6 +562,51 @@ const ProductsManager = () => {
                     className="flex items-center gap-1 font-body text-xs font-bold text-primary hover:text-primary/80 transition-colors"
                   >
                     <Plus className="w-3 h-3" /> Add Specification
+                  </button>
+                </div>
+              </div>
+
+              {/* Features Section */}
+              <div className="bg-secondary/30 border border-border rounded-lg p-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-heading text-sm font-bold uppercase tracking-wider text-muted-foreground">Product Features (Grid Layout)</h3>
+                </div>
+                <div className="space-y-4">
+                  {form.features.map((feature, idx) => (
+                    <div key={idx} className="p-4 border border-border rounded-md bg-background space-y-3">
+                      <div className="flex justify-between items-start">
+                        <span className="text-xs font-bold text-muted-foreground uppercase">Feature {idx + 1}</span>
+                        <button type="button" onClick={() => {
+                          const newFeatures = [...form.features];
+                          newFeatures.splice(idx, 1);
+                          setForm({ ...form, features: newFeatures });
+                        }} className="text-destructive hover:text-destructive/80"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <Input placeholder="Image URL" value={feature.image} onChange={(e) => {
+                          const newFeatures = [...form.features];
+                          newFeatures[idx].image = e.target.value;
+                          setForm({ ...form, features: newFeatures });
+                        }} />
+                        <Input placeholder="Feature Title" value={feature.title} onChange={(e) => {
+                          const newFeatures = [...form.features];
+                          newFeatures[idx].title = e.target.value;
+                          setForm({ ...form, features: newFeatures });
+                        }} />
+                      </div>
+                      <textarea placeholder="Feature Description" value={feature.description} onChange={(e) => {
+                        const newFeatures = [...form.features];
+                        newFeatures[idx].description = e.target.value;
+                        setForm({ ...form, features: newFeatures });
+                      }} rows={2} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none" />
+                    </div>
+                  ))}
+                  <button 
+                    type="button" 
+                    onClick={() => setForm({ ...form, features: [...form.features, { image: '', title: '', description: '' }] })}
+                    className="flex items-center gap-1 font-body text-xs font-bold text-primary hover:text-primary/80 transition-colors"
+                  >
+                    <Plus className="w-3 h-3" /> Add Feature Item
                   </button>
                 </div>
               </div>
