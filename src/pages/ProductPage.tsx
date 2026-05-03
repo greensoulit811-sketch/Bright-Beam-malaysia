@@ -294,7 +294,7 @@ const ProductPage = () => {
               </button>
             </div>
 
-            <div className="min-h-[400px]">
+            <div className="min-h-[200px]">
               {activeTab === 'description' ? (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-16">
                   {product.features.length > 0 ? (
@@ -322,9 +322,9 @@ const ProductPage = () => {
                       <table className="w-full text-left border-collapse">
                         <tbody>
                           {Object.entries(product.specifications).map(([key, value], idx) => (
-                            <tr key={idx} className={`${idx % 2 === 0 ? 'bg-secondary/10' : 'bg-transparent'} hover:bg-neon/5 transition-colors`}>
-                              <td className="py-4 px-6 font-heading text-xs font-bold uppercase tracking-widest text-muted-foreground w-1/3 md:w-1/4 border-r border-border/50">{key}</td>
-                              <td className="py-4 px-6 font-body text-sm text-foreground leading-relaxed whitespace-pre-wrap">{value}</td>
+                            <tr key={idx} className={`${idx % 2 === 0 ? 'bg-secondary/40' : 'bg-white'} hover:bg-neon/5 transition-colors`}>
+                              <td className="py-3 px-6 font-heading text-xs font-bold uppercase tracking-widest text-muted-foreground w-1/3 md:w-1/4 border-r border-border/50">{key}</td>
+                              <td className="py-3 px-6 font-body text-sm text-foreground leading-relaxed whitespace-pre-wrap">{value}</td>
                             </tr>
                           ))}
                         </tbody>
