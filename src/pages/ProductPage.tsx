@@ -29,6 +29,8 @@ const ProductPage = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [customSpecs, setCustomSpecs] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState<'description' | 'specifications'>('description');
+  const [zoomPos, setZoomPos] = useState({ x: 0, y: 0 });
+  const [isZooming, setIsZooming] = useState(false);
 
   const allProducts = useMemo(() => dbProducts.map(p => ({
     id: p.id, name: p.name, brand: p.brand, price: Number(p.price),
@@ -129,10 +131,27 @@ const ProductPage = () => {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-            <div>
+            <div className="lg:sticky lg:top-36">
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="aspect-square bg-card overflow-hidden rounded-lg border border-border mb-4">
-                <img src={galleryImages[selectedImage]} alt={product.name} className="w-full h-full object-cover" />
+                className="relative aspect-square bg-card overflow-hidden rounded-lg border border-border mb-4 cursor-zoom-in"
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = ((e.clientX - rect.left) / rect.width) * 100;
+                  const y = ((e.clientY - rect.top) / rect.height) * 100;
+                  setZoomPos({ x, y });
+                  setIsZooming(true);
+                }}
+                onMouseLeave={() => setIsZooming(false)}
+              >
+                <img 
+                  src={galleryImages[selectedImage]} 
+                  alt={product.name} 
+                  className="w-full h-full object-cover transition-transform duration-200" 
+                  style={{
+                    transform: isZooming ? 'scale(2)' : 'scale(1)',
+                    transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`
+                  }}
+                />
               </motion.div>
               {galleryImages.length > 1 && (
                 <div className="flex gap-2 overflow-x-auto pb-2">
