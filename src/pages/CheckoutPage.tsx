@@ -238,20 +238,20 @@ const CheckoutPage = () => {
                           {item.customSpecs && Object.entries(item.customSpecs).map(([k, v]) => v ? `${k}: ${v} · ` : '').join('')}
                           x{item.quantity}
                         </p>
-                        <p className="font-body text-xs font-bold text-primary">{(item.product.price * item.quantity).toFixed(2)} RM</p>
+                        <p className="font-body text-xs font-bold text-primary">RM {(item.product.price * item.quantity).toFixed(2)}</p>
                       </div>
                     </div>
                   ))}
                 </div>
                 <div className="space-y-2 font-body text-sm border-t border-border pt-4 mb-4">
-                  <div className="flex justify-between"><span className="text-muted-foreground">{t('cart.subtotal')}</span><span>{cartTotal.toFixed(2)} RM</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">{t('cart.subtotal')}</span><span>RM {cartTotal.toFixed(2)}</span></div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('cart.shipping')}{selectedShipping ? ` (${selectedShipping.name})` : ''}</span>
-                    <span>{shippingCharge === 0 ? t('cart.free') : `${shippingCharge.toFixed(2)} RM`}</span>
+                    <span>{shippingCharge === 0 ? t('cart.free') : `RM ${shippingCharge.toFixed(2)}`}</span>
                   </div>
                 </div>
                 <div className="flex justify-between font-heading text-xl font-bold border-t border-border pt-4 mb-6 text-foreground">
-                  <span>{t('cart.total')}</span><span className="text-primary">{total.toFixed(2)} RM</span>
+                  <span>{t('cart.total')}</span><span className="text-primary">RM {total.toFixed(2)}</span>
                 </div>
                 <button type="submit" disabled={isSubmitting}
                   className="w-full bg-primary text-primary-foreground py-4 font-body text-sm font-bold tracking-wider uppercase hover:bg-primary/90 transition-all duration-300 rounded-md disabled:opacity-50">

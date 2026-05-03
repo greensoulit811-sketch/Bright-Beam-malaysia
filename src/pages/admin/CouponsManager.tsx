@@ -56,8 +56,8 @@ const CouponsManager = () => {
                 {c.is_active ? 'Active' : 'Inactive'}
               </span>
             </div>
-            <p className="font-body text-2xl font-bold mb-1 text-foreground">{c.type === 'percentage' ? `${Number(c.value)}% OFF` : `${Number(c.value).toFixed(2)} RM OFF`}</p>
-            <p className="font-body text-xs text-muted-foreground mb-3">Min order: {Number(c.min_order).toFixed(2)} RM</p>
+            <p className="font-body text-2xl font-bold mb-1 text-foreground">{c.type === 'percentage' ? `${Number(c.value)}% OFF` : `RM ${Number(c.value).toFixed(2)} OFF`}</p>
+            <p className="font-body text-xs text-muted-foreground mb-3">Min order: RM {Number(c.min_order).toFixed(2)}</p>
             <div className="flex justify-between font-body text-xs text-muted-foreground mb-4">
               <span>Used: {c.used_count}/{c.max_uses}</span>
               <span>Expires: {c.expires_at}</span>

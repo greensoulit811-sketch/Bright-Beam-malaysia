@@ -294,8 +294,8 @@ const ProductsManager = () => {
                   </td>
                   <td className="p-4 font-body text-sm text-muted-foreground hidden md:table-cell">{(p as any).sku || '—'}</td>
                   <td className="p-4">
-                    <p className="font-body text-sm font-bold text-primary">{Number(p.price).toFixed(2)} RM</p>
-                    {p.original_price && <p className="font-body text-xs text-muted-foreground line-through">{Number(p.original_price).toFixed(2)} RM</p>}
+                    <p className="font-body text-sm font-bold text-primary">RM {Number(p.price).toFixed(2)}</p>
+                    {p.original_price && <p className="font-body text-xs text-muted-foreground line-through">RM {Number(p.original_price).toFixed(2)}</p>}
                   </td>
                   <td className="p-4 font-body text-sm capitalize text-foreground hidden md:table-cell">{p.category}</td>
                   <td className="p-4 font-body text-sm text-foreground">{p.stock}</td>
