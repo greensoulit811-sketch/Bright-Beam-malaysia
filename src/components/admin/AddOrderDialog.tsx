@@ -10,11 +10,11 @@ import { toast } from 'sonner';
 
 interface OrderItem {
   productName: string;
-  size: number;
+  size: string;
   color: string;
   quantity: number;
   price: number;
-}
+}  
 
 const AddOrderDialog = () => {
   const [open, setOpen] = useState(false);
@@ -26,7 +26,7 @@ const AddOrderDialog = () => {
   const [customerPhone, setCustomerPhone] = useState('');
   const [shippingAddress, setShippingAddress] = useState('');
   const [notes, setNotes] = useState('');
-  const [items, setItems] = useState<OrderItem[]>([{ productName: '', size: 40, color: '', quantity: 1, price: 0 }]);
+  const [items, setItems] = useState<OrderItem[]>([{ productName: '', size: '', color: '', quantity: 1, price: 0 }]);
 
   const resetForm = () => {
     setCustomerName('');
@@ -34,11 +34,11 @@ const AddOrderDialog = () => {
     setCustomerPhone('');
     setShippingAddress('');
     setNotes('');
-    setItems([{ productName: '', size: 40, color: '', quantity: 1, price: 0 }]);
+    setItems([{ productName: '', size: '', color: '', quantity: 1, price: 0 }]);
   };
 
   const addItem = () => {
-    setItems(prev => [...prev, { productName: '', size: 40, color: '', quantity: 1, price: 0 }]);
+    setItems(prev => [...prev, { productName: '', size: '', color: '', quantity: 1, price: 0 }]);
   };
 
   const removeItem = (index: number) => {
@@ -46,7 +46,7 @@ const AddOrderDialog = () => {
   };
 
   const updateItem = (index: number, field: keyof OrderItem, value: string | number) => {
-    setItems(prev => prev.map((item, i) => i === index ? { ...item, [field]: value } : item));
+    setItems(prev => prev.map((item, i) => i === index ? { ...item, [field]: field === 'size' ? String(value) : value } : item));
   };
 
   const selectProduct = (index: number, productName: string) => {
@@ -57,7 +57,7 @@ const AddOrderDialog = () => {
         productName: product.name,
         price: product.price,
         color: product.colors?.[0] || '',
-        size: product.sizes?.[0] || 40,
+        size: product.sizes?.[0] ? String(product.sizes[0]) : '',
       } : item));
     } else {
       updateItem(index, 'productName', productName);
@@ -175,7 +175,7 @@ const AddOrderDialog = () => {
                   <div className="grid grid-cols-4 gap-2">
                     <div>
                       <Label className="font-body text-xs">Size</Label>
-                      <Input type="number" value={item.size} onChange={e => updateItem(index, 'size', Number(e.target.value))} />
+                      <Input value={item.size} onChange={e => updateItem(index, 'size', e.target.value)} />
                     </div>
                     <div>
                       <Label className="font-body text-xs">Color</Label>

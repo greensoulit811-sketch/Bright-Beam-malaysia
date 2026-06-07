@@ -1,5 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
+export interface ProductVariation {
+  size: string | number;
+  color: string;
+  sku?: string;
+  price?: number | null;
+  stock: number;
+}
+
 export interface AdminProduct {
   id: string;
   name: string;
@@ -10,6 +18,7 @@ export interface AdminProduct {
   image: string;
   sizes: number[];
   colors: string[];
+  variations?: ProductVariation[];
   description: string;
   stock: number;
   isActive: boolean;
