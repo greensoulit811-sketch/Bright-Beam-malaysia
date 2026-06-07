@@ -25,6 +25,7 @@ const ProductPage = () => {
   const navigate = useNavigate();
 
   const [selectedColor, setSelectedColor] = useState<string>('');
+  const [selectedSize, setSelectedSize] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [customSpecs, setCustomSpecs] = useState<Record<string, string>>({});
@@ -45,17 +46,58 @@ const ProductPage = () => {
 
   const product = allProducts.find(p => p.id === id);
 
-  // Auto-select when only one color option
-  useEffect(() => {
-    if (product) {
-      if (product.colors.length === 1) setSelectedColor(product.colors[0]);
+  const availableSizes = useMemo(() => {
+    if (variations.length > 0) {
+      return Array.from(new Set(variations.map(v => v.size).filter(Boolean)));
     }
-  }, [product?.id]);
+    return [];
+  }, [variations]);
+
+  const availableColors = useMemo(() => {
+    if (variations.length > 0) {
+      if (selectedSize) {
+        return Array.from(new Set(variations.filter(v => v.size === selectedSize).map(v => v.color).filter(Boolean)));
+      }
+      return [];
+    }
+    return product?.colors || [];
+  }, [variations, product, selectedSize]);
+
+  // Auto-select when only one option
+  useEffect(() => {
+    if (availableSizes.length === 1 && !selectedSize) setSelectedSize(availableSizes[0]);
+    if (availableColors.length === 1 && !selectedColor) setSelectedColor(availableColors[0]);
+  }, [availableColors, availableSizes, selectedColor, selectedSize]);
+
+  // If selected color is not available in the new size, reset it
+  useEffect(() => {
+    if (selectedColor && availableColors.length > 0 && !availableColors.includes(selectedColor)) {
+      setSelectedColor('');
+    }
+  }, [selectedSize, availableColors, selectedColor]);
 
   const selectedVariation = useMemo(() => {
-    if (!selectedColor || variations.length === 0) return null;
-    return variations.find(v => v.color === selectedColor) || null;
-  }, [selectedColor, variations]);
+    if (variations.length === 0) return null;
+    
+    const hasColors = availableColors.length > 0;
+    const hasSizes = availableSizes.length > 0;
+
+    if (hasColors && hasSizes) {
+      if (selectedColor && selectedSize) {
+        return variations.find(v => v.color === selectedColor && v.size === selectedSize) || null;
+      }
+      return null;
+    }
+
+    if (hasColors && selectedColor) {
+      return variations.find(v => v.color === selectedColor) || null;
+    }
+    if (hasSizes && selectedSize) {
+      return variations.find(v => v.size === selectedSize) || null;
+    }
+    
+    return null;
+  }, [selectedColor, selectedSize, variations, availableColors.length, availableSizes.length]);
 
   const displayPrice = selectedVariation?.price ? Number(selectedVariation.price) : product?.price || 0;
   const variationStock = selectedVariation ? selectedVariation.stock : null;
@@ -96,15 +138,16 @@ const ProductPage = () => {
   const productNames = allProducts.map(p => p.name);
 
   const validateSelection = () => {
-    if (product.colors && product.colors.length > 0 && !selectedColor) { toast.error(t('product.select_color_error')); return false; }
-    if (variationStock !== null && variationStock <= 0) { toast.error(t('product.out_of_stock_error')); return false; }
+    if (availableColors.length > 0 && !selectedColor) { toast.error(t('product.select_color_error') || 'Please select a color'); return false; }
+    if (availableSizes.length > 0 && !selectedSize) { toast.error('Please select a size'); return false; }
+    if (variationStock !== null && variationStock <= 0) { toast.error(t('product.out_of_stock_error') || 'Out of stock'); return false; }
     return true;
   };
 
   const handleAddToCart = () => {
     if (!validateSelection()) return;
     const cartProduct = { ...product, price: displayPrice };
-    addToCart(cartProduct, selectedColor, Object.keys(customSpecs).length > 0 ? customSpecs : undefined);
+    addToCart(cartProduct, selectedSize || undefined, selectedColor, Object.keys(customSpecs).length > 0 ? customSpecs : undefined);
     fbTrackAddToCart({
       content_ids: [product.id], content_name: product.name,
       value: displayPrice * quantity, num_items: quantity,
@@ -115,7 +158,7 @@ const ProductPage = () => {
   const handleBuyNow = () => {
     if (!validateSelection()) return;
     const cartProduct = { ...product, price: displayPrice };
-    addToCart(cartProduct, selectedColor, Object.keys(customSpecs).length > 0 ? customSpecs : undefined);
+    addToCart(cartProduct, selectedSize || undefined, selectedColor, Object.keys(customSpecs).length > 0 ? customSpecs : undefined);
     navigate('/checkout');
   };
 
@@ -202,11 +245,25 @@ const ProductPage = () => {
 
 
 
-              {product.colors && product.colors.length > 0 && (
+              {availableSizes.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="font-heading font-bold uppercase tracking-wider text-sm mb-3 text-foreground">Size</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {availableSizes.map(size => (
+                      <button key={size} onClick={() => setSelectedSize(size)}
+                        className={`px-4 py-2 border font-body text-sm font-medium rounded-sm transition-all ${selectedSize === size ? 'border-neon bg-neon text-accent-foreground' : 'border-border text-foreground hover:border-neon/50'}`}>
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {availableColors.length > 0 && (
                 <div className="mb-8">
                   <h3 className="font-heading font-bold uppercase tracking-wider text-sm mb-3 text-foreground">{t('product.color')}</h3>
                   <div className="flex flex-wrap gap-2">
-                    {product.colors.map(color => (
+                    {availableColors.map(color => (
                       <button key={color} onClick={() => setSelectedColor(color)}
                         className={`px-4 py-2 border font-body text-sm font-medium rounded-sm transition-all ${selectedColor === color ? 'border-neon bg-neon text-accent-foreground' : 'border-border text-foreground hover:border-neon/50'}`}>
                         {color}
@@ -270,7 +327,7 @@ const ProductPage = () => {
               </button>
 
               <a
-                href={`https://wa.me/+60193222058?text=${encodeURIComponent(`Hi! I'd like to order:\n\nProduct: ${product.name}\nBrand: ${product.brand}\nColor: ${selectedColor || 'Not selected'}\nQuantity: ${quantity}\nPrice: RM ${displayPrice}\n\nPlease confirm my order. Thank you!`)}`}
+                href={`https://wa.me/+60193222058?text=${encodeURIComponent(`Hi! I'd like to order:\n\nProduct: ${product.name}\nBrand: ${product.brand}\nColor: ${selectedColor || 'Not selected'}\nSize: ${selectedSize || 'Not selected'}\nQuantity: ${quantity}\nPrice: RM ${displayPrice}\n\nPlease confirm my order. Thank you!`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full h-12 bg-[#25D366] text-white font-body text-sm font-bold tracking-wider uppercase hover:bg-[#20bd5a] transition-all duration-300 rounded-sm flex items-center justify-center gap-2 mb-8"

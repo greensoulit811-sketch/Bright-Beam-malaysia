@@ -57,7 +57,7 @@ const CheckoutPage = () => {
       address: form.address,
       area: '', notes: form.notes,
       cartItems: items.map(item => ({
-        productId: item.product.id, productName: item.product.name, color: item.color,
+        productId: item.product.id, productName: item.product.name, color: item.color, size: item.size,
         quantity: item.quantity, price: item.product.price,
         customSpecs: item.customSpecs,
       })),
@@ -78,7 +78,7 @@ const CheckoutPage = () => {
 
     setIsSubmitting(true);
     const orderItems = items.map(item => ({
-      productId: item.product.id, productName: item.product.name, color: item.color,
+      productId: item.product.id, productName: item.product.name, color: item.color, size: item.size,
       quantity: item.quantity, price: item.product.price,
       customSpecs: item.customSpecs,
     }));
@@ -234,7 +234,8 @@ const CheckoutPage = () => {
                       <div className="flex-1 min-w-0">
                         <p className="font-body text-xs font-bold truncate text-foreground">{item.product.name}</p>
                         <p className="font-body text-xs text-muted-foreground">
-                          {item.color ? `${item.color} · ` : ''}
+                          {item.size ? `Size: ${item.size} · ` : ''}
+                          {item.color ? `Color: ${item.color} · ` : ''}
                           {item.customSpecs && Object.entries(item.customSpecs).map(([k, v]) => v ? `${k}: ${v} · ` : '').join('')}
                           x{item.quantity}
                         </p>

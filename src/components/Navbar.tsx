@@ -264,7 +264,7 @@ const Navbar = () => {
           <div className="flex-1 flex justify-center h-full items-center">
             <form onSubmit={handleSearch} className="w-full max-w-2xl flex h-10">
               <input type="text" placeholder="Search..." className="w-full bg-white rounded-l-full px-6 text-sm text-gray-800 focus:outline-none" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-              <button type="submit" className="w-14 bg-[#5BC0DE] text-white rounded-r-full hover:bg-[#46b8da] transition-colors"><Search className="w-5 h-5 mx-auto" /></button>
+              <button type="submit" className="w-14 bg-blue-500 text-white rounded-r-full hover:bg-blue-600 transition-colors"><Search className="w-5 h-5 mx-auto" /></button>
             </form>
           </div>
           <Link to="/cart" className="flex items-center gap-3 shrink-0 group transition-colors">

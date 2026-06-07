@@ -46,6 +46,12 @@ const ProductsManager = () => {
   const [autoOpened, setAutoOpened] = useState(false);
   const [isUploading, setIsUploading] = useState<string | null>(null);
 
+  // Bulk Variations States
+  const [bulkSize, setBulkSize] = useState('');
+  const [bulkColors, setBulkColors] = useState('');
+  const [bulkPrice, setBulkPrice] = useState('');
+  const [bulkStock, setBulkStock] = useState(50);
+
   // Auto-open product from URL params
   useEffect(() => {
     if (products.length === 0 || autoOpened) return;
@@ -189,21 +195,39 @@ const ProductsManager = () => {
     setForm(f => ({ ...f, image: '' }));
   };
 
-  const generateVariations = () => {
-    const sizes = form.sizes.split(',').map(s => s.trim()).filter(Boolean);
-    const colors = form.colors.split(',').map(c => c.trim()).filter(Boolean);
-    if (!sizes.length || !colors.length) {
-      toast.error('Add sizes and colors first');
+  const handleBulkAdd = () => {
+    if (!bulkSize.trim() && !bulkColors.trim()) {
+      toast.error('Please enter a size or color');
       return;
     }
-    const newVars: VariationRow[] = [];
-    for (const size of sizes) {
-      for (const color of colors) {
-        const existing = variations.find(v => v.size === size && v.color === color);
-        newVars.push(existing || { size, color, sku: '', price: '', stock: 0 });
-      }
+    
+    const size = bulkSize.trim();
+    const colors = bulkColors.split(',').map(c => c.trim()).filter(Boolean);
+    const newVars = [...variations];
+    
+    if (colors.length > 0) {
+      colors.forEach(color => {
+        newVars.push({
+          size,
+          color,
+          sku: '',
+          price: bulkPrice,
+          stock: bulkStock
+        });
+      });
+    } else if (size) {
+      newVars.push({
+        size,
+        color: '',
+        sku: '',
+        price: bulkPrice,
+        stock: bulkStock
+      });
     }
+    
     setVariations(newVars);
+    setBulkColors('');
+    toast.success(`Added ${Math.max(1, colors.length)} variation(s) for ${size || 'No Size'}`);
   };
 
   const updateVariation = (idx: number, field: keyof VariationRow, value: string | number) => {
@@ -232,8 +256,12 @@ const ProductsManager = () => {
       image: form.image || '/assets/shoe-runner-1.jpg',
       images: form.images.length > 0 ? form.images : [form.image || '/assets/shoe-runner-1.jpg'],
       sku: form.sku,
-      sizes: form.sizes.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n)),
-      colors: form.colors.split(',').map(c => c.trim()).filter(Boolean),
+      sizes: variations.length > 0 
+        ? Array.from(new Set(variations.map(v => parseInt(v.size)).filter(n => !isNaN(n))))
+        : form.sizes.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n)),
+      colors: variations.length > 0
+        ? Array.from(new Set(variations.map(v => v.color).filter(Boolean)))
+        : form.colors.split(',').map(c => c.trim()).filter(Boolean),
       description: form.description, stock: form.stock,
       is_active: form.is_active, is_trending: form.is_trending, is_new: form.is_new,
       specifications: filteredSpecs,
@@ -467,30 +495,38 @@ const ProductsManager = () => {
                 </div>
               </div>
 
-              {/* Sizes & Colors */}
-              <div className="bg-secondary/30 border border-border rounded-lg p-5 space-y-4">
-                <h3 className="font-heading text-sm font-bold uppercase tracking-wider text-muted-foreground">Sizes & Colors</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Sizes (comma separated)</label>
-                    <Input value={form.sizes} onChange={e => setForm({ ...form, sizes: e.target.value })} placeholder="39, 40, 41, 42, 43" />
-                  </div>
-                  <div>
-                    <label className="block font-body text-xs uppercase tracking-wider text-muted-foreground mb-1">Colors (comma separated)</label>
-                    <Input value={form.colors} onChange={e => setForm({ ...form, colors: e.target.value })} placeholder="Black, White, Brown" />
-                  </div>
-                </div>
-              </div>
-
               {/* Variations */}
               <div className="bg-secondary/30 border border-border rounded-lg p-5 space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-2">
                   <h3 className="font-heading text-sm font-bold uppercase tracking-wider text-muted-foreground">Variations</h3>
-                  <button type="button" onClick={generateVariations}
-                    className="font-body text-xs font-bold uppercase tracking-wider text-primary hover:text-primary/80 transition-colors">
-                    Generate from Sizes & Colors
+                </div>
+
+                {/* Quick Add Tool */}
+                <div className="p-4 border border-border rounded-md bg-background space-y-4">
+                  <h4 className="text-xs font-bold uppercase text-foreground">Quick Add Combinations</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+                    <div className="lg:col-span-1">
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Size / Storage</label>
+                      <Input value={bulkSize} onChange={e => setBulkSize(e.target.value)} placeholder="e.g. 1 TB" className="h-9 text-xs" />
+                    </div>
+                    <div className="lg:col-span-2">
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Colors (comma separated)</label>
+                      <Input value={bulkColors} onChange={e => setBulkColors(e.target.value)} placeholder="e.g. Red, Blue, Green" className="h-9 text-xs" />
+                    </div>
+                    <div className="lg:col-span-1">
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Base Price</label>
+                      <Input type="number" step="0.01" value={bulkPrice} onChange={e => setBulkPrice(e.target.value)} placeholder="Leave blank for default" className="h-9 text-xs" />
+                    </div>
+                    <div className="lg:col-span-1">
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Stock</label>
+                      <Input type="number" value={bulkStock} onChange={e => setBulkStock(+e.target.value)} className="h-9 text-xs" />
+                    </div>
+                  </div>
+                  <button type="button" onClick={handleBulkAdd} className="bg-primary text-primary-foreground text-xs font-bold px-4 py-2 rounded-md hover:bg-primary/90 transition-colors w-full md:w-auto">
+                    + Add Combinations
                   </button>
                 </div>
+
                 {variations.length > 0 ? (
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">

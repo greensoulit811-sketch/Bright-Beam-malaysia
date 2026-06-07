@@ -64,7 +64,8 @@ const CartPage = () => {
                       <div>
                         <span className="font-body text-xs text-neon font-bold tracking-wider uppercase">{item.product.brand}</span>
                         <Link to={`/product/${item.product.id}`} className="block font-heading font-bold text-sm sm:text-base uppercase tracking-wide text-foreground hover-neon transition-colors">{item.product.name}</Link>
-                        {item.color && <p className="font-body text-xs text-muted-foreground mt-1">{item.color}</p>}
+                        {item.size && <p className="font-body text-xs text-muted-foreground mt-1">Size: {item.size}</p>}
+                        {item.color && <p className="font-body text-xs text-muted-foreground mt-0.5">Color: {item.color}</p>}
                       </div>
                       <button onClick={() => removeFromCart(item.product.id)} className="text-muted-foreground hover:text-foreground transition-colors"><X className="w-4 h-4" /></button>
                     </div>
