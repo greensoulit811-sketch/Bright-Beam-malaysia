@@ -79,7 +79,7 @@ const Navbar = () => {
   }, [categories, parentCategories, products]);
 
   const navLinks = [
-    { title: 'DIY PC Packages', dropdown: true, items: diySubCategories, path: '/' },
+    // { title: 'DIY PC Packages', dropdown: true, items: diySubCategories, path: '/' },
     { title: 'Shop', dropdown: false, path: '/shop' },
     { title: 'Pricelist', dropdown: false, path: '/pricelist' },
     { title: 'Quotation', dropdown: false, path: '/quotation' },
@@ -112,7 +112,7 @@ const Navbar = () => {
                     <div className={`absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 transition-transform duration-300 ${hoveredLink === link.title ? 'scale-x-100' : 'scale-x-0'}`} />
                     
                     {/* Desktop Mega Menu Dropdown */}
-                    <AnimatePresence>
+                    {/* <AnimatePresence>
                       {link.dropdown && hoveredLink === link.title && (
                         <motion.div
                           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
@@ -129,7 +129,7 @@ const Navbar = () => {
                           )}
                         </motion.div>
                       )}
-                    </AnimatePresence>
+                    </AnimatePresence> */}
                   </div>
                 ))}
               </div>
@@ -317,7 +317,7 @@ const Navbar = () => {
               </div>
 
               <div className="flex-1 overflow-y-auto">
-                <AnimatePresence mode="wait">
+                {/* <AnimatePresence mode="wait">
                   {mobileTab === 'menu' ? (
                     <motion.div key="menu" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="divide-y divide-gray-50">
                        {navLinks.map((link) => (
@@ -371,7 +371,7 @@ const Navbar = () => {
                        })}
                     </motion.div>
                   )}
-                </AnimatePresence>
+                </AnimatePresence> */}
               </div>
 
               <div className="p-6 bg-gray-50 border-t border-gray-100 space-y-4">
