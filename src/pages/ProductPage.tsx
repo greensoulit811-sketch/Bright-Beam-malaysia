@@ -15,6 +15,44 @@ import CountdownTimer from '@/components/CountdownTimer';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
+const FeatureItem = ({ feature }: { feature: { image: string; title: string; description: string } }) => {
+  const [isLarge, setIsLarge] = useState(false);
+  const hasImage = !!feature.image;
+
+  return (
+    <div className={`group ${!hasImage || isLarge ? 'col-span-1 md:col-span-2 lg:col-span-3' : 'col-span-1'}`}>
+      {hasImage && (
+        <div className={`rounded-lg overflow-hidden border border-border bg-card mb-6 transition-colors group-hover:border-neon/50 ${isLarge ? 'w-full' : 'aspect-square w-full'}`}>
+          <img 
+            src={feature.image} 
+            alt={feature.title} 
+            onLoad={(e) => {
+              const img = e.target as HTMLImageElement;
+              // If it's a landscape image or very large square, make it full width
+              if (img.naturalWidth > img.naturalHeight * 1.2 || img.naturalWidth > 800) {
+                setIsLarge(true);
+              }
+            }}
+            className={`w-full transition-transform duration-500 group-hover:scale-105 ${isLarge ? 'h-auto object-contain' : 'h-full object-cover'}`} 
+          />
+        </div>
+      )}
+      <div className={!hasImage ? 'w-full py-12 px-6 text-center bg-secondary/10 rounded-xl border border-border/50 shadow-sm' : ''}>
+        {feature.title && (
+          <h3 className={`font-heading font-bold mb-3 text-foreground ${!hasImage ? 'text-2xl md:text-3xl  mb-6' : 'text-xl'}`}>
+            {feature.title}
+          </h3>
+        )}
+        {feature.description && (
+          <p className={`font-body text-muted-foreground leading-relaxed whitespace-pre-wrap ${!hasImage ? 'text-base md:text-lg max-w-4xl mx-auto' : 'text-sm'}`}>
+            {feature.description}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const ProductPage = () => {
   const { id } = useParams();
   const { data: dbProducts = [], isLoading } = useActiveProducts();
@@ -374,15 +412,9 @@ const ProductPage = () => {
               {activeTab === 'description' ? (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-16">
                   {product.features.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 grid-flow-dense">
                       {product.features.map((feature, idx) => (
-                        <div key={idx} className="group">
-                          <div className="aspect-square rounded-lg overflow-hidden border border-border bg-card mb-6 group-hover:border-neon/50 transition-colors">
-                            <img src={feature.image} alt={feature.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                          </div>
-                          <h3 className="font-heading text-xl font-bold mb-3 text-foreground">{feature.title}</h3>
-                          <p className="font-body text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
-                        </div>
+                        <FeatureItem key={idx} feature={feature} />
                       ))}
                     </div>
                   ) : (
