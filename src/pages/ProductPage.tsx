@@ -212,38 +212,42 @@ const ProductPage = () => {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-            <div className="lg:sticky lg:top-36">
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="relative aspect-square bg-card overflow-hidden rounded-lg border border-border mb-4 cursor-zoom-in"
-                onMouseMove={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const x = ((e.clientX - rect.left) / rect.width) * 100;
-                  const y = ((e.clientY - rect.top) / rect.height) * 100;
-                  setZoomPos({ x, y });
-                  setIsZooming(true);
-                }}
-                onMouseLeave={() => setIsZooming(false)}
-              >
-                <img 
-                  src={galleryImages[selectedImage]} 
-                  alt={product.name} 
-                  className="w-full h-full object-cover transition-transform duration-200" 
-                  style={{
-                    transform: isZooming ? 'scale(2)' : 'scale(1)',
-                    transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`
+            {/* Left Column - Stretches to full height of right column */}
+            <div className="relative">
+              {/* Inner Sticky Container */}
+              <div className="lg:sticky lg:top-36">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  className="relative aspect-square bg-card overflow-hidden rounded-lg border border-border mb-4 cursor-zoom-in"
+                  onMouseMove={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    setZoomPos({ x, y });
+                    setIsZooming(true);
                   }}
-                />
-              </motion.div>
-              {galleryImages.length > 1 && (
-                <div className="flex gap-2 overflow-x-auto pb-2">
-                  {galleryImages.map((img, i) => (
-                    <button key={i} onClick={() => setSelectedImage(i)}
-                      className={`w-20 h-20 shrink-0 rounded-md overflow-hidden border-2 transition-all ${selectedImage === i ? 'border-primary ring-2 ring-primary/20' : 'border-border hover:border-primary/50'}`}>
-                      <img src={img} alt="" className="w-full h-full object-cover" />
-                    </button>
-                  ))}
-                </div>
-              )}
+                  onMouseLeave={() => setIsZooming(false)}
+                >
+                  <img 
+                    src={galleryImages[selectedImage]} 
+                    alt={product.name} 
+                    className="w-full h-full object-cover transition-transform duration-200" 
+                    style={{
+                      transform: isZooming ? 'scale(2)' : 'scale(1)',
+                      transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`
+                    }}
+                  />
+                </motion.div>
+                {galleryImages.length > 1 && (
+                  <div className="flex gap-2 overflow-x-auto pb-2">
+                    {galleryImages.map((img, i) => (
+                      <button key={i} onClick={() => setSelectedImage(i)}
+                        className={`w-20 h-20 shrink-0 rounded-md overflow-hidden border-2 transition-all ${selectedImage === i ? 'border-primary ring-2 ring-primary/20' : 'border-border hover:border-primary/50'}`}>
+                        <img src={img} alt="" className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
@@ -279,7 +283,28 @@ const ProductPage = () => {
                 </p>
               )}
 
-              <p className="font-body text-muted-foreground leading-relaxed mb-8">{product.description}</p>
+              {/* Format Description */}
+              {(() => {
+                if (!product.description) return null;
+                
+                // Split by newline or bullet character
+                const items = product.description
+                  .split(/[\n•]/)
+                  .map(item => item.trim())
+                  .filter(Boolean);
+
+                if (items.length > 0) {
+                  return (
+                    <ul className="list-disc list-outside ml-5 pl-2 space-y-2 font-body text-muted-foreground leading-relaxed mb-8 marker:text-muted-foreground">
+                      {items.map((item, idx) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  );
+                }
+
+                return null;
+              })()}
 
 
 
@@ -419,7 +444,27 @@ const ProductPage = () => {
                     </div>
                   ) : (
                     <div className="max-w-4xl mx-auto">
-                      <p className="font-body text-muted-foreground leading-relaxed text-lg whitespace-pre-wrap text-center">{product.description}</p>
+                      {(() => {
+                        if (!product.description) return null;
+                        
+                        // Split by newline or bullet character
+                        const items = product.description
+                          .split(/[\n•]/)
+                          .map(item => item.trim())
+                          .filter(Boolean);
+
+                        if (items.length > 0) {
+                          return (
+                            <ul className="list-disc list-outside ml-5 pl-2 space-y-3 font-body text-muted-foreground leading-relaxed text-lg marker:text-muted-foreground text-left">
+                              {items.map((item, idx) => (
+                                <li key={idx}>{item}</li>
+                              ))}
+                            </ul>
+                          );
+                        }
+
+                        return <p className="font-body text-muted-foreground leading-relaxed text-lg whitespace-pre-wrap text-center">{product.description}</p>;
+                      })()}
                     </div>
                   )}
                 </motion.div>

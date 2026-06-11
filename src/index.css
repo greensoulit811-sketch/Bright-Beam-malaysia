@@ -61,7 +61,7 @@
     @apply border-border;
   }
   html, body {
-    overflow-x: hidden;
+    overflow-x: clip;
     width: 100%;
   }
   body {
@@ -114,3 +114,4 @@
     color: hsl(var(--neon));
   }
 }
+
